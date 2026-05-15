@@ -20,8 +20,8 @@ echo "⬆️ Pushing to origin/master..."
 git push origin master
 
 # 3. Check if PR already exists
-echo "🔍 Checking for existing Pull Request..."
-EXISTING_PR=$(gh pr list --repo "$UPSTREAM_REPO" --head "$HEAD_BRANCH" --json number --jq '.[0].number')
+echo "🔍 Checking for existing Pull Request from SimplyLouie..."
+EXISTING_PR=$(gh pr list --repo "$UPSTREAM_REPO" --json number,headRefName,headRepositoryOwner --jq '.[] | select(.headRefName=="master" and .headRepositoryOwner.login=="SimplyLouie") | .number')
 
 if [ -n "$EXISTING_PR" ]; then
     echo "✅ Pull Request #$EXISTING_PR already exists and has been updated with your latest changes."

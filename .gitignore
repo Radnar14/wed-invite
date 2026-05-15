@@ -50,3 +50,4 @@ __v0_jsx-dev-runtime.ts
 *.sln
 *.sw?
 push-to-upstream.sh
+private/

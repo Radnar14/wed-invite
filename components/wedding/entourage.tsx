@@ -7,19 +7,37 @@ interface EntourageMember {
   role: string
   image?: string
 }
+/* NOt yet Added */
+/*const GroomsParents: EntourageMember[] = [
+  { name: "Glen Abad", role: "Father" },
+  { name: "Sarah Abad", role: "Mother" },
+
+]
+/* NOt yet Added */
+/*const BridesParents: EntourageMember[] = [
+  { name: "Tarcisio Dela Cruz", role: "Father" },
+  { name: "Amilita Dela Cruz", role: "Mother" },
+]
+*/
 
 const bridesSide: EntourageMember[] = [
   { name: "Maria Santos", role: "Maid of Honor" },
-  { name: "Angela Cruz", role: "Bridesmaid" },
-  { name: "Patricia Reyes", role: "Bridesmaid" },
-  { name: "Isabella Garcia", role: "Bridesmaid" },
+  { name: "Shinn Everielle Booc", role: "Bridesmaid" },
+  { name: "Jemmelyn Pescadero", role: "Bridesmaid" },
+  { name: "Jomily Irisawa", role: "Bridesmaid" },
+  { name: "Majesca Shane Zamora", role: "Bridesmaid" },
+  { name: "Candice Pastor", role: "Bridesmaid" },
+  { name: "Sofia Garcia", role: "Bridesmaid" },
 ]
 
 const groomsSide: EntourageMember[] = [
   { name: "Carlos Mendoza", role: "Best Man" },
-  { name: "Miguel Torres", role: "Groomsman" },
-  { name: "Rafael Santos", role: "Groomsman" },
-  { name: "Antonio Reyes", role: "Groomsman" },
+  { name: "Niño Anton Liloan", role: "Groomsman" },
+  { name: "Eizel Jimenez", role: "Groomsman" },
+  { name: "Josh Nicolaus Abad", role: "Groomsman" },
+  { name: "Leonardo Berjame", role: "Groomsman" },
+  { name: "Axziel Bartolabac", role: "Groomsman" },
+  { name: "James Vincent Abad", role: "Groomsman" },
 ]
 
 const primarySponsors: EntourageMember[] = [
@@ -30,16 +48,20 @@ const primarySponsors: EntourageMember[] = [
 ]
 
 const secondarySponsors = {
-  veil: ["Mrs. Carmen Santos", "Mrs. Elena Cruz"],
+  veil: ["Mr. Vincy Ceniza", "Mrs. Orje Marey Ceniza"],
   cord: ["Mr. Ricardo Torres", "Mrs. Sofia Reyes"],
-  candle: ["Mr. Luis Garcia", "Mrs. Ana Mendoza"],
+  candle: ["Mr. Charles Bott", "Mrs. Charmie Sheen Bott"],
 }
 
 const bearers: EntourageMember[] = [
-  { name: "Lucas Santos", role: "Ring Bearer" },
-  { name: "Sofia Cruz", role: "Flower Girl" },
-  { name: "Emma Garcia", role: "Flower Girl" },
-  { name: "Gabriel Mendoza", role: "Bible Bearer" },
+  { name: "Elias Caden Marquesess", role: "Ring Bearer" },
+  { name: "Gabriella Eloise Bott", role: "Flower Girl" },
+  { name: "Sophia Scarlett Marqueses", role: "Flower Girl" },
+  { name: "Sophia Syziel Bartolabac", role: "Flower Girl" },
+  { name: "Arianne Argallon", role: "Flower Girl" },
+  { name: "Hannah Mae Abad", role: "Flower Girl" },
+  { name: "Abiel Jimenez", role: "Bible Bearer" },
+  { name: "Zeijan Wryle Ybañez", role: "Coin Bearer" },
 ]
 
 function MemberCard({ member }: { member: EntourageMember }) {
@@ -77,8 +99,8 @@ export function Entourage() {
           <p className="text-accent text-xs md:text-sm tracking-[0.3em] uppercase mb-3">
             The Wedding Party
           </p>
-          <h2 className="text-3xl md:text-5xl font-serif text-foreground mb-4">
-            Our Entourage
+          <h2 className="text-3xl md:text-5xl font-cursive text-foreground mb-4">
+            The Entourage
           </h2>
           <div className="w-16 md:w-24 h-px bg-accent mx-auto" />
         </div>

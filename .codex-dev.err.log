@@ -1,0 +1,2 @@
+⚠ Slow filesystem detected. The benchmark took 346ms. If F:\Project\wedding-website-design\.next/dev is a network drive, consider moving it to a local folder.
+See more: https://nextjs.org/docs/app/guides/local-development

@@ -69,11 +69,10 @@ const bearers: EntourageMember[] = [
   { name: "Abiel Jimenez", role: "Bible Bearer" },
   { name: "Zeijan Wryle Ybañez", role: "Coin Bearer" },
 ]
-
+{/*Img circle frame of each member */}
 function MemberCard({ member }: { member: EntourageMember }) {
   return (
     <div className="text-center group">
-      {/*Img circle frame of each member */}
       {/* <div className="w-20 h-20 md:w-24 md:h-24 mx-auto mb-3 rounded-full bg-muted flex items-center justify-center overflow-hidden border-2 border-accent/20 group-hover:border-accent transition-colors">
         {member.image ? (
           <Image

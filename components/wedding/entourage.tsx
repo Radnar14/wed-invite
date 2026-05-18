@@ -105,11 +105,11 @@ export function Entourage() {
             Groom's Parents
           </h3>
           
-              <div className="w-40 h-[1px] bg-[#d8cfc7] mx-auto mb-3"></div>
+              <div className="w-40 h-px bg-[#d8cfc7] mx-auto mb-3"></div>
               <div className="text-center">
                 {GroomsParents.map((parent) => (
                       <div key={parent.name}>
-                        <p className="text-muted text-sm md:text-base italic text-[#8C6A5D] mt-1">
+                        <p className="text-muted text-sm md:text-base italic mt-1">
                           {parent.role}
                         </p>
 
@@ -127,11 +127,11 @@ export function Entourage() {
             Bride's Parents
           </h3>
           
-          <div className="w-40 h-[1px] bg-[#d8cfc7] mx-auto mb-3"></div>
+          <div className="w-40 h-px bg-[#d8cfc7] mx-auto mb-3"></div>
               <div className="text-center">
                 {BridesParents.map((parent) => (
                       <div key={parent.name}>
-                        <p className="text-muted text-sm md:text-base italic text-[#8C6A5D] mt-1">
+                        <p className="text-muted text-sm md:text-base italic mt-1">
                           {parent.role}
                         </p>
 
@@ -168,7 +168,7 @@ export function Entourage() {
             <div className="grid grid-cols-2 gap-4 md:gap-6">
                 {bridesSide.map((member) => (
                   <div key={member.name}>
-                        <p className="text-muted text-sm md:text-base italic text-[#8C6A5D] mt-1">
+                        <p className="text-muted text-sm md:text-base italic mt-1">
                           {member.role}
                         </p>
 
@@ -188,7 +188,7 @@ export function Entourage() {
             <div className="grid grid-cols-2 gap-4 md:gap-6">
               {groomsSide.map((member) => (
                 <div key={member.name}>
-                        <p className="text-muted text-sm md:text-base italic text-[#8C6A5D] mt-1">
+                        <p className="text-muted text-sm md:text-base italic mt-1">
                           {member.role}
                         </p>
 
@@ -267,7 +267,7 @@ export function Entourage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-3xl mx-auto">
             {bearers.map((bearer) => (
               <div key={bearer.name}>
-                        <p className="text-muted text-sm md:text-base italic text-[#8C6A5D] mt-1">
+                        <p className="text-muted text-sm md:text-base italic mt-1">
                           {bearer.role}
                         </p>
 

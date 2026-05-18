@@ -47,8 +47,10 @@ export function Gallery() {
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-6xl mx-auto">
           {galleryImages.map((image, index) => (
             <button
+              type="button"
               key={index}
               onClick={() => openLightbox(index)}
+              aria-label={`Open lightbox for ${image.alt}`}
               className={cn(
                 "relative overflow-hidden rounded-sm group cursor-pointer",
                 index === 0 || index === 5 ? "row-span-2 aspect-3/4" : "aspect-square"
@@ -74,6 +76,7 @@ export function Gallery() {
         >
           {/* Close Button */}
           <button
+            type="button"
             onClick={closeLightbox}
             className="absolute top-6 right-6 text-white/80 hover:text-white transition-colors"
             aria-label="Close gallery"
@@ -83,6 +86,7 @@ export function Gallery() {
 
           {/* Navigation */}
           <button
+            type="button"
             onClick={(e) => {
               e.stopPropagation()
               prevImage()
@@ -93,6 +97,7 @@ export function Gallery() {
             <ChevronLeft size={40} strokeWidth={1} />
           </button>
           <button
+            type="button"
             onClick={(e) => {
               e.stopPropagation()
               nextImage()

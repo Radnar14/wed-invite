@@ -20,15 +20,6 @@ const BridesParents: EntourageMember[] = [
 ]
 
 
-/* 
-  JM INSTRUCTIONS FOR IMAGE:
-  To add real images for any member, add an 'image' property to their object.
-  Example: { name: "Maria Santos", role: "Maid of Honor", image: "/images/maria.jpg" }
-  Place the image files in the 'public/images/' folder.
-  TO REMOVE PLACEHOLDERS ENTIRELY: Once you have real images for everyone, delete the `getPlaceholderImage`
-   function and update `MemberCard` to use: const imageSrc = member.image || "/images/placeholder-user.jpg"
-*/
-
 const bridesSide: EntourageMember[] = [
   { name: "Maria Santos", role: "Maid of Honor" },
   { name: "Shinn Everielle Booc", role: "Bridesmaid" },
@@ -82,6 +73,56 @@ const bearers: EntourageMember[] = [
   { name: "Abiel Jimenez", role: "Bible Bearer" },
   { name: "Zeijan Wryle Ybañez", role: "Coin Bearer" },
 ]
+
+function EntourageSide({
+  title,
+  lead,
+  members,
+}: {
+  title: string
+  lead: EntourageMember
+  members: EntourageMember[]
+}) {
+  return (
+    <div className="text-center">
+      <h3 className="font-serif text-xl md:text-3xl text-foreground mb-3 font-bold">
+        {title}
+      </h3>
+
+      <div className="w-40 h-px bg-[#d8cfc7] mx-auto mb-3"></div>
+      <div className="grid gap-6">
+       { <div className="mx-auto max-w-xs">
+          <p className="font-cursive text-2xl md:text-1xl text-accent italic">
+            {lead.role}
+          </p>
+          <p className="font-cursive text-1xl md:text-1xl text-foreground mt-1">
+            {lead.name}
+          </p>
+        </div>}
+
+        <div className="grid grid-cols-2 gap-4 md:gap-4 mt-2">
+          {members.map((member, index) => {
+            const isLastOddItem = members.length % 2 === 1 && index === members.length - 1
+
+            return (
+              <div
+                key={member.name}
+                className={`text-center ${isLastOddItem ? "col-span-2 justify-self-center max-w-xs" : ""}`}
+              >
+                <p className="font-cursive text-md tracking-[0.2em] text-accent italic">
+                  {member.role}
+                </p>
+                <p className="font-cursive text-lg md:text-xl text-foreground mt-1">
+                  {member.name}
+                </p>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </div>
+  )
+}
 
 
 function EntourageSide({
@@ -159,6 +200,7 @@ export function Entourage() {
                 {GroomsParents.map((parent) => (
                       <div key={parent.name}>
                         <p className="text-muted text-sm md:text-base italic mt-1">
+                        <p className="text-sm md:text-base italic text-[#8C6A5D] mt-1">
                           {parent.role}
                         </p>
 
@@ -181,6 +223,7 @@ export function Entourage() {
                 {BridesParents.map((parent) => (
                       <div key={parent.name}>
                         <p className="text-muted text-sm md:text-base italic mt-1">
+                        <p className="text-sm md:text-base italic text-[#8C6A5D] mt-1">
                           {parent.role}
                         </p>
 
@@ -294,6 +337,7 @@ export function Entourage() {
             {bearers.map((bearer) => (
               <div key={bearer.name}>
                         <p className="text-muted text-sm md:text-base italic mt-1">
+                        <p className="text-sm md:text-base italic text-[#8C6A5D] mt-1">
                           {bearer.role}
                         </p>
 

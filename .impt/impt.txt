@@ -1,0 +1,11 @@
+1. To add a divider here's the code snippet:
+<div className="w-40 h-px bg-[#d8cfc7] mx-auto mb-3"></div>
+
+2. To use image
+<Image
+    src="/images/hero-couple.jpg"
+    alt="John Mark and Chezza"
+    fill
+    className="object-cover"
+    priority
+/>

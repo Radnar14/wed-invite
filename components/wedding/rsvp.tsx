@@ -38,7 +38,7 @@ export function RSVP() {
             <h2 className="text-3xl md:text-4xl font-light text-foreground mb-4">
               Thank You!
             </h2>
-            <p className="text-muted-foreground font-[family-name:var(--font-montserrat)]">
+            <p className="text-muted-foreground font-(family-name:--font-montserrat)">
               Your RSVP has been received. We can&apos;t wait to celebrate with you!
             </p>
           </div>
@@ -52,13 +52,13 @@ export function RSVP() {
       <div className="container mx-auto px-6">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <p className="text-sm tracking-[0.3em] uppercase font-[family-name:var(--font-montserrat)] text-muted-foreground mb-4">
+          <p className="text-sm tracking-[0.3em] uppercase font-(family-name:--font-montserrat) text-muted-foreground mb-4">
             We Hope You Can Join Us
           </p>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-foreground mb-4">
             RSVP
           </h2>
-          <p className="text-muted-foreground font-[family-name:var(--font-montserrat)] max-w-md mx-auto">
+          <p className="text-muted-foreground font-(family-name:--font-montserrat) max-w-md mx-auto">
             Please respond by November 28, 2026 to help us plan for your attendance.
           </p>
         </div>
@@ -69,7 +69,7 @@ export function RSVP() {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Name */}
               <div className="space-y-2">
-                <Label htmlFor="name" className="text-sm font-[family-name:var(--font-montserrat)] tracking-wide">
+                <Label htmlFor="name" className="text-sm font-(family-name:--font-montserrat) tracking-wide">
                   Full Name *
                 </Label>
                 <Input
@@ -86,7 +86,7 @@ export function RSVP() {
 
               {/* Email */}
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-[family-name:var(--font-montserrat)] tracking-wide">
+                <Label htmlFor="email" className="text-sm font-(family-name:--font-montserrat) tracking-wide">
                   Email Address *
                 </Label>
                 <Input
@@ -104,7 +104,7 @@ export function RSVP() {
 
               {/* Attendance */}
               <div className="space-y-3">
-                <Label className="text-sm font-[family-name:var(--font-montserrat)] tracking-wide">
+                <Label className="text-sm font-(family-name:--font-montserrat) tracking-wide">
                   Will you be attending? *
                 </Label>
                 <RadioGroup
@@ -116,13 +116,13 @@ export function RSVP() {
                 >
                   <div className="flex items-center gap-2">
                     <RadioGroupItem value="yes" id="yes" />
-                    <Label htmlFor="yes" className="font-[family-name:var(--font-montserrat)] text-sm cursor-pointer">
+                    <Label htmlFor="yes" className="font-(family-name:--font-montserrat) text-sm cursor-pointer">
                       Joyfully Accept
                     </Label>
                   </div>
                   <div className="flex items-center gap-2">
                     <RadioGroupItem value="no" id="no" />
-                    <Label htmlFor="no" className="font-[family-name:var(--font-montserrat)] text-sm cursor-pointer">
+                    <Label htmlFor="no" className="font-(family-name:--font-montserrat) text-sm cursor-pointer">
                       Regretfully Decline
                     </Label>
                   </div>
@@ -132,7 +132,7 @@ export function RSVP() {
               {/* Number of Guests */}
               {formData.attendance === "yes" && (
                 <div className="space-y-2">
-                  <Label htmlFor="guests" className="text-sm font-[family-name:var(--font-montserrat)] tracking-wide">
+                  <Label htmlFor="guests" className="text-sm font-(family-name:--font-montserrat) tracking-wide">
                     Number of Guests
                   </Label>
                   <select
@@ -142,7 +142,7 @@ export function RSVP() {
                     onChange={(e) =>
                       setFormData({ ...formData, guests: e.target.value })
                     }
-                    className="w-full h-10 px-3 rounded-md border border-border/50 bg-background text-foreground focus:border-accent focus:outline-none font-[family-name:var(--font-montserrat)] text-sm"
+                    className="w-full h-10 px-3 rounded-md border border-border/50 bg-background text-foreground focus:border-accent focus:outline-none font-(family-name:--font-montserrat) text-sm"
                   >
                     <option value="1">1 Guest</option>
                     <option value="2">2 Guests</option>
@@ -155,7 +155,7 @@ export function RSVP() {
               {/* Dietary Restrictions */}
               {formData.attendance === "yes" && (
                 <div className="space-y-2">
-                  <Label htmlFor="dietary" className="text-sm font-[family-name:var(--font-montserrat)] tracking-wide">
+                  <Label htmlFor="dietary" className="text-sm font-(family-name:--font-montserrat) tracking-wide">
                     Dietary Restrictions
                   </Label>
                   <Input
@@ -172,7 +172,7 @@ export function RSVP() {
 
               {/* Message */}
               <div className="space-y-2">
-                <Label htmlFor="message" className="text-sm font-[family-name:var(--font-montserrat)] tracking-wide">
+                <Label htmlFor="message" className="text-sm font-(family-name:--font-montserrat) tracking-wide">
                   Message for the Couple
                 </Label>
                 <Textarea
@@ -189,7 +189,7 @@ export function RSVP() {
               {/* Submit */}
               <Button
                 type="submit"
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-[family-name:var(--font-montserrat)] tracking-[0.15em] uppercase text-sm py-6"
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-(family-name:--font-montserrat) tracking-[0.15em] uppercase text-sm py-6"
               >
                 Send RSVP
               </Button>

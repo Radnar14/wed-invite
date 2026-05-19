@@ -14,6 +14,7 @@ const navLinks = [
   { href: "#timeline", label: "Timeline" },
   { href: "#gallery", label: "Gallery" },
   { href: "#rsvp", label: "RSVP" },
+  { href: "#faq", label: "FAQ" },
 ]
 
 export function Navigation() {

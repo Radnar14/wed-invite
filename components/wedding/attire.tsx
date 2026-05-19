@@ -181,7 +181,7 @@ export function Attire() {
                   <GentlemanFigure color={activeSelection.hex} />
                 </div>
                 <p className="text-[10px] md:text-sm font-medium text-foreground capitalize text-center">
-                  {activePalette} suit
+                  {activeSelection.name} Suit
                 </p>
               </div>
             </div>
@@ -196,7 +196,7 @@ export function Attire() {
                   <LadyFigure color={activeSelection.hex} />
                 </div>
                 <p className="text-[10px] md:text-sm font-medium text-foreground capitalize text-center">
-                  {activePalette} dress
+                  {activeSelection.name} Dress
                 </p>
               </div>
             </div>
@@ -264,14 +264,6 @@ export function Attire() {
               </button>
             ))}
           </div>
-
-          <p className="mt-2 text-center text-lg text-foreground">
-            <span
-              className="inline-block w-3 h-3 rounded-full mr-2 align-middle"
-              style={{ backgroundColor: activeSelection.hex }}
-            />
-            <span className="align-middle">{activeSelection.name}</span>
-          </p>
         </div>
 
         <div className="mt-12 text-center">

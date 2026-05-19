@@ -53,3 +53,4 @@ __v0_jsx-dev-runtime.ts
 *.sw?
 push-to-upstream.sh
 private/
+next-env.d.ts

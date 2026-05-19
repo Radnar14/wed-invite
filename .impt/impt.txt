@@ -9,3 +9,7 @@
     className="object-cover"
     priority
 />
+
+3. Add a card
+
+<div className="text-center p-4 md:p-6 bg-background rounded-lg"></div>

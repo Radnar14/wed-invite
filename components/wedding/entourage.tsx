@@ -16,7 +16,7 @@ const GroomsParents: EntourageMember[] = [
 
 const BridesParents: EntourageMember[] = [
   { name: "Tarcisio Dela Cruz", role: "Father" },
-  { name: "Amilita Dela Cruz", role: "Mother" },
+  { name: "Amelita Dela Cruz ♱", role: "Mother" },
 ]
 
 
@@ -74,6 +74,7 @@ const bearers: EntourageMember[] = [
   { name: "Zeijan Wryle Ybañez", role: "Coin Bearer" },
 ]
 
+// Component for Bride's Side and Groom's Side
 function EntourageSide({
   title,
   lead,
@@ -90,16 +91,17 @@ function EntourageSide({
       </h3>
 
       <div className="w-40 h-px bg-[#d8cfc7] mx-auto mb-3"></div>
-      <div className="grid gap-6">
-       { <div className="mx-auto max-w-xs">
-          <p className="font-cursive text-2xl md:text-1xl text-accent italic">
-            {lead.role}
-          </p>
-          <p className="font-cursive text-1xl md:text-1xl text-foreground mt-1">
-            {lead.name}
-          </p>
-        </div>}
-
+      <div className="text-center p-4 md:p-6 bg-background rounded-lg">
+        <div className="grid gap-6">
+        { <div className="mx-auto max-w-xs">
+            <p className="font-cursive text-2xl md:text-1xl text-accent italic">
+              {lead.role}
+            </p>
+            <p className="font-cursive text-1xl md:text-1xl text-foreground mt-1">
+              {lead.name}
+            </p>
+          </div>}
+        </div>
         <div className="grid grid-cols-2 gap-4 md:gap-4 mt-2">
           {members.map((member, index) => {
             const isLastOddItem = members.length % 2 === 1 && index === members.length - 1
@@ -130,49 +132,51 @@ export function Entourage() {
     <section id="entourage" className="py-16 md:py-24 bg-secondary/30">
       <div className="container mx-auto px-4 md:px-6">
         {/* Section Header */}
-        <div className="text-center mb-12 md:mb-16">
+        <div className="text-center mb-10 md:mb-16">
           <p className="text-accent text-xs md:text-sm tracking-[0.3em] uppercase mb-3">
             The Wedding Party
           </p>
           <h2 className="text-3xl md:text-5xl font-cursive text-foreground mb-4">
             The Entourage
           </h2>
-          <div className="w-16 md:w-24 h-px bg-accent mx-auto" />
+          <div className="w-16 md:w-24 h-px bg-[#d8cfc7] mx-auto" />
         </div>
 
         {/* Groom's Parents */}
         <div className="mb-12 md:mb-16">
-          <h3 className="text-center font-cursive text-2xl md:text-4xl text-[#8C6A5D] mb-6 md:mb-8">
+          <h3 className="text-center font-cursive text-2xl md:text-4xl text-[#8C6A5D] mb-4 md:mb-8">
             Groom's Parents
           </h3>
-          
               <div className="w-40 h-px bg-[#d8cfc7] mx-auto mb-3"></div>
-              <div className="text-center">
-                {GroomsParents.map((parent) => (
+              <div className="text-center p-4 md:p-6 bg-background rounded-lg">
+                <div className="text-center">
+                  {GroomsParents.map((parent) => (
                       <div key={parent.name}>
-                        <p className="text-sm md:text-base italic text-[#8C6A5D] mt-1">
+                        <p className="text-sm md:text-base italic text-accent mt-1">
                           {parent.role}
                         </p>
 
                         <p className="font-serif text-lg md:text-xl text-foreground">
                           {parent.name}
                         </p>
-                    </div>
+                      </div>
                       ))}
-            </div>
+                </div>
+              </div>
         </div>
 
         {/* Bride's Parents */}
         <div className="mb-12 md:mb-16">
-          <h3 className="text-center font-cursive text-2xl md:text-4xl text-[#8C6A5D] mb-6 md:mb-8">
+          <h3 className="text-center font-cursive text-2xl md:text-4xl text-[#8C6A5D] mb-4 md:mb-8">
             Bride's Parents
           </h3>
           
           <div className="w-40 h-px bg-[#d8cfc7] mx-auto mb-3"></div>
+            <div className="text-center p-4 md:p-6 bg-background rounded-lg">
               <div className="text-center">
                 {BridesParents.map((parent) => (
                       <div key={parent.name}>
-                        <p className="text-sm md:text-base italic text-[#8C6A5D] mt-1">
+                        <p className="text-sm md:text-base italic text-accent mt-1">
                           {parent.role}
                         </p>
 
@@ -180,21 +184,25 @@ export function Entourage() {
                           {parent.name}
                         </p>                
                     </div>
-                      ))}
+                     ))}
+              </div>
             </div>
         </div>
 
         {/* Principal Sponsors */}
         <div className="mb-12 md:mb-16">
-          <h3 className="text-center font-serif text-xl md:text-2xl text-foreground mb-6 md:mb-8">
+          <h3 className="text-center font-serif text-xl md:text-2xl text-foreground mb-4 md:mb-8">
             Principal Sponsors
           </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 max-w-4xl mx-auto">
-            {primarySponsors.map((sponsor) => (
-              <p key={sponsor.name} className="font-serif text-sm md:text-base text-foreground">
-                {sponsor.name}
-              </p>
-            ))}
+          <div className="w-40 h-px bg-[#d8cfc7] mx-auto mb-3"></div>
+            <div className="text-center p-4 md:p-6 bg-background rounded-lg">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 max-w-4xl mx-auto">
+              {primarySponsors.map((sponsor) => (
+                <p key={sponsor.name} className="font-serif text-sm md:text-base text-foreground">
+                  {sponsor.name}
+                </p>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -215,7 +223,7 @@ export function Entourage() {
 
         {/* Secondary Sponsors */}
         <div className="mb-12 md:mb-16">
-          <h3 className="text-center font-serif text-xl md:text-2xl text-foreground mb-6 md:mb-2">
+          <h3 className="text-center font-serif text-xl md:text-2xl text-foreground mb-4 md:mb-2">
             Secondary Sponsors
           </h3>
 
@@ -261,39 +269,43 @@ export function Entourage() {
 
         {/* Flower girls */}
         <div>
-          <h3 className="text-center font-serif text-xl md:text-2xl text-foreground mb-6 md:mb-2">
+          <h3 className="text-center font-serif text-xl md:text-2xl text-foreground mb-4 md:mb-2">
             Flower Girls
           </h3>
 
           <div className="w-40 h-px bg-[#d8cfc7] mx-auto mb-6"></div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-3xl mx-auto">
-            {flowerGirls.map((flower) => (
-              <p key={flower.name} className="font-serif text-sm md:text-base text-foreground">
-                {flower.name}
-              </p>
-            ))}
-          </div>
+             <div className="text-center p-4 md:p-6 bg-background rounded-lg">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-3xl mx-auto">
+                  {flowerGirls.map((flower) => (
+                    <p key={flower.name} className="font-serif text-sm md:text-base text-foreground">
+                      {flower.name}
+                    </p>
+                  ))}
+                </div>
+            </div> 
         </div>
 
         {/* Bearers */}
         <div>
-          <h3 className="text-center font-serif text-xl md:text-2xl text-foreground mb-6 md:mb-2">
+          <h3 className="text-center font-serif text-xl md:text-2xl text-foreground mb-4 md:mb-2">
             Bearers
           </h3>
 
           <div className="w-40 h-px bg-[#d8cfc7] mx-auto mb-6"></div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-3xl mx-auto">
-            {bearers.map((bearer) => (
-              <div key={bearer.name}>
-                        <p className="text-sm md:text-base italic text-[#8C6A5D] mt-1">
-                          {bearer.role}
-                        </p>
+            <div className="text-center p-4 md:p-6 bg-background rounded-lg">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-3xl mx-auto">
+                    {bearers.map((bearer) => (
+                  <div key={bearer.name}>
+                            <p className="text-sm md:text-base italic text-accent mt-1">
+                              {bearer.role}
+                            </p>
 
-                        <p className="font-serif text-lg md:text-xl text-foreground">
-                          {bearer.name}
-                        </p>
-                    </div>
-            ))}
+                            <p className="font-serif text-lg md:text-xl text-foreground">
+                              {bearer.name}
+                            </p>
+                  </div>
+                ))}
+              </div>
           </div>
         </div>
       </div>

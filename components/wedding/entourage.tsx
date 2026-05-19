@@ -95,10 +95,10 @@ function EntourageSide({
       <div className="text-center p-4 md:p-6 bg-background rounded-lg">
       <div className="grid gap-6">
        { <div className="mx-auto max-w-xs">
-          <p className="font-cursive text-2xl md:text-1xl text-accent italic">
+          <p className="font-cursive text-1xl md:text-1xl text-accent italic font-bold">
             {lead.role}
           </p>
-          <p className="font-cursive text-1xl md:text-1xl text-foreground mt-1">
+          <p className="font-cursive text-lg md:text-1xl text-foreground mt-1">
             {lead.name}
           </p>
         </div>}

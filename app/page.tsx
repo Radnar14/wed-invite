@@ -8,6 +8,7 @@ import { Details } from "@/components/wedding/details"
 import { Timeline } from "@/components/wedding/timeline"
 import { Gallery } from "@/components/wedding/gallery"
 import { RSVP } from "@/components/wedding/rsvp"
+import { FAQ } from "@/components/wedding/faq"
 import { Footer } from "@/components/wedding/footer"
 import { MusicPlayer } from "@/components/wedding/music-player"
 
@@ -24,6 +25,7 @@ export default function WeddingPage() {
       <Timeline />
       <Gallery />
       <RSVP />
+      <FAQ />
       <Footer />
       <MusicPlayer />
     </main>

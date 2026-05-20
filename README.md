@@ -93,10 +93,4 @@ To personalize the invitation:
 
 ---
 
-## 📄 License
-
-This project is private and intended for personal use.
-
----
-
 Built with ❤️ for John Mark & Chezza.

@@ -11,6 +11,8 @@ import { Check } from "lucide-react"
 
 export function RSVP() {
   const [submitted, setSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -20,11 +22,32 @@ export function RSVP() {
     message: "",
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // In a real app, this would send to a backend
-    console.log("RSVP submitted:", formData)
-    setSubmitted(true)
+    setIsSubmitting(true)
+    setError(null)
+
+    try {
+      const response = await fetch("/api/rsvp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const data = await response.json()
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || "Failed to submit RSVP. Please try again.")
+      }
+
+      setSubmitted(true)
+    } catch (err: any) {
+      console.error("RSVP submission error:", err)
+      setError(err.message || "Something went wrong. Please try again later.")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   if (submitted) {
@@ -186,12 +209,19 @@ export function RSVP() {
                 />
               </div>
 
+              {error && (
+                <div className="text-destructive text-sm text-center font-(family-name:--font-montserrat) animate-pulse">
+                  {error}
+                </div>
+              )}
+
               {/* Submit */}
               <Button
                 type="submit"
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-(family-name:--font-montserrat) tracking-[0.15em] uppercase text-sm py-6"
+                disabled={isSubmitting}
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-(family-name:--font-montserrat) tracking-[0.15em] uppercase text-sm py-6 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Send RSVP
+                {isSubmitting ? "Sending..." : "Send RSVP"}
               </Button>
             </form>
           </CardContent>

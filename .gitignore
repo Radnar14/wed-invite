@@ -54,3 +54,7 @@ __v0_jsx-dev-runtime.ts
 push-to-upstream.sh
 private/
 next-env.d.ts
+
+# Local Scripts
+submit-pr.sh
+

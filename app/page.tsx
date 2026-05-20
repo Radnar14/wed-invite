@@ -20,8 +20,8 @@ export default function WeddingPage() {
       <Countdown />
       <OurStory />
       <Entourage />
-      <Attire />
       <Details />
+      <Attire />
       <Timeline />
       <Gallery />
       <RSVP />

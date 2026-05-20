@@ -14,6 +14,7 @@ const navLinks = [
   { href: "#timeline", label: "Timeline" },
   { href: "#gallery", label: "Gallery" },
   { href: "#rsvp", label: "RSVP" },
+  { href: "#faq", label: "FAQ" },
 ]
 
 export function Navigation() {
@@ -50,7 +51,7 @@ export function Navigation() {
             alt="John Mark and Chezza"
             width={80}
             height={80}
-            className="w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 object-contain"
+            className="w-12 h-12 rounded-full md:w-16 md:h-16 lg:w-20 lg:h-20 object-contain"
             priority
           />
         </a>

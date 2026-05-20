@@ -4,22 +4,40 @@ import { Heart } from "lucide-react"
 
 export function Footer() {
   return (
-    <footer className="py-12 bg-primary text-primary-foreground">
-      <div className="container mx-auto px-6 text-center">
-        <h2 className="text-3xl md:text-4xl font-light mb-4">John Mark & Chezza</h2>
-        <p className="text-sm tracking-[0.2em] uppercase font-(family-name:--font-montserrat) mb-8 opacity-80">
+    <footer className="relative py-20 md:py-32 bg-primary text-primary-foreground overflow-hidden">
+      {/* Decorative background elements */}
+      <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-primary-foreground/20 to-transparent" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-primary-foreground opacity-5 rounded-full blur-3xl pointer-events-none -z-10" />
+
+      {/* Large Monogram Background */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[15rem] md:text-[25rem] font-light opacity-5 pointer-events-none select-none whitespace-nowrap">
+        J&C
+      </div>
+
+      <div className="container mx-auto px-6 relative z-10 text-center flex flex-col items-center">
+        <div className="w-12 h-12 border border-primary-foreground/20 rounded-full flex items-center justify-center mb-8">
+          <Heart className="w-5 h-5 text-primary-foreground/60 fill-primary-foreground/60" />
+        </div>
+        
+        <h2 className="text-4xl md:text-5xl lg:text-6xl font-light mb-6">
+          John Mark & Chezza
+        </h2>
+        
+        <p className="text-sm md:text-base tracking-[0.3em] uppercase font-(family-name:--font-montserrat) mb-12 text-primary-foreground/80">
           December 28, 2026
         </p>
-        <div className="flex items-center justify-center gap-2 mb-8">
-          <Heart className="w-4 h-4 fill-current" />
-          <span className="text-sm font-(family-name:--font-montserrat)">
+        
+        <div className="flex items-center justify-center w-full max-w-sm mx-auto mb-12">
+          <div className="h-px bg-linear-to-r from-transparent via-primary-foreground/30 to-transparent flex-1" />
+          <span className="text-xs tracking-widest uppercase font-(family-name:--font-montserrat) text-primary-foreground/60 px-4 whitespace-nowrap">
             Forever & Always
           </span>
-          <Heart className="w-4 h-4 fill-current" />
+          <div className="h-px bg-linear-to-r from-transparent via-primary-foreground/30 to-transparent flex-1" />
         </div>
-        <div className="w-16 h-px bg-primary-foreground/30 mx-auto mb-6" />
-        <p className="text-xs opacity-60 font-(family-name:--font-montserrat)">
-          Made with love for our special day
+
+        <p className="text-xs md:text-sm text-primary-foreground/50 font-(family-name:--font-montserrat) max-w-md leading-relaxed">
+          Made with love for our special day. <br className="md:hidden" />
+          Thank you for being part of our story.
         </p>
       </div>
     </footer>

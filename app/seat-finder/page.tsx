@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import { Navigation } from "@/components/wedding/navigation"
 import { SeatFinder } from "@/components/wedding/seat-finder"
 import { Footer } from "@/components/wedding/footer"
@@ -17,7 +18,9 @@ export default function SeatFinderPage() {
             Seat Finder
           </h2>
         </div>
-        <SeatFinder />
+        <Suspense fallback={<div className="container mx-auto px-6 text-center text-muted-foreground">Loading seat finder...</div>}>
+          <SeatFinder />
+        </Suspense>
       </section>
 
       <Footer />

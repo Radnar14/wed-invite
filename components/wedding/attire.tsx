@@ -11,14 +11,6 @@ const greenShades = [
   { name: "Moss", hex: "#8A9A5B" },
 ];
 
-const brownShades = [
-  { name: "Tan", hex: "#D2B48C" },
-  { name: "Caramel", hex: "#FFD59A" },
-  { name: "Chestnut", hex: "#954535" },
-  { name: "Mocha", hex: "#967969" },
-  { name: "Chocolate", hex: "#7B3F00" },
-];
-
 type Shade = {
   name: string;
   hex: string;
@@ -136,19 +128,6 @@ function LadyFigure({ color }: { color: string }) {
 
 export function Attire() {
   const [selectedGreen, setSelectedGreen] = useState<Shade>(greenShades[0]);
-  const [selectedBrown, setSelectedBrown] = useState<Shade>(brownShades[0]);
-  const [activePalette, setActivePalette] = useState<"green" | "brown">("green");
-
-  const activeShades = activePalette === "green" ? greenShades : brownShades;
-  const activeSelection = activePalette === "green" ? selectedGreen : selectedBrown;
-
-  const handleColorSelect = (color: Shade) => {
-    if (activePalette === "green") {
-      setSelectedGreen(color);
-      return;
-    }
-    setSelectedBrown(color);
-  };
 
   return (
     <section id="attire" className="py-24 md:py-32 bg-background">
@@ -162,8 +141,8 @@ export function Attire() {
             Dress Code
           </h2>
           <p className="mt-6 text-muted-foreground max-w-xl mx-auto">
-            We kindly request our guests to wear shades of green or brown to
-            match our wedding theme
+            We kindly request our guests to wear shades of green to
+            match our wedding theme.
           </p>
         </div>
 
@@ -178,10 +157,10 @@ export function Attire() {
               <div className="flex flex-col items-center gap-4">
                 {/* Figure container — fixed aspect ratio so it never clips */}
                 <div className="w-16 h-28 sm:w-20 sm:h-36 md:w-24 md:h-40">
-                  <GentlemanFigure color={activeSelection.hex} />
+                  <GentlemanFigure color={selectedGreen.hex} />
                 </div>
                 <p className="text-[10px] md:text-sm font-medium text-foreground capitalize text-center">
-                  {activeSelection.name} Suit
+                  {selectedGreen.name} Suit
                 </p>
               </div>
             </div>
@@ -193,10 +172,10 @@ export function Attire() {
               </h4>
               <div className="flex flex-col items-center gap-4">
                 <div className="w-16 h-28 sm:w-20 sm:h-36 md:w-24 md:h-40">
-                  <LadyFigure color={activeSelection.hex} />
+                  <LadyFigure color={selectedGreen.hex} />
                 </div>
                 <p className="text-[10px] md:text-sm font-medium text-foreground capitalize text-center">
-                  {activeSelection.name} Dress
+                  {selectedGreen.name} Dress
                 </p>
               </div>
             </div>
@@ -209,55 +188,28 @@ export function Attire() {
             Select A Shade
           </h3>
 
-          <div className="flex justify-center mb-6">
-            <div className="inline-flex rounded-full bg-background/80 p-1 border border-border">
-              <button
-                onClick={() => setActivePalette("green")}
-                className={`px-5 py-2 text-sm rounded-full transition-colors ${
-                  activePalette === "green"
-                    ? "bg-[#5E7D57] text-white"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                Green Shades
-              </button>
-              <button
-                onClick={() => setActivePalette("brown")}
-                className={`px-5 py-2 text-sm rounded-full transition-colors ${
-                  activePalette === "brown"
-                    ? "bg-[#6B4A3A] text-white"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                Brown Shades
-              </button>
-            </div>
-          </div>
-
           <div className="flex flex-nowrap items-start justify-center gap-3 pb-3">
-            {activeShades.map((color) => (
+            {greenShades.map((color) => (
               <button
                 key={color.name}
-                onClick={() => handleColorSelect(color)}
+                onClick={() => setSelectedGreen(color)}
                 className="group flex flex-col items-center shrink-0"
               >
                 <div
                   className={`w-14 h-14 md:w-16 md:h-16 rounded-full border-4 transition-all duration-300 flex items-center justify-center shadow-sm ${
-                    activeSelection.name === color.name
+                    selectedGreen.name === color.name
                       ? "scale-110"
                       : "border-background hover:scale-105"
                   }`}
                   style={{
                     backgroundColor: color.hex,
                     borderColor:
-                      activeSelection.name === color.name
-                        ? activePalette === "green"
-                          ? "#5E7D57"
-                          : "#6B4A3A"
+                      selectedGreen.name === color.name
+                        ? "#5E7D57"
                         : undefined,
                   }}
                 >
-                  {activeSelection.name === color.name && (
+                  {selectedGreen.name === color.name && (
                     <Check className="w-5 h-5 md:w-6 md:h-6 text-white drop-shadow-md" />
                   )}
                 </div>
@@ -268,8 +220,7 @@ export function Attire() {
 
         <div className="mt-12 text-center">
           <p className="text-sm text-muted-foreground italic max-w-lg mx-auto">
-            Feel free to choose either green or brown for your outfit. Cocktail
-            or semi-formal attire is encouraged.
+            Cocktail or semi-formal attire is encouraged.
           </p>
         </div>
       </div>

@@ -15,13 +15,13 @@ import {
 
 const timelineEvents = [
   {
-    time: "2:30 PM",
+    time: "1:30 PM",
     title: "Guest Arrival",
     description: "Guests arrive and are seated for the ceremony",
     icon: Users,
   },
   {
-    time: "3:00 PM",
+    time: "2:30 PM",
     title: "Ceremony",
     description: "Exchange of vows in the garden pavilion",
     icon: Heart,

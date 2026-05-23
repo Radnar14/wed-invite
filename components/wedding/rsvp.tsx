@@ -174,25 +174,7 @@ export function RSVP() {
                   </select>
                 </div>
               )}
-
-              {/* Dietary Restrictions
-              {formData.attendance === "yes" && (
-                <div className="space-y-2">
-                  <Label htmlFor="dietary" className="text-sm font-(family-name:--font-montserrat) tracking-wide">
-                    Dietary Restrictions
-                  </Label>
-                  <Input
-                    id="dietary"
-                    value={formData.dietary}
-                    onChange={(e) =>
-                      setFormData({ ...formData, dietary: e.target.value })
-                    }
-                    className="border-border/50 focus:border-accent"
-                    placeholder="Any allergies or dietary needs?"
-                  />
-                </div>
-              )} */}
-
+              
               {/* Message */}
               <div className="space-y-2">
                 <Label htmlFor="message" className="text-sm font-(family-name:--font-montserrat) tracking-wide">

@@ -51,7 +51,7 @@ export function Navigation() {
     >
       <nav className="container mx-auto px-8 flex items-center justify-between">
         <Link
-          href="/"
+          href="/#home"
           className={cn(
             "flex items-center justify-center transition-colors",
             textClass
@@ -68,7 +68,7 @@ export function Navigation() {
         </Link>
 
         {/* Desktop Navigation */}
-        <ul className="hidden md:flex items-center gap-4">
+        <ul className="hidden md:flex items-center flex-1 justify-evenly ml-8">
           {[...navLinks, rsvpLink, seatFinderLink].map((link) => (
             <li key={link.href}>
               <Link

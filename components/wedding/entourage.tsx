@@ -23,7 +23,7 @@ const BridesParents: EntourageMember[] = [
 
 
 const bridesSide: EntourageMember[] = [
-  { name: "Maria Santos", role: "Maid of Honor" },
+  { name: "NAME", role: "Maid of Honor" },
   { name: "Shinn Everielle Booc", role: "Bridesmaid" },
   { name: "Jemmelyn Pescadero", role: "Bridesmaid" },
   { name: "Jomily Irisawa", role: "Bridesmaid" },
@@ -33,7 +33,7 @@ const bridesSide: EntourageMember[] = [
 ]
 
 const groomsSide: EntourageMember[] = [
-  { name: "Carlos Mendoza", role: "Best Man" },
+  { name: "NAME", role: "Best Man" },
   { name: "Niño Anton Liloan", role: "Groomsman" },
   { name: "Eizel Jimenez", role: "Groomsman" },
   { name: "Josh Nicolaus Abad", role: "Groomsman" },
@@ -89,7 +89,7 @@ function EntourageSide({
 }) {
   return (
     <div className="text-center">
-      <h3 className="font-serif text-xl md:text-3xl text-foreground mb-3 font-bold">
+      <h3 className="font-serif text-xl md:text-3xl text-[#8C6A5D] mb-3 font-bold">
         {title}
       </h3>
 
@@ -113,7 +113,7 @@ function EntourageSide({
                 key={member.name}
                 className={`text-center ${isLastOddItem ? "col-span-2 justify-self-center max-w-xs" : ""}`}
               >
-                <p className="text-accent text-sm tracking-[0.2em] italic mt-1">
+                <p className="text-blushpink text-sm tracking-[0.2em] italic mt-1">
                   {member.role}
                 </p>
                 <p className="font-cursive text-lg md:text-xl text-foreground mt-1">
@@ -135,11 +135,11 @@ export function Entourage() {
       <div className="container mx-auto px-4 md:px-6">
         {/* Section Header */}
         <div className="text-center mb-10 md:mb-16">
-          <p className="text-accent text-xs md:text-sm tracking-[0.3em] uppercase mb-3">
+          <p className="text-blushpink text-xs md:text-sm tracking-[0.3em] uppercase mb-3">
             The Wedding Party
           </p>
-          <h2 className="text-3xl md:text-5xl font-cursive text-foreground mb-2 md:mb-4">
-            The Entourage
+          <h2 className="text-4xl md:text-5xl font-cursive text-foreground mb-2 md:mb-4">
+            Our Entourage
           </h2>
           <div className="w-16 md:w-24 h-px bg-[#d8cfc7] mx-auto" />
         </div>
@@ -155,7 +155,7 @@ export function Entourage() {
               <div className="text-center">
                 {GroomsParents.map((parent) => (
                       <div key={parent.name}>
-                        <p className="text-sm md:text-base italic text-accent mt-1">
+                        <p className="text-sm md:text-base italic text-blushpink mt-1">
                           {parent.role}
                         </p>
 
@@ -179,7 +179,7 @@ export function Entourage() {
               <div className="text-center">
                 {BridesParents.map((parent) => (
                       <div key={parent.name}>
-                        <p className="text-sm md:text-base italic text-accent mt-1">
+                        <p className="text-sm md:text-base italic text-blushpink mt-1">
                           {parent.role}
                         </p>
 
@@ -194,14 +194,14 @@ export function Entourage() {
 
         {/* Principal Sponsors */}
         <div className="mb-12 md:mb-16">
-          <h3 className="text-center font-serif text-xl md:text-2xl text-foreground mb-2 md:mb-4">
+          <h3 className="text-center  font-serif text-xl md:text-2xl text-[#8C6A5D] mb-2 md:mb-4">
             Principal Sponsors
           </h3>
           <div className="w-40 h-px bg-[#d8cfc7] mx-auto mb-3"></div>
             <div className="text-center p-4 md:p-6 bg-background rounded-lg">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 max-w-4xl mx-auto">
               {primarySponsors.map((sponsor) => (
-                <p key={sponsor.name} className="font-serif text-sm md:text-base text-foreground">
+                <p key={sponsor.name} className="font-serif text-lg md:text-base text-foreground">
                   {sponsor.name}
                 </p>
               ))}
@@ -210,7 +210,7 @@ export function Entourage() {
         </div>
 
         {/* Bride's Side & Groom's Side */}
-        <div className="grid md:grid-cols-2 gap-8 md:gap-12 mb-12 md:mb-16">
+        <div className="grid md:grid-cols-2 gap-8 md:gap-12 mb-12  md:mb-16">
           <EntourageSide
             title="Bride's Side"
             lead={bridesSide[0]}
@@ -226,7 +226,7 @@ export function Entourage() {
 
         {/* Secondary Sponsors */}
         <div className="mb-12 md:mb-16">
-          <h3 className="text-center font-serif text-xl md:text-2xl text-foreground mb-2 md:mb-4">
+          <h3 className="text-center font-serif text-xl md:text-2xl text-[#8C6A5D] mb-2 md:mb-4">
             Secondary Sponsors
           </h3>
 
@@ -234,7 +234,7 @@ export function Entourage() {
           <div className="grid md:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto">
             {/* Veil */}
             <div className="text-center p-4 md:p-6 bg-background rounded-lg">
-              <h4 className="text-muted text-xs tracking-[0.2em] uppercase mb-3 md:mb-4">
+              <h4 className="text-blushpink text-xs tracking-[0.2em] uppercase mb-3 md:mb-4">
                 Veil Sponsors
               </h4>
               {secondarySponsors.veil.map((name) => (
@@ -246,7 +246,7 @@ export function Entourage() {
 
             {/* Cord */}
             <div className="text-center p-4 md:p-6 bg-background rounded-lg">
-              <h4 className="text-muted text-xs tracking-[0.2em] uppercase mb-3 md:mb-4">
+              <h4 className="text-blushpink text-xs tracking-[0.2em] uppercase mb-3 md:mb-4">
                 Cord Sponsors
               </h4>
               {secondarySponsors.cord.map((name) => (
@@ -258,7 +258,7 @@ export function Entourage() {
 
             {/* Candle */}
             <div className="text-center p-4 md:p-6 bg-background rounded-lg">
-              <h4 className="text-muted text-xs tracking-[0.2em] uppercase mb-3 md:mb-4">
+              <h4 className="text-blushpink text-xs tracking-[0.2em] uppercase mb-3 md:mb-4">
                 Candle Sponsors
               </h4>
               {secondarySponsors.candle.map((name) => (
@@ -272,7 +272,7 @@ export function Entourage() {
 
         {/* Flower girls */}
         <div className="mb-12 md:mb-16">
-          <h3 className="text-center font-serif text-xl md:text-2xl text-foreground mb-2 md:mb-4">
+          <h3 className="text-center font-serif text-xl md:text-2xl text-[#8C6A5D] mb-2 md:mb-4">
             Flower Girls
           </h3>
 
@@ -280,7 +280,7 @@ export function Entourage() {
              <div className="text-center p-4 md:p-6 bg-background rounded-lg">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-3xl mx-auto">
                   {flowerGirls.map((flower) => (
-                    <p key={flower.name} className="font-serif text-sm md:text-base text-foreground">
+                    <p key={flower.name} className="font-serif text-lg md:text-base text-foreground">
                       {flower.name}
                     </p>
                   ))}
@@ -290,7 +290,7 @@ export function Entourage() {
 
         {/* Bearers */}
         <div>
-          <h3 className="text-center font-serif text-xl md:text-2xl text-foreground mb-2 md:mb-4">
+          <h3 className="text-center font-serif text-xl md:text-2xl text-[#8C6A5D] mb-2 md:mb-4">
             Bearers
           </h3>
 

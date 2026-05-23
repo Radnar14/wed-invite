@@ -13,6 +13,12 @@ export function MusicPlayer() {
     const audio = audioRef.current
     if (!audio) return
 
+     // AUTO PLAY WHEN WEBSITE LOADS
+  audio.play().catch(() => {
+    console.log("Autoplay blocked by browser")
+  })
+  setIsPlaying(true)
+
     const handleCanPlay = () => setIsLoaded(true)
     const handleEnded = () => {
       // Loop the audio
@@ -51,6 +57,7 @@ export function MusicPlayer() {
         ref={audioRef}
         src="/new_song.mp3" /* Change here your new song*/
         preload="auto"
+        autoPlay
         loop
       />
 

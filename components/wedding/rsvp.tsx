@@ -18,7 +18,6 @@ export function RSVP() {
     email: "",
     attendance: "yes",
     guests: "1",
-    dietary: "",
     message: "",
   })
 
@@ -82,7 +81,7 @@ export function RSVP() {
             RSVP
           </h2>
           <p className="text-muted-foreground font-(family-name:--font-montserrat) max-w-md mx-auto">
-            Please respond by November 28, 2026 to help us plan for your attendance.
+            We would appreciate your prompt response to help us plan for the attendance.
           </p>
         </div>
 
@@ -140,13 +139,13 @@ export function RSVP() {
                   <div className="flex items-center gap-2">
                     <RadioGroupItem value="yes" id="yes" />
                     <Label htmlFor="yes" className="font-(family-name:--font-montserrat) text-sm cursor-pointer">
-                      Joyfully Accept
+                    Accept
                     </Label>
                   </div>
                   <div className="flex items-center gap-2">
                     <RadioGroupItem value="no" id="no" />
                     <Label htmlFor="no" className="font-(family-name:--font-montserrat) text-sm cursor-pointer">
-                      Regretfully Decline
+                    Decline
                     </Label>
                   </div>
                 </RadioGroup>
@@ -174,25 +173,7 @@ export function RSVP() {
                   </select>
                 </div>
               )}
-
-              {/* Dietary Restrictions */}
-              {formData.attendance === "yes" && (
-                <div className="space-y-2">
-                  <Label htmlFor="dietary" className="text-sm font-(family-name:--font-montserrat) tracking-wide">
-                    Dietary Restrictions
-                  </Label>
-                  <Input
-                    id="dietary"
-                    value={formData.dietary}
-                    onChange={(e) =>
-                      setFormData({ ...formData, dietary: e.target.value })
-                    }
-                    className="border-border/50 focus:border-accent"
-                    placeholder="Any allergies or dietary needs?"
-                  />
-                </div>
-              )}
-
+              
               {/* Message */}
               <div className="space-y-2">
                 <Label htmlFor="message" className="text-sm font-(family-name:--font-montserrat) tracking-wide">

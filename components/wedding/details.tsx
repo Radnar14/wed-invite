@@ -1,6 +1,7 @@
 "use client"
 
 import { MapPin, Clock, Shirt, Mail } from "lucide-react"
+import { FaFacebookMessenger, FaYoutube  } from "react-icons/fa6";
 
 export function Details() {
   return (
@@ -30,20 +31,20 @@ export function Details() {
             </div>
             <h3 className="text-3xl font-light mb-6">Ceremony</h3>
             <div className="space-y-2 mb-10 text-muted-foreground font-(family-name:--font-montserrat) text-sm md:text-base leading-relaxed">
-              <p>Chapel of San Pedro Calungsod</p>
-              <p>SM Seaside Complex</p>
+              <p>Archdiocesan Shrine of St. Thérèse</p>
+              <p>Lahug, Cebu City</p>
               <p>Cebu City, Philippines</p>
             </div>
             <div className="w-full aspect-4/3 md:aspect-video lg:aspect-4/3 rounded-2xl overflow-hidden shadow-md border border-border/50 bg-background relative group-hover:shadow-lg transition-shadow duration-500">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3925.864778107954!2d123.87834787502446!3d10.27851608985141!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a99b4566d87e07%3A0x633d98031e13b860!2sChapel%20of%20San%20Pedro%20Calungsod!5e0!3m2!1sen!2sph!4v1715785200000!5m2!1sen!2sph"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3925.135183062164!2d123.89791887575537!3d10.3310649897919!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a999269b2146d5%3A0x462d30e860ab63f2!2sArchdiocesan%20Shrine%20of%20St.%20Th%C3%A9r%C3%A8se%20of%20the%20Child%20Jesus!5e0!3m2!1sen!2sph!4v1779541275708!5m2!1sen!2sph"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Ceremony Location: Chapel of San Pedro Calungsod"
+                title="Ceremony Location:  Archdiocesan Shrine of St. Thérèse"
                 className="grayscale group-hover:grayscale-0 transition-all duration-700"
               />
             </div>
@@ -84,18 +85,18 @@ export function Details() {
             <h4 className="text-xl font-medium mb-6">Schedule</h4>
             <ul className="space-y-4 text-sm text-muted-foreground font-(family-name:--font-montserrat)">
               <li className="flex flex-col gap-1">
-                <span className="font-semibold text-foreground">3:00 PM</span>
-                <span>Ceremony</span>
+                <span className="font-semibold text-foreground">2:00 PM</span>
+                <span className= "text-blushpink">Ceremony</span>
               </li>
               <li className="w-8 h-px bg-border mx-auto" />
               <li className="flex flex-col gap-1">
                 <span className="font-semibold text-foreground">4:30 PM</span>
-                <span>Cocktail Hour</span>
+                <span className="text-blushpink">Cocktail Hour</span>
               </li>
               <li className="w-8 h-px bg-border mx-auto" />
               <li className="flex flex-col gap-1">
                 <span className="font-semibold text-foreground">6:00 PM</span>
-                <span>Reception</span>
+                <span className="text-blushpink">Reception</span>
               </li>
             </ul>
           </div>
@@ -105,10 +106,9 @@ export function Details() {
             <Shirt className="w-6 h-6 mx-auto mb-6 text-muted-foreground opacity-70" strokeWidth={1.5} />
             <h4 className="text-xl font-medium mb-6">Dress Code</h4>
             <div className="space-y-4 text-sm text-muted-foreground font-(family-name:--font-montserrat)">
-              <p className="font-medium text-foreground tracking-wide uppercase text-xs">Modern Filipiniana</p>
+              <p className="font-medium text-foreground tracking-wide uppercase text-xs">Modern Suits/Dresses</p>
               <div className="w-8 h-px bg-border mx-auto" />
-              <p>Ladies: Formal Gowns</p>
-              <p>Gentlemen: Barong Tagalog / Suits</p>
+              <p>Click the Palette below </p>
             </div>
             <a href="#attire" className="inline-block mt-8 text-xs tracking-wider uppercase underline underline-offset-4 decoration-border hover:text-foreground hover:decoration-foreground transition-all">
               View Palette
@@ -121,12 +121,24 @@ export function Details() {
             <h4 className="text-xl font-medium mb-6">Contact</h4>
             <div className="space-y-4 text-sm text-muted-foreground font-(family-name:--font-montserrat)">
               <p>Questions? Reach out to us:</p>
-              <a 
-                href="mailto:wedding@johnmarkandchezza.com" 
-                className="block break-all hover:text-foreground transition-colors mt-4 text-foreground/80 font-medium"
+              
+              {/* add icons here using react-icons */}
+              <div className="flex justify-center items-center gap-2">
+              <a href="https://www.google.com/"
+              target="_blank"
+              rel="noopener noreferrer"
               >
-                wedding@johnmarkandchezza.com
+              <FaFacebookMessenger size={24} className="mx-auto text-blushpink" />
               </a>
+              <a href="https://www.youtube.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              >
+              <FaYoutube size={24} className="mx-auto text-blushpink" />
+              </a>
+
+
+              </div>
             </div>
           </div>
         </div>

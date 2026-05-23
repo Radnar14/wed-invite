@@ -58,3 +58,5 @@ next-env.d.ts
 # Local Scripts
 submit-pr.sh
 
+.env.local
+.env

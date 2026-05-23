@@ -37,8 +37,8 @@ export function Navigation() {
   }, [])
 
   const navBgClass = isAltPage || isScrolled
-    ? "bg-background/95 backdrop-blur-md shadow-sm py-3"
-    : "bg-transparent py-6"
+    ? "bg-background/95 backdrop-blur-md shadow-sm py-2"
+    : "bg-transparent py-3"
     
   const textClass = isAltPage || isScrolled ? "text-foreground" : "text-white"
 
@@ -49,9 +49,9 @@ export function Navigation() {
         navBgClass
       )}
     >
-      <nav className="container mx-auto px-6 flex items-center justify-between">
+      <nav className="container mx-auto px-8 flex items-center justify-between">
         <Link
-          href="/"
+          href="/#home"
           className={cn(
             "flex items-center justify-center transition-colors",
             textClass
@@ -68,7 +68,7 @@ export function Navigation() {
         </Link>
 
         {/* Desktop Navigation */}
-        <ul className="hidden md:flex items-center gap-8">
+        <ul className="hidden md:flex items-center flex-1 justify-evenly ml-8">
           {[...navLinks, rsvpLink, seatFinderLink].map((link) => (
             <li key={link.href}>
               <Link

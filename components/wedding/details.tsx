@@ -121,7 +121,8 @@ export function Details() {
             <h4 className="text-xl font-medium mb-6">Contact</h4>
             <div className="space-y-4 text-sm text-muted-foreground font-(family-name:--font-montserrat)">
               <p>Questions? Reach out to us:</p>
-
+              
+              {/* add icons here using react-icons */}
               <div className="flex justify-center items-center gap-2">
               <a href="https://www.google.com/"
               target="_blank"

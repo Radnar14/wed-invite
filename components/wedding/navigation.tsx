@@ -51,7 +51,7 @@ export function Navigation() {
     >
       <nav className="container mx-auto px-8 flex items-center justify-between">
         <Link
-          href="/#home"
+          href="/"
           className={cn(
             "flex items-center justify-center transition-colors",
             textClass

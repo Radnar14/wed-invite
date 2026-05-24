@@ -23,7 +23,7 @@ const BridesParents: EntourageMember[] = [
 
 
 const bridesSide: EntourageMember[] = [
-  { name: "NAME", role: "Maid of Honor" },
+  { name: "Chariss Ann Marqueses", role: "Matron of Honor" },
   { name: "Shinn Everielle Booc", role: "Bridesmaid" },
   { name: "Jemmelyn Pescadero", role: "Bridesmaid" },
   { name: "Jomily Irisawa", role: "Bridesmaid" },
@@ -72,7 +72,7 @@ const flowerGirls: EntourageMember[] = [
 
 const bearers: EntourageMember[] = [
 
-  { name: "Elias Caden Marquesess", role: "Ring Bearer" },
+  { name: "Elias Caden Marqueses", role: "Ring Bearer" },
   { name: "Abiel Jimenez", role: "Bible Bearer" },
   { name: "Zeijan Wryle Ybañez", role: "Coin Bearer" },
 ]

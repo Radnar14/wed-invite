@@ -175,7 +175,7 @@ export function Navigation() {
                 <Link
                   href={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="group block w-full rounded-xl px-4 py-3 text-sm tracking-[0.2em] uppercase font-(family-name:--font-montserrat) text-foreground transition-all duration-300 border border-transparent hover:bg-accent/10 hover:border-accent/30 hover:text-accent active:scale-[0.98]"
+                  className="group block w-full rounded-xl px-4 py-3 text-sm tracking-[0.2em] uppercase font-(family-name:--font-montserrat) text-foreground transition-all duration-300 border border-transparent hover:bg-accent/10 hover:border-accent/30 hover:text-accent active:bg-accent/10 active:border-accent/30 active:text-accent active:scale-[0.98]"
                 >
                   {link.label}
                 </Link>

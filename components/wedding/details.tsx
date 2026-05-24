@@ -123,13 +123,35 @@ export function Details() {
               <p>Questions? Reach out to us:</p>
               
               {/* add icons here using react-icons */}
-              <div className="flex justify-center items-center gap-2">
-              <a href="https://www.google.com/"
-              target="_blank"
-              rel="noopener noreferrer"
+              <div className="flex justify-center gap-2 mt-2">
+                <div className="flex self-center">
+                <FaFacebookMessenger
+                  size={24}
+                  className="text-blushpink"
+                />
+                </div>
+              <div className="flex text-left flex-col leading-tight text-sm">
+              <a href="https://m.me/chezza214"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative hover:text-accent transition-colors 
+                after:absolute after:left-0 after:-bottom-1 after:h-[1px] after:w-0 after:bg-current 
+                after:transition-all after:duration-300 hover:after:w-full 
+                active:after:w-full"
               >
-              <FaFacebookMessenger size={24} className="mx-auto text-blushpink" />
+              Chezza
               </a>
+              <a
+                    href="https://m.me/kingcoal214"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="relative w-fit hover:text-accent transition-colors 
+                    after:absolute after:left-0 after:-bottom-0.5 after:h-[1px] after:w-0 after:bg-current 
+                    after:transition-all after:duration-300 hover:after:w-full"
+                  >
+                    John Mark
+                  </a>
+              </div>
               <a href="https://www.youtube.com/"
               target="_blank"
               rel="noopener noreferrer"

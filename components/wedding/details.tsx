@@ -1,7 +1,9 @@
 "use client"
 
-import { MapPin, Clock, Shirt, Mail } from "lucide-react"
+import { MapPin, Clock, Shirt, Mail, Heart, PartyPopper  } from "lucide-react"
 import { FaFacebookMessenger, FaYoutube  } from "react-icons/fa6";
+import Image from "next/image"
+
 
 export function Details() {
   return (
@@ -23,59 +25,134 @@ export function Details() {
         </div>
 
         {/* Main Events (Ceremony & Reception) */}
-        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 max-w-6xl mx-auto mb-24">
-          {/* Ceremony */}
-          <div className="group flex flex-col items-center lg:items-start text-center lg:text-left">
-            <div className="w-14 h-14 rounded-full border border-border flex items-center justify-center mb-8 bg-background/50 shadow-sm group-hover:scale-105 transition-transform duration-500">
-              <MapPin className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
-            </div>
-            <h3 className="text-3xl font-light mb-6">Ceremony</h3>
-            <div className="space-y-2 mb-10 text-muted-foreground font-(family-name:--font-montserrat) text-sm md:text-base leading-relaxed">
-              <p>Archdiocesan Shrine of St. Thérèse</p>
-              <p>Lahug, Cebu City</p>
-              <p>Cebu City, Philippines</p>
-            </div>
-            <div className="w-full aspect-4/3 md:aspect-video lg:aspect-4/3 rounded-2xl overflow-hidden shadow-md border border-border/50 bg-background relative group-hover:shadow-lg transition-shadow duration-500">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3925.135183062164!2d123.89791887575537!3d10.3310649897919!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a999269b2146d5%3A0x462d30e860ab63f2!2sArchdiocesan%20Shrine%20of%20St.%20Th%C3%A9r%C3%A8se%20of%20the%20Child%20Jesus!5e0!3m2!1sen!2sph!4v1779541275708!5m2!1sen!2sph"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Ceremony Location:  Archdiocesan Shrine of St. Thérèse"
-                className="grayscale group-hover:grayscale-0 transition-all duration-700"
-              />
-            </div>
-          </div>
+        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 max-w-6xl mx-auto mb-10">
+          {/* Ceremony Side Card */}
+              <div className="relative group rounded-[32px] border border-border/40 
+              bg-background/70 backdrop-blur-xl shadow-lg transition-all duration-500 
+              hover:-translate-y-1 hover:shadow-xl mt-12">
 
-          {/* Reception */}
-          <div className="group flex flex-col items-center lg:items-start text-center lg:text-left mt-8 lg:mt-32">
-            <div className="w-14 h-14 rounded-full border border-border flex items-center justify-center mb-8 bg-background/50 shadow-sm group-hover:scale-105 transition-transform duration-500">
-              <MapPin className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
-            </div>
-            <h3 className="text-3xl font-light mb-6">Reception</h3>
-            <div className="space-y-2 mb-10 text-muted-foreground font-(family-name:--font-montserrat) text-sm md:text-base leading-relaxed">
-              <p>Marco Polo Plaza Cebu</p>
-              <p>Nivel Hills, Cebu City</p>
-              <p>6000 Cebu, Philippines</p>
-            </div>
-            <div className="w-full aspect-4/3 md:aspect-video lg:aspect-4/3 rounded-2xl overflow-hidden shadow-md border border-border/50 bg-background relative group-hover:shadow-lg transition-shadow duration-500">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3925.3674681605335!2d123.89679657478652!3d10.334645289766952!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a999741e57147b%3A0x6e788c03973c7340!2sMarco%20Polo%20Plaza%20Cebu!5e0!3m2!1sen!2sph!4v1715777777777!5m2!1sen!2sph"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Reception Location: Marco Polo Plaza Cebu"
-                className="grayscale group-hover:grayscale-0 transition-all duration-700"
-              />
-            </div>
-          </div>
-        </div>
+                {/* Floating MapPin */}
+                <div className="absolute left-1/2 -top-23 -translate-x-1/2 z-20">
+                  <div className="w-14 h-14 rounded-full border border-border bg-background shadow-md flex items-center justify-center">
+                    <MapPin
+                      className="w-5 h-5 text-muted-foreground"
+                      strokeWidth={1.5}
+                    />
+                  </div>
+                </div>
+
+                {/* Ceremony Image */}
+                <div className="relative h-72 overflow-hidden">
+                    <Image
+                      src="/images/ceremony.jpg"
+                      alt="Wedding Ceremony Venue"
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+
+                    {/* Optional soft overlay */}
+                    <div className="absolute inset-0 bg-black/10" />
+                  </div>
+                    {/* Content */}
+                  <div className="p-8 text-center">
+                    <div className="flex items-center justify-center gap-2 mb-2 text-blushpink">
+                    <Heart className="w-4 h-4" />
+                    <p className="text-xs tracking-[0.3em] uppercase text-muted-foreground leading-none">
+                      Ceremony
+                    </p>
+                    </div>
+
+                    <h3 className="text-3xl font-light mb-4">
+                      Archdiocesan Shrine of St. Thérèse
+                    </h3>
+
+                    <div className="flex justify-center items-center gap-2 text-blushpink mb-2">
+                      <MapPin className="w-4 h-4" />
+                      <p>Lahug, Cebu City</p>
+                    </div>
+
+                    <div className="flex justify-center items-center gap-2 text-muted-foreground mb-6">
+                      <Clock className="w-4 h-4" />
+                      <p>Dec 28, 2026 · 2:30 PM</p>
+                    </div>
+
+                    <a
+                      href="https://maps.google.com/?q=Archdiocesan+Shrine+of+St.+Therese+Cebu"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 rounded-full bg-accent/10 px-5 py-3 text-sm transition-all hover:bg-accent hover:text-white"
+                    >
+                      <MapPin className="w-4 h-4" />
+                      Open in Maps
+                    </a>
+                  </div>
+                </div>
+
+
+                {/* Reception Side Card*/}
+                <div className="relative group rounded-[32px] h-fit border 
+                    border-border/40 bg-background/70 backdrop-blur-xl shadow-lg transition-all duration-500 
+                    hover:-translate-y-1 hover:shadow-xl mt-28">
+
+                    {/* Floating MapPin */}
+                    <div className="absolute left-1/2 -top-23 -translate-x-1/2 z-20">
+                        <div className="w-14 h-14 rounded-full border border-border bg-background 
+                            shadow-md flex items-center justify-center">
+                              <MapPin
+                                className="w-5 h-5 text-muted-foreground"
+                                strokeWidth={1.5}
+                              />
+                        </div>
+                    </div>
+
+                          {/* Reception Image */}
+                      <div className="relative h-72 overflow-hidden rounded-t-[32px]">
+                        <Image
+                          src="/images/reception.jpg"
+                          alt="Wedding Reception Venue"
+                          fill
+                          className="object-cover transition-transform duration-700 group-hover:scale-105"
+                        />
+
+                        <div className="absolute inset-0 bg-black/10" />
+                      </div>
+                      {/* Content */}
+                      <div className="px-8 pt-8 pb-10 text-center">
+
+                        <div className="flex items-center justify-center gap-2 mb-2 text-blushpink">
+                          <PartyPopper  className="w-4 h-4" />
+                          <p className="text-xs tracking-[0.3em] uppercase text-muted-foreground leading-none">
+                            Reception
+                          </p>
+                        </div>
+
+                        <h3 className="text-3xl font-light mb-4">
+                          Marco Polo Plaza Cebu
+                        </h3>
+
+                        <div className="flex justify-center items-center gap-2 text-blushpink mb-2">
+                          <MapPin className="w-4 h-4" />
+                          <p>Nivel Hills, Cebu City</p>
+                        </div>
+
+                        <div className="flex justify-center items-center gap-2 text-muted-foreground mb-6">
+                          <Clock className="w-4 h-4" />
+                          <p>Dec 28, 2026 · 6:00 PM</p>
+                        </div>
+                          <a
+                            href="https://maps.google.com/?q=Marco+Polo+Plaza+Cebu"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 rounded-full 
+                            bg-accent/10 px-5 py-3 text-sm transition-all 
+                            hover:bg-accent hover:text-white"
+                          >      
+                          <MapPin className="w-4 h-4" />
+                            Open in Maps
+                          </a>
+                      </div>
+                  </div>
+              </div>
 
         {/* Additional Info Grid */}
         <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">

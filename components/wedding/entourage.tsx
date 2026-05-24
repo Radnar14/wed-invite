@@ -94,7 +94,11 @@ function EntourageSide({
       </h3>
 
       <div className="w-40 h-px bg-[#d8cfc7] mx-auto mb-3"></div>
-      <div className="text-center p-4 md:p-6 bg-background rounded-lg">
+          {/* Card effect shadow */}
+        <div className="text-center p-4 md:p-6 bg-background rounded-[28px] 
+        border border-border/40 shadow-[0_8px_24px_rgba(0,0,0,0.05)] transition-all duration-300 
+        hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)]">
+
       <div className="grid gap-6">
        { <div className="mx-auto max-w-xs">
           <p className="font-cursive text-1xl md:text-1xl text-blushpink italic font-bold">
@@ -151,7 +155,11 @@ export function Entourage() {
           </h3>
           
               <div className="w-40 h-px bg-[#d8cfc7] mx-auto mb-3"></div>
-              <div className="text-center p-4 md:p-6 bg-background rounded-lg">
+             {/* Card effect shadow */}
+            <div className="text-center p-4 md:p-6 bg-background rounded-[28px] 
+            border border-border/40 shadow-[0_8px_24px_rgba(0,0,0,0.05)] transition-all duration-300 
+            hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)]">
+
               <div className="text-center">
                 {GroomsParents.map((parent) => (
                       <div key={parent.name}>
@@ -175,7 +183,11 @@ export function Entourage() {
           </h3>
           
           <div className="w-40 h-px bg-[#d8cfc7] mx-auto mb-3"></div>
-          <div className="text-center p-4 md:p-6 bg-background rounded-lg">
+             {/* Card effect shadow */}
+            <div className="text-center p-4 md:p-6 bg-background rounded-[28px] 
+            border border-border/40 shadow-[0_8px_24px_rgba(0,0,0,0.05)] transition-all duration-300 
+            hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)]">
+              
               <div className="text-center">
                 {BridesParents.map((parent) => (
                       <div key={parent.name}>
@@ -198,7 +210,11 @@ export function Entourage() {
             Principal Sponsors
           </h3>
           <div className="w-40 h-px bg-[#d8cfc7] mx-auto mb-3"></div>
-            <div className="text-center p-4 md:p-6 bg-background rounded-lg">
+             {/* Card effect shadow */}
+            <div className="text-center p-4 md:p-6 bg-background rounded-[28px] 
+            border border-border/40 shadow-[0_8px_24px_rgba(0,0,0,0.05)] transition-all duration-300 
+            hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)]">
+
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 max-w-4xl mx-auto">
               {primarySponsors.map((sponsor) => (
                 <p key={sponsor.name} className="font-serif text-lg md:text-base text-foreground">
@@ -232,8 +248,11 @@ export function Entourage() {
 
           <div className="w-40 h-px bg-[#d8cfc7] mx-auto mb-4"></div>
           <div className="grid md:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto">
-            {/* Veil */}
-            <div className="text-center p-4 md:p-6 bg-background rounded-lg">
+             {/* Card effect shadow */}
+            <div className="text-center p-4 md:p-6 bg-background rounded-[28px] 
+            border border-border/40 shadow-[0_8px_24px_rgba(0,0,0,0.05)] transition-all duration-300 
+            hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)]">
+              {/* Veil */}
               <h4 className="text-blushpink text-xs tracking-[0.2em] uppercase mb-3 md:mb-4">
                 Veil Sponsors
               </h4>
@@ -244,8 +263,12 @@ export function Entourage() {
               ))}
             </div>
 
-            {/* Cord */}
-            <div className="text-center p-4 md:p-6 bg-background rounded-lg">
+
+            {/* Card effect shadow */}
+            <div className="text-center p-4 md:p-6 bg-background rounded-[28px] 
+            border border-border/40 shadow-[0_8px_24px_rgba(0,0,0,0.05)] transition-all duration-300 
+            hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)]">
+               {/* Cord */}
               <h4 className="text-blushpink text-xs tracking-[0.2em] uppercase mb-3 md:mb-4">
                 Cord Sponsors
               </h4>
@@ -256,8 +279,12 @@ export function Entourage() {
               ))}
             </div>
 
+
+          {/* Card effect shadow */}
+            <div className="text-center p-4 md:p-6 bg-background rounded-[28px] 
+            border border-border/40 shadow-[0_8px_24px_rgba(0,0,0,0.05)] transition-all duration-300 
+            hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)]">
             {/* Candle */}
-            <div className="text-center p-4 md:p-6 bg-background rounded-lg">
               <h4 className="text-blushpink text-xs tracking-[0.2em] uppercase mb-3 md:mb-4">
                 Candle Sponsors
               </h4>
@@ -277,7 +304,11 @@ export function Entourage() {
           </h3>
 
           <div className="w-40 h-px bg-[#d8cfc7] mx-auto mb-4"></div>
-             <div className="text-center p-4 md:p-6 bg-background rounded-lg">
+          {/* Card effect shadow */}
+            <div className="text-center p-4 md:p-6 bg-background rounded-[28px] 
+            border border-border/40 shadow-[0_8px_24px_rgba(0,0,0,0.05)] transition-all duration-300 
+            hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)]">
+
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-3xl mx-auto">
                   {flowerGirls.map((flower) => (
                     <p key={flower.name} className="font-serif text-lg md:text-base text-foreground">
@@ -295,21 +326,25 @@ export function Entourage() {
           </h3>
 
           <div className="w-40 h-px bg-[#d8cfc7] mx-auto mb-4"></div>
-          <div className="text-center p-4 md:p-6 bg-background rounded-lg">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-3xl mx-auto">
-            {bearers.map((bearer) => (
-              <div key={bearer.name}>
-                        <p className="text-sm md:text-base italic text-accent mt-1">
-                          {bearer.role}
-                        </p>
+          {/* Card effect shadow */}
+            <div className="text-center p-4 md:p-6 bg-background rounded-[28px] 
+            border border-border/40 shadow-[0_8px_24px_rgba(0,0,0,0.05)] transition-all duration-300 
+            hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)]">
 
-                        <p className="font-serif text-lg md:text-xl text-foreground">
-                          {bearer.name}
-                        </p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-3xl mx-auto">
+                {bearers.map((bearer) => (
+                  <div key={bearer.name}>
+                            <p className="text-sm md:text-base italic text-blushpink mt-1">
+                              {bearer.role}
+                            </p>
+
+                            <p className="font-serif text-lg md:text-xl text-foreground">
+                              {bearer.name}
+                            </p>
                     </div>
-            ))}
+                ))}
+              </div>
           </div>
-        </div>
         </div>
       </div>
     </section>

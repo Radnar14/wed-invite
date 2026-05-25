@@ -13,27 +13,30 @@ export function MusicPlayer() {
     const audio = audioRef.current
     if (!audio) return
 
-     // AUTO PLAY WHEN WEBSITE LOADS
-      audio.play()
-        .then(() => {
-          setIsPlaying(true)
-        })
-        .catch(() => {
-          console.log("Autoplay blocked by browser")
-          setIsPlaying(false)
+    // AUTO PLAY WHEN WEBSITE LOADS
+    audio.play()
+      .then(() => {
+        setIsPlaying(true)
+      })
+      .catch(() => {
+        console.log("Autoplay blocked by browser")
 
-          // Try again on first interaction
-          const startMusic = () => {
-            audio.play().then(() => {
-              setIsPlaying(true)
-            })
-
-            document.removeEventListener("click", startMusic)
+        // Retry after first interaction
+        const startMusic = async () => {
+          try {
+            await audio.play()
+            setIsPlaying(true)
+          } catch (err) {
+            console.log("Still blocked")
           }
 
-          document.addEventListener("click", startMusic)
-        })
+          document.removeEventListener("click", startMusic)
+          document.removeEventListener("touchstart", startMusic)
+        }
 
+        document.addEventListener("click", startMusic)
+        document.addEventListener("touchstart", startMusic)
+      })
 
     const handleCanPlay = () => setIsLoaded(true)
     const handleEnded = () => {
@@ -75,6 +78,7 @@ export function MusicPlayer() {
         preload="auto"
         autoPlay
         loop
+        playsInline
       />
 
       {/* Floating music button */}

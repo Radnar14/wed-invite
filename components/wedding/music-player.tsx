@@ -14,10 +14,26 @@ export function MusicPlayer() {
     if (!audio) return
 
      // AUTO PLAY WHEN WEBSITE LOADS
-  audio.play().catch(() => {
-    console.log("Autoplay blocked by browser")
-  })
-  setIsPlaying(true)
+      audio.play()
+        .then(() => {
+          setIsPlaying(true)
+        })
+        .catch(() => {
+          console.log("Autoplay blocked by browser")
+          setIsPlaying(false)
+
+          // Try again on first interaction
+          const startMusic = () => {
+            audio.play().then(() => {
+              setIsPlaying(true)
+            })
+
+            document.removeEventListener("click", startMusic)
+          }
+
+          document.addEventListener("click", startMusic)
+        })
+
 
     const handleCanPlay = () => setIsLoaded(true)
     const handleEnded = () => {

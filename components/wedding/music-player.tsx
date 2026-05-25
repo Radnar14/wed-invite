@@ -10,56 +10,30 @@ export function MusicPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null)
 
   useEffect(() => {
-    const audio = audioRef.current
-    if (!audio) return
+          const audio = audioRef.current
+          if (!audio) return
 
-        // START MUSIC FUNCTION
-        // This handles both autoplay and fallback play
-        const startMusic = async () => {
-          try {
-            // Try to play audio
-            await audio.play()
+          // AUTO PLAY WHEN WEBSITE LOADS
+        audio.play().catch(() => {
+          console.log("Autoplay blocked by browser")
+        })
+        setIsPlaying(true)
 
-            // Update UI to show music is playing
-            setIsPlaying(true)
-          } catch (err) {
-            // Browser blocked autoplay
-            console.log("Autoplay blocked by browser")
+          const handleCanPlay = () => setIsLoaded(true)
+          const handleEnded = () => {
+            // Loop the audio
+            audio.currentTime = 0
+            audio.play()
           }
-        }
 
-        // TRY AUTOPLAY IMMEDIATELY
-        // Works on desktop and some mobile browsers
-        startMusic()
+          audio.addEventListener("canplaythrough", handleCanPlay)
+          audio.addEventListener("ended", handleEnded)
 
-        // FALLBACK FOR MOBILE / PRODUCTION
-        // If autoplay is blocked, music starts
-        // on the user's first interaction
-        document.addEventListener("click", startMusic, 
-          {once: true,})
-
-        document.addEventListener("touchstart", startMusic,
-          {once: true })
-
-    const handleCanPlay = () => setIsLoaded(true)
-    const handleEnded = () => {
-      // Loop the audio
-      audio.currentTime = 0
-      audio.play()
-    }
-
-    audio.addEventListener("canplaythrough", handleCanPlay)
-    audio.addEventListener("ended", handleEnded)
-
-    return () => {
-      audio.removeEventListener("canplaythrough", handleCanPlay)
-      audio.removeEventListener("ended", handleEnded)
-        // CLEANUP EVENT LISTENERS
-        // Prevent memory leaks
-      document.removeEventListener("click", startMusic)
-      document.removeEventListener("touchstart", startMusic)
+          return () => {
+            audio.removeEventListener("canplaythrough", handleCanPlay)
+            audio.removeEventListener("ended", handleEnded)
           }
-        }, [])
+  }, [])
 
   const togglePlay = () => {
     const audio = audioRef.current
@@ -82,10 +56,9 @@ export function MusicPlayer() {
       <audio
         ref={audioRef}
         src="/new_song.mp3" /* Change here your new song*/
-        preload="auto" // Load audio early
-        autoPlay // Try autoplay
-        loop // Repeat forever
-        playsInline // Better mobile support
+        preload="auto"
+        autoPlay
+        loop
       />
 
       {/* Floating music button */}

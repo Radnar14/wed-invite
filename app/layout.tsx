@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Cormorant_Garamond, Great_Vibes, Montserrat } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
+import { MusicPlayer } from "@/components/wedding/music-player"
 
 
 const cormorant = Cormorant_Garamond({ 
@@ -54,6 +55,7 @@ export default function RootLayout({
     <html lang="en" data-scroll-behavior="smooth" className={`${cormorant.variable} ${montserrat.variable} ${greatVibes.variable} bg-background`}>
       <body className="font-serif antialiased">
         {children}
+        <MusicPlayer />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

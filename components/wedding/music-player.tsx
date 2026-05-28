@@ -14,18 +14,11 @@ export function MusicPlayer() {
     if (!audio) return
 
     const handleCanPlay = () => setIsLoaded(true)
-    const handleEnded = () => {
-      // Loop the audio
-      audio.currentTime = 0
-      audio.play()
-    }
 
     audio.addEventListener("canplaythrough", handleCanPlay)
-    audio.addEventListener("ended", handleEnded)
 
     return () => {
       audio.removeEventListener("canplaythrough", handleCanPlay)
-      audio.removeEventListener("ended", handleEnded)
     }
   }, [])
 
@@ -51,7 +44,6 @@ export function MusicPlayer() {
         ref={audioRef}
         src="/new_song.mp3" /* Change here your new song*/
         preload="auto"
-        autoPlay
         loop
       />
 

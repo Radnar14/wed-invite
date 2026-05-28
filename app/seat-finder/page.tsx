@@ -2,7 +2,6 @@ import { Suspense } from "react"
 import { Navigation } from "@/components/wedding/navigation"
 import { SeatFinder } from "@/components/wedding/seat-finder"
 import { Footer } from "@/components/wedding/footer"
-import { MusicPlayer } from "@/components/wedding/music-player"
 
 export default function SeatFinderPage() {
   return (
@@ -24,7 +23,6 @@ export default function SeatFinderPage() {
       </section>
 
       <Footer />
-      <MusicPlayer />
     </main>
   )
 }

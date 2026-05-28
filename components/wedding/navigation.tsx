@@ -33,23 +33,6 @@ useEffect(() => {
     setIsScrolled(window.scrollY > 50)
   }
 
-  // Always start page at top on refresh
-  window.history.scrollRestoration = "manual"
-
-  // Scroll to top ONLY on refresh
-  if (performance.navigation?.type === 1) {
-    window.scrollTo(0, 0)
-
-    // remove hash AFTER page loads
-    setTimeout(() => {
-      window.history.replaceState(
-        null,
-        "",
-        window.location.pathname
-      )
-    }, 100)
-  }
-
   window.addEventListener("scroll", handleScroll)
 
   return () => {

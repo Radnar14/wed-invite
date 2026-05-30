@@ -9,16 +9,44 @@ export function MusicPlayer() {
   const [isLoaded, setIsLoaded] = useState(false)
   const audioRef = useRef<HTMLAudioElement>(null)
 
-   useEffect(() => {
+  useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
 
-    const handleCanPlay = () => setIsLoaded(true)
+    const handleCanPlay = () => {
+      setIsLoaded(true)
+      // Attempt to play on load (browsers might block this)
+      audio.play().then(() => {
+        setIsPlaying(true)
+      }).catch(() => {
+        // Autoplay prevented
+        console.log("Autoplay prevented on load")
+      })
+    }
 
     audio.addEventListener("canplaythrough", handleCanPlay)
 
+    // Global click listener to start music on first interaction
+    const handleFirstInteraction = () => {
+      if (audio && audio.paused) {
+        audio.play().then(() => {
+          setIsPlaying(true)
+          window.removeEventListener("click", handleFirstInteraction)
+          window.removeEventListener("touchstart", handleFirstInteraction)
+          window.removeEventListener("scroll", handleFirstInteraction)
+        }).catch(() => {})
+      }
+    }
+
+    window.addEventListener("click", handleFirstInteraction)
+    window.addEventListener("touchstart", handleFirstInteraction)
+    window.addEventListener("scroll", handleFirstInteraction)
+
     return () => {
       audio.removeEventListener("canplaythrough", handleCanPlay)
+      window.removeEventListener("click", handleFirstInteraction)
+      window.removeEventListener("touchstart", handleFirstInteraction)
+      window.removeEventListener("scroll", handleFirstInteraction)
     }
   }, [])
 
@@ -28,13 +56,14 @@ export function MusicPlayer() {
 
     if (isPlaying) {
       audio.pause()
+      setIsPlaying(false)
     } else {
-      audio.play().catch(() => {
-        // Autoplay was prevented, user needs to interact first
-        console.log("Autoplay prevented, waiting for user interaction")
+      audio.play().then(() => {
+        setIsPlaying(true)
+      }).catch(() => {
+        console.log("Play failed")
       })
     }
-    setIsPlaying(!isPlaying)
   }
 
   return (

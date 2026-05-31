@@ -131,3 +131,35 @@
     scroll-behavior: smooth;
   }
 }
+
+
+
+@keyframes arrowTick {
+  0%, 100% {
+    transform: translateX(0);
+  }
+
+  20% {
+    transform: translateX(0);
+  }
+
+  40% {
+    transform: translateX(6px);
+  }
+
+  50% {
+    transform: translateX(0);
+  }
+
+  65% {
+    transform: translateX(6px);
+  }
+
+  80% {
+    transform: translateX(0);
+  }
+}
+
+.animate-arrowTick {
+  animation: arrowTick 1.6s ease-in-out infinite;
+}

@@ -15,6 +15,15 @@ const galleryImages = [
   { src: "/images/gallery-6.jpg", alt: "Wedding bouquet" },
 ]
 
+const VIDEO_URLS = {
+  prenup:
+    "https://www.youtube.com/embed/YMKjUxJa6C4",
+
+  saveTheDate:
+    "https://www.youtube.com/embed/ZWb4OYzpySE",
+}
+
+
 export function Gallery() {
   const [selectedImage, setSelectedImage] = useState<number | null>(null)
 
@@ -44,40 +53,167 @@ export function Gallery() {
           </h2>
         </div>
 
-        {/* Gallery Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-6xl mx-auto">
-          {galleryImages.map((image, index) => (
-            <button
-              type="button"
-              key={index}
-              onClick={() => openLightbox(index)}
-              aria-label={`Open lightbox for ${image.alt}`}
-              className={cn(
-                "relative overflow-hidden rounded-sm group cursor-pointer",
-                index === 0 || index === 5 ? "row-span-2 aspect-3/4" : "aspect-square"
-              )}
-            >
-              <Image
-                src={image.src}
-                alt={image.alt}
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
-            </button>
-          ))}
-        </div>
+      {/* Gallery Layout */}
+              <div className="max-w-6xl mx-auto">
 
-        {/* View Full Gallery Link */}
-        <div className="mt-16 text-center">
-          <Link
-            href="/gallery"
-            className="inline-flex items-center gap-2 text-sm tracking-[0.3em] uppercase font-(family-name:--font-montserrat) text-foreground hover:text-accent transition-colors group"
-          >
-            View Full Gallery
-            <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
-          </Link>
-        </div>
+                {/* MOBILE LAYOUT */}
+                <div className="md:hidden space-y-6">
+
+                  {/* Prenup Hero */}
+                    <div className="overflow-hidden rounded-[28px] shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
+                      <iframe
+                        className="w-full aspect-video"
+                        src={VIDEO_URLS.prenup}
+                        title="Prenup Video"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+
+                  {/* 6 Pictures */}
+                  <div className="grid grid-cols-2 gap-4">
+                    {galleryImages.slice(0, 6).map((image, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        onClick={() => openLightbox(index)}
+                        className="relative h-[180px] overflow-hidden rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.08)] group"
+                      >
+                        <Image
+                          src={image.src}
+                          alt={image.alt}
+                          fill
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Save the Date Video */}
+                  <div className="overflow-hidden rounded-[28px] shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
+                    <iframe
+                      className="w-full aspect-video"
+                      src={VIDEO_URLS.saveTheDate}
+                      title="Save The Date Video"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen />
+                  </div>
+                </div>
+
+                {/* DESKTOP LAYOUT */}
+                <div className="hidden md:grid grid-cols-[1.2fr_1fr] gap-8 items-center">
+
+                  {/* LEFT VIDEOS */}
+                  <div className="space-y-6">
+
+                    {/* Prenup Hero */}
+                    <div className="overflow-hidden rounded-[28px] shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
+                      <iframe
+                          className="w-full aspect-video"
+                          src={VIDEO_URLS.prenup}
+                          title="Prenup Video"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen />
+                    </div>
+
+                    {/* Save the Date */}
+                    <div className="overflow-hidden rounded-[28px] shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
+                      <iframe
+                      className="w-full aspect-video"
+                      src={VIDEO_URLS.saveTheDate}
+                      title="Save The Date Video"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen />
+                    </div>
+                  </div>
+
+                  {/* RIGHT PHOTOS */}
+                    <div className="grid grid-cols-2 gap-5 content-center my-auto">
+
+                      {galleryImages.slice(0, 6).map((image, index) => (
+                        <button
+                          key={index}
+                          type="button"
+                          onClick={() => openLightbox(index)}
+                          className="relative overflow-hidden rounded-[28px] bg-white/40 shadow-[0_8px_30px_rgba(0,0,0,0.08)] group transition-all duration-300 hover:scale-[1.02]"
+                        >
+                          <div className="relative w-full h-[220px] xl:h-[260px]">
+                            <Image
+                              src={image.src}
+                              alt={image.alt}
+                              fill
+                              className="object-cover transition-transform duration-500 group-hover:scale-105"
+                              sizes="(max-width: 1024px) 50vw, 33vw"
+                            />
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                </div>
+              </div>
+
+        {/* View Full Gallery Bubble Button */}
+            <div className="mt-16 text-center">
+              <Link
+                href="/gallery"
+                className="
+                  group
+                  relative
+                  inline-flex
+                  items-center
+                  gap-4
+                  rounded-full
+                  border border-accent/40
+                  bg-transparent
+                  px-10 py-5
+                  shadow-[0_8px_30px_rgba(0,0,0,0.08)]
+                  transition-all duration-300
+                  hover:-translate-y-1
+                  active:scale-95
+                  hover:shadow-[0_12px_35px_rgba(0,0,0,0.12)]
+                  hover:border-accent
+                "
+              >
+                {/* Text */}
+                <span
+                  className="
+                    text-sm
+                    uppercase
+                    tracking-[0.35em]
+                    font-(family-name:--font-montserrat)
+                    text-foreground
+                    transition-all duration-300
+                    group-hover:text-accent
+                    group-hover:underline
+                  "
+                >
+                  View Full Gallery
+                </span>
+
+                {/* Animated Arrow Bubble */}
+                <div
+                  className="
+                    flex items-center justify-center
+                    w-10 h-10 rounded-full
+                    bg-accent/10
+                    transition-all duration-300
+                    group-hover:bg-accent/20
+                  "
+                >
+                  <ArrowRight
+                      size={18}
+                      className="
+                        text-accent
+                        animate-arrowTick
+                        transition-transform duration-300
+                        group-hover:translate-x-1
+                      "
+                    />
+                </div>
+              </Link>
+            </div>
+
+
       </div>
 
       {/* Lightbox */}

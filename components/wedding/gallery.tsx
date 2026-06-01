@@ -15,6 +15,8 @@ const galleryImages = [
   { src: "/images/gallery-6.jpg", alt: "Wedding bouquet" },
 ]
 
+// Videos URLs here
+
 const VIDEO_URLS = {
   prenup:
     "https://www.youtube.com/embed/YMKjUxJa6C4",
@@ -77,7 +79,7 @@ export function Gallery() {
                         key={index}
                         type="button"
                         onClick={() => openLightbox(index)}
-                        className="relative h-[180px] overflow-hidden rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.08)] group"
+                        className="relative h-45 overflow-hidden rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.08)] group"
                       >
                         <Image
                           src={image.src}
@@ -137,7 +139,7 @@ export function Gallery() {
                           onClick={() => openLightbox(index)}
                           className="relative overflow-hidden rounded-[28px] bg-white/40 shadow-[0_8px_30px_rgba(0,0,0,0.08)] group transition-all duration-300 hover:scale-[1.02]"
                         >
-                          <div className="relative w-full h-[220px] xl:h-[260px]">
+                          <div className="relative w-full h-55 xl:h-65">
                             <Image
                               src={image.src}
                               alt={image.alt}
@@ -219,9 +221,30 @@ export function Gallery() {
       {/* Lightbox */}
       {selectedImage !== null && (
         <div
-          className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center"
-          onClick={closeLightbox}
-        >
+            className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center touch-pan-y"
+            onClick={closeLightbox}
+            onTouchStart={(e) => {
+              const touchStartX = e.changedTouches[0].clientX
+              e.currentTarget.dataset.touchStartX = String(touchStartX)
+            }}
+            onTouchEnd={(e) => {
+              const touchStartX = Number(
+                e.currentTarget.dataset.touchStartX || 0
+              )
+
+              const touchEndX = e.changedTouches[0].clientX
+              const difference = touchStartX - touchEndX
+
+              if (difference > 50) {
+                nextImage()
+              }
+
+              if (difference < -50) {
+                prevImage()
+              }
+            }}
+          >
+            
           {/* Close Button */}
           <button
             type="button"

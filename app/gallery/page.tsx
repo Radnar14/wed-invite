@@ -53,6 +53,22 @@ export default function GalleryPage() {
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [selectedIndex])
 
+  // Handle background music pause/resume
+  useEffect(() => {
+    if (selectedIndex !== null && galleryMedia[selectedIndex].type === "video") {
+      window.dispatchEvent(new CustomEvent("wedding-pause-music"))
+    } else {
+      window.dispatchEvent(new CustomEvent("wedding-resume-music"))
+    }
+    
+    // Resume music when component unmounts or lightbox closes
+    return () => {
+      if (selectedIndex !== null && galleryMedia[selectedIndex].type === "video") {
+        window.dispatchEvent(new CustomEvent("wedding-resume-music"))
+      }
+    }
+  }, [selectedIndex])
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />

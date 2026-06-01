@@ -8,10 +8,32 @@ export function MusicPlayer() {
   const [isPlaying, setIsPlaying] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
   const audioRef = useRef<HTMLAudioElement>(null)
+  const wasPlayingRef = useRef(false)
 
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
+
+    const handlePauseRequest = () => {
+      if (!audio.paused) {
+        wasPlayingRef.current = true
+        audio.pause()
+        setIsPlaying(false)
+      } else {
+        wasPlayingRef.current = false
+      }
+    }
+
+    const handleResumeRequest = () => {
+      if (wasPlayingRef.current) {
+        audio.play().then(() => {
+          setIsPlaying(true)
+        }).catch(() => {})
+      }
+    }
+
+    window.addEventListener("wedding-pause-music", handlePauseRequest)
+    window.addEventListener("wedding-resume-music", handleResumeRequest)
 
     const handleCanPlay = () => {
       setIsLoaded(true)
@@ -47,6 +69,8 @@ export function MusicPlayer() {
       window.removeEventListener("click", handleFirstInteraction)
       window.removeEventListener("touchstart", handleFirstInteraction)
       window.removeEventListener("scroll", handleFirstInteraction)
+      window.removeEventListener("wedding-pause-music", handlePauseRequest)
+      window.removeEventListener("wedding-resume-music", handleResumeRequest)
     }
   }, [])
 

@@ -19,8 +19,6 @@ export function MusicPlayer() {
         wasPlayingRef.current = true
         audio.pause()
         setIsPlaying(false)
-      } else {
-        wasPlayingRef.current = false
       }
     }
 
@@ -28,12 +26,52 @@ export function MusicPlayer() {
       if (wasPlayingRef.current) {
         audio.play().then(() => {
           setIsPlaying(true)
+          wasPlayingRef.current = false
         }).catch(() => {})
       }
     }
 
     window.addEventListener("wedding-pause-music", handlePauseRequest)
     window.addEventListener("wedding-resume-music", handleResumeRequest)
+
+    // Global listeners for native video elements
+    const handleGlobalPlay = (e: Event) => {
+      if (e.target instanceof HTMLVideoElement) {
+        handlePauseRequest()
+      }
+    }
+
+    const handleGlobalPause = (e: Event) => {
+      if (e.target instanceof HTMLVideoElement) {
+        handleResumeRequest()
+      }
+    }
+
+    // Capture phase to catch non-bubbling play/pause events
+    document.addEventListener("play", handleGlobalPlay, true)
+    document.addEventListener("pause", handleGlobalPause, true)
+    document.addEventListener("ended", handleGlobalPause, true)
+
+    // Listener for YouTube IFrame messages
+    const handleYoutubeMessage = (e: MessageEvent) => {
+      if (typeof e.data === "string" && e.data.includes("infoDelivery")) {
+        try {
+          const data = JSON.parse(e.data)
+          if (data.event === "infoDelivery" && data.info && data.info.playerState !== undefined) {
+            const state = data.info.playerState
+            if (state === 1) { // Playing
+              handlePauseRequest()
+            } else if (state === 2 || state === 0) { // Paused or Ended
+              handleResumeRequest()
+            }
+          }
+        } catch (error) {
+          // Ignore parse errors
+        }
+      }
+    }
+
+    window.addEventListener("message", handleYoutubeMessage)
 
     const handleCanPlay = () => {
       setIsLoaded(true)
@@ -71,6 +109,10 @@ export function MusicPlayer() {
       window.removeEventListener("scroll", handleFirstInteraction)
       window.removeEventListener("wedding-pause-music", handlePauseRequest)
       window.removeEventListener("wedding-resume-music", handleResumeRequest)
+      document.removeEventListener("play", handleGlobalPlay, true)
+      document.removeEventListener("pause", handleGlobalPause, true)
+      document.removeEventListener("ended", handleGlobalPause, true)
+      window.removeEventListener("message", handleYoutubeMessage)
     }
   }, [])
 

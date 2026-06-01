@@ -19,10 +19,10 @@ const galleryImages = [
 
 const VIDEO_URLS = {
   prenup:
-    "https://www.youtube.com/embed/YMKjUxJa6C4",
+    "https://www.youtube.com/embed/YMKjUxJa6C4?enablejsapi=1",
 
   saveTheDate:
-    "https://www.youtube.com/embed/ZWb4OYzpySE",
+    "https://www.youtube.com/embed/ZWb4OYzpySE?enablejsapi=1",
 }
 
 

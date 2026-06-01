@@ -8,22 +8,23 @@ import { cn } from "@/lib/utils"
 import { usePathname } from "next/navigation"
 
 const navLinks = [
-  { href: "/#home", label: "Home" },
-  { href: "/#story", label: "Our Story" },
-  { href: "/#entourage", label: "Entourage" },
-  { href: "/#details", label: "Details" },
-  { href: "/#attire", label: "Attire" },
-  { href: "/#timeline", label: "Timeline" },
-  { href: "/#gallery", label: "Gallery" },
-  { href: "/#faq", label: "FAQ" },
+  { id: "home", label: "Home" },
+  { id: "story", label: "Our Story" },
+  { id: "entourage", label: "Entourage" },
+  { id: "details", label: "Details" },
+  { id: "attire", label: "Attire" },
+  { id: "timeline", label: "Timeline" },
+  { id: "gallery", label: "Gallery" },
+  { id: "faq", label: "FAQ" },
 ]
 
-const rsvpLink = { href: "/#rsvp", label: "RSVP" }
+const rsvpLink = { id: "rsvp", label: "RSVP" }
 const seatFinderLink = { href: "/seat-finder", label: "Find Seat" }
 
 export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [activeHash, setActiveHash] = useState("")
   const pathname = usePathname()
 
   const isAltPage = pathname !== "/"
@@ -31,14 +32,65 @@ export function Navigation() {
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50)
+      
+      // Update active hash based on scroll position
+      if (pathname === "/") {
+        const sections = navLinks.map(link => link.id)
+        for (const section of sections.reverse()) {
+          const el = document.getElementById(section)
+          if (el && el.getBoundingClientRect().top <= 100) {
+            setActiveHash(`#${section}`)
+            break
+          }
+        }
+      }
+    }
+
+    const handleHashChange = () => {
+      setActiveHash(window.location.hash)
     }
 
     window.addEventListener("scroll", handleScroll)
+    window.addEventListener("hashchange", handleHashChange)
+    handleScroll() // Initial check
 
     return () => {
       window.removeEventListener("scroll", handleScroll)
+      window.removeEventListener("hashchange", handleHashChange)
     }
-  }, [])
+  }, [pathname])
+
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    if (pathname === "/") {
+      e.preventDefault()
+      const el = document.getElementById(id)
+      if (el) {
+        const offset = 80 // Offset for the fixed header
+        const bodyRect = document.body.getBoundingClientRect().top
+        const elementRect = el.getBoundingClientRect().top
+        const elementPosition = elementRect - bodyRect
+        const offsetPosition = elementPosition - offset
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth"
+        })
+        
+        window.history.pushState(null, "", `#${id}`)
+        setActiveHash(`#${id}`)
+        setIsMobileMenuOpen(false)
+      }
+    }
+  }
+
+  const getHref = (id: string) => {
+    return pathname === "/" ? `#${id}` : `/#${id}`
+  }
+
+  const isActive = (id: string) => {
+    if (pathname !== "/") return false
+    return activeHash === `#${id}` || (id === "home" && activeHash === "")
+  }
 
   const navBgClass = isAltPage || isScrolled
     ? "bg-background/95 backdrop-blur-md shadow-sm py-2"
@@ -57,7 +109,14 @@ export function Navigation() {
         <Link
           href="/"
           scroll={true}
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          onClick={(e) => {
+            if (pathname === "/") {
+              e.preventDefault()
+              window.scrollTo({ top: 0, behavior: "smooth" })
+              window.history.pushState(null, "", "/")
+              setActiveHash("")
+            }
+          }}
           className={cn(
             "flex items-center justify-center transition-colors shrink-0",
             textClass
@@ -76,17 +135,16 @@ export function Navigation() {
 
         {/* Desktop Navigation */}
         <ul className="hidden lg:flex items-center flex-1 justify-evenly ml-8">
-          {[...navLinks, rsvpLink, seatFinderLink].map((link) => (
-            <li key={link.href}>
+          {navLinks.map((link) => (
+            <li key={link.id}>
               <Link
-                href={link.href}
+                href={getHref(link.id)}
+                onClick={(e) => handleLinkClick(e, link.id)}
                 className={cn(
-                  // "text-sm tracking-[0.2em] uppercase font-(family-name:--font-montserrat) transition-colors hover:text-accent",
-                  // Make the tabs hover with underline animation, and if it's the active page, show the underline by default
                   "relative inline-block text-sm tracking-[0.2em] uppercase font-(family-name:--font-montserrat) transition-colors hover:text-accent",
                   "after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:h-[1px] after:bg-current after:transition-all after:duration-300",
-                  pathname === link.href
-                    ? "after:w-full"
+                  isActive(link.id)
+                    ? "after:w-full text-accent"
                     : "after:w-0 hover:after:w-full",
                   textClass
                 )}
@@ -95,6 +153,37 @@ export function Navigation() {
               </Link>
             </li>
           ))}
+          <li>
+            <Link
+              href={getHref(rsvpLink.id)}
+              onClick={(e) => handleLinkClick(e, rsvpLink.id)}
+              className={cn(
+                "relative inline-block text-sm tracking-[0.2em] uppercase font-(family-name:--font-montserrat) transition-colors hover:text-accent",
+                "after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:h-[1px] after:bg-current after:transition-all after:duration-300",
+                isActive(rsvpLink.id)
+                  ? "after:w-full text-accent"
+                  : "after:w-0 hover:after:w-full",
+                textClass
+              )}
+            >
+              {rsvpLink.label}
+            </Link>
+          </li>
+          <li>
+            <Link
+              href={seatFinderLink.href}
+              className={cn(
+                "relative inline-block text-sm tracking-[0.2em] uppercase font-(family-name:--font-montserrat) transition-colors hover:text-accent",
+                "after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:h-[1px] after:bg-current after:transition-all after:duration-300",
+                pathname === seatFinderLink.href
+                  ? "after:w-full text-accent"
+                  : "after:w-0 hover:after:w-full",
+                textClass
+              )}
+            >
+              {seatFinderLink.label}
+            </Link>
+          </li>
         </ul>
 
         {/* Mobile Menu Toggle Button */}
@@ -125,8 +214,8 @@ export function Navigation() {
           <div className="flex flex-col gap-3 pb-7 mb-6 border-b border-border/50">
             {/* RSVP — filled warm gradient */}
             <Link
-              href={rsvpLink.href}
-              onClick={() => setIsMobileMenuOpen(false)}
+              href={getHref(rsvpLink.id)}
+              onClick={(e) => handleLinkClick(e, rsvpLink.id)}
               className="group relative flex items-center justify-center gap-2.5 py-4 overflow-hidden transition-all duration-300 active:scale-[0.98]"
               style={{
                 background: "linear-gradient(135deg, lab(57% 51.78 -8.6), lab(44% 51.78 -8.6))",
@@ -170,11 +259,14 @@ export function Navigation() {
           <div className="max-h-[45vh] overflow-y-auto pr-2">
             <ul className="flex flex-col gap-4 pb-10">
               {navLinks.map((link) => (
-                <li key={link.href}>
+                <li key={link.id}>
                   <Link
-                    href={link.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="group block w-full rounded-xl px-4 py-3 text-sm tracking-[0.2em] uppercase font-(family-name:--font-montserrat) text-foreground transition-all duration-300 border border-transparent hover:bg-accent/10 hover:border-accent/30 hover:text-accent active:bg-accent/10 active:border-accent/30 active:text-accent active:scale-[0.98]"
+                    href={getHref(link.id)}
+                    onClick={(e) => handleLinkClick(e, link.id)}
+                    className={cn(
+                      "group block w-full rounded-xl px-4 py-3 text-sm tracking-[0.2em] uppercase font-(family-name:--font-montserrat) text-foreground transition-all duration-300 border border-transparent hover:bg-accent/10 hover:border-accent/30 hover:text-accent active:bg-accent/10 active:border-accent/30 active:text-accent active:scale-[0.98]",
+                      isActive(link.id) && "bg-accent/10 border-accent/30 text-accent"
+                    )}
                   >
                     {link.label}
                   </Link>

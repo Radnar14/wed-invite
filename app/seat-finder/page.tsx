@@ -22,7 +22,9 @@ export default function SeatFinderPage() {
         </Suspense>
       </section>
 
-      <Footer />
+      <Footer showBackToTop={false} />
+
+
     </main>
   )
 }

@@ -95,10 +95,13 @@ export function SeatFinder() {
         <div className="relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
-            type="text"
-            placeholder="Enter your name..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
+              type="text"
+              placeholder="Enter your name..."
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value)
+                setSelectedGuest(null)
+              }}
             className="pl-12 h-14 text-lg bg-background/80 backdrop-blur-sm border-primary/20 focus:border-primary/40 rounded-full shadow-lg"
           />
           {isLoading && (

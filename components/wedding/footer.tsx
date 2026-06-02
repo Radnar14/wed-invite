@@ -2,7 +2,12 @@
 
 import { Heart } from "lucide-react"
 
-export function Footer() {
+// Footer component with enhanced design and optional "Back to Top" button only in homepage
+export function Footer({
+  showBackToTop = true,
+}: {
+  showBackToTop?: boolean
+}) {
   return (
     <footer className="relative py-20 md:py-32 bg-primary text-primary-foreground overflow-hidden">
       {/* Decorative background elements */}
@@ -42,38 +47,27 @@ export function Footer() {
           <div className="h-px bg-linear-to-r from-transparent via-primary-foreground/30 to-transparent flex-1" />
         </div>
 
-        {/* Footer Buttons */}
-        {typeof window !== "undefined" &&
-              window.location.pathname === "/seat-finder" ? (
-                <button
-                  onClick={() => {
-                    window.location.href = "/"
-                  }}
-                  className="group mb-10 inline-flex items-center gap-2 rounded-full border border-primary-foreground/25 bg-primary-foreground/5 px-6 py-3 text-xs md:text-sm tracking-[0.15em] uppercase font-(family-name:--font-montserrat) text-primary-foreground/80 shadow-[0_8px_30px_rgba(255,255,255,0.08)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:bg-primary-foreground/10 hover:shadow-[0_10px_35px_rgba(255,255,255,0.12)] active:scale-95 animate-floatSoft"
-                >
-                  <span className="transition-transform duration-300 group-hover:-translate-x-0.5">
-                    ←
-                  </span>
+        {/* Back to Top Button only in homepage */}
+        {showBackToTop && (
+            <button
+              onClick={() =>
+                window.scrollTo({
+                  top: 0,
+                  behavior: "smooth",
+                })
+              }
+              className="group mb-10 inline-flex items-center gap-2 rounded-full border border-primary-foreground/25 bg-primary-foreground/5 px-6 py-3 
+              text-xs md:text-sm tracking-[0.15em] uppercase font-(family-name:--font-montserrat) text-primary-foreground/80 shadow-[0_8px_30px_rgba(255,255,255,0.08)] 
+              backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:bg-primary-foreground/10 
+              hover:shadow-[0_10px_35px_rgba(255,255,255,0.12)] active:scale-95 animate-floatSoft"
+            >
+              <span className="transition-transform duration-300 group-hover:-translate-y-0.5">
+                ↑
+              </span>
 
-                  Back to Home
-                </button>
-              ) : (
-                <button
-                  onClick={() =>
-                    window.scrollTo({
-                      top: 0,
-                      behavior: "smooth",
-                    })
-                  }
-                  className="group mb-10 inline-flex items-center gap-2 rounded-full border border-primary-foreground/25 bg-primary-foreground/5 px-6 py-3 text-xs md:text-sm tracking-[0.15em] uppercase font-(family-name:--font-montserrat) text-primary-foreground/80 shadow-[0_8px_30px_rgba(255,255,255,0.08)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:bg-primary-foreground/10 hover:shadow-[0_10px_35px_rgba(255,255,255,0.12)] active:scale-95 animate-floatSoft"
-                >
-                  <span className="transition-transform duration-300 group-hover:-translate-y-0.5">
-                    ↑
-                  </span>
-
-                  Back to Top
-                </button>
-              )}
+              Back to Top
+            </button>
+          )}
 
         <p className="text-xs md:text-sm text-primary-foreground/50 font-(family-name:--font-montserrat) max-w-md leading-relaxed">
           Made with love for our special day. <br className="md:hidden" />

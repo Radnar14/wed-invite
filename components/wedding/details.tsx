@@ -15,7 +15,7 @@ export function Details() {
       <div className="container mx-auto px-6 relative z-10">
         {/* Section Header */}
         <div className="text-center mb-16 md:mb-24">
-          <p className="text-sm tracking-[0.3em] uppercase font-(family-name:--font-montserrat) text-muted-foreground mb-4">
+          <p className="text-sm tracking-[0.3em] uppercase font-(family-name:--font-montserrat) text-blushpink mb-4">
             The Celebration
           </p>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-foreground">

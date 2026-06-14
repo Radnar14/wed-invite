@@ -18,7 +18,7 @@
   --muted-foreground: oklch(0.50 0.02 30);
   --accent: lab(51.93% 51.78 -8.6);
   --accent-foreground: oklch(0.98 0.005 60);
-  --blushpink: rgb(255, 130, 140);
+  --blushpink: oklch(74.999% 0.15195 16.411);
   --blushpink-foreground: oklch(0.98 0.005 60);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.577 0.245 27.325);
@@ -204,4 +204,11 @@
 
 .animate-floatSoft {
   animation: floatSoft 2.8s ease-in-out infinite;
+}
+
+/* Premium RSVP shimmer */
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
 }

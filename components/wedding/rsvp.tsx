@@ -34,6 +34,8 @@ export function RSVP() {
 
   const [isSearching, setIsSearching] = useState(false);
 
+  const [isLoadingGuest, setIsLoadingGuest] = useState(false);
+
   const [showQRPreview, setShowQRPreview] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -46,6 +48,25 @@ export function RSVP() {
 
   const showRSVPForm = query.trim() === "" || selectedGuest;
 
+  const GOOGLE_SCRIPT_URL = process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL;
+
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      email: "",
+      attendance: "Accept",
+      guests: "",
+      message: "",
+    });
+  };
+
+  const updateFormField = (field: keyof typeof formData, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
   useEffect(() => {
     const fetchGuests = async () => {
       if (query.trim().length < 4 || selectedGuest) {
@@ -56,7 +77,7 @@ export function RSVP() {
       setIsSearching(true);
 
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL}?q=${encodeURIComponent(query)}`);
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?q=${encodeURIComponent(query)}`);
 
         const data = await response.json();
 
@@ -77,6 +98,7 @@ export function RSVP() {
 
   const selectGuest = async (guest: { fullName: string; guestCount: number }) => {
     setSelectedGuest(guest);
+    setIsLoadingGuest(true);
 
     // reset lock state
     setIsLockedRSVP(false);
@@ -86,25 +108,23 @@ export function RSVP() {
       ...prev,
       name: guest.fullName,
       guests: String(guest.guestCount),
-      email: "",
-      message: "",
-      attendance: "Accept",
     }));
 
     setQuery(guest.fullName);
     setResults([]);
 
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL}?action=checkGuest&q=${encodeURIComponent(guest.fullName)}`,
-      );
-
+      const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=checkGuest&q=${encodeURIComponent(guest.fullName)}`);
       const data = await response.json();
 
       // finalized RSVP
-      if (data.locked) {
-        setIsLockedRSVP(true);
+      if (data.hasRSVP) {
+        // finalized RSVP
+        if (data.locked) {
+          setIsLockedRSVP(true);
+        }
 
+        // auto-fill previous RSVP data
         setFormData({
           name: data.guest.name || "",
           email: data.guest.email || "",
@@ -115,6 +135,9 @@ export function RSVP() {
       }
     } catch (error) {
       console.error("Locked RSVP check failed:", error);
+    } finally {
+      // always stop loading
+      setIsLoadingGuest(false);
     }
   };
 
@@ -191,7 +214,9 @@ export function RSVP() {
             </div>
             <h2 className="text-3xl md:text-4xl font-light text-foreground mb-4">Thank You!</h2>
             <p className="text-muted-foreground font-(family-name:--font-montserrat) leading-8 max-w-lg mx-auto">
-              <span className="text-lg font-medium text-blushpink">Your RSVP has been confirmed.</span>
+              <span className="text-lg font-medium text-blushpink">
+                {submissionType === "Updated RSVP" ? "Your RSVP has been updated." : "Your RSVP has been confirmed."}
+              </span>
               <br />
               Please proceed to the <span className="font-semibold text-foreground">Find Seat</span> section to view your assigned table.
               <br />
@@ -230,7 +255,8 @@ export function RSVP() {
 
         {/* RSVP Form */}
         <Card className="max-w-xl mx-auto border-none shadow-lg">
-          <CardContent className="p-8 md:p-10">
+          {/* RSVP Card Content */}
+          <CardContent className="p-6 sm:p-8 md:p-10">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Guest Name */}
               <div className="space-y-2 relative">
@@ -249,11 +275,9 @@ export function RSVP() {
                       setResults([]);
                     }
 
-                    setFormData((prev) => ({
-                      ...prev,
-                      name: "",
-                      guests: "",
-                    }));
+                    setIsLockedRSVP(false);
+
+                    resetForm();
                   }}
                   placeholder="Start typing your name..."
                   autoComplete="off"
@@ -262,22 +286,88 @@ export function RSVP() {
 
                 {/* Dropdown Suggestions */}
                 {results.length > 0 && (
-                  <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-2xl border border-border bg-card shadow-xl">
-                    {results.map((guest, index) => (
-                      <button
-                        key={index}
-                        type="button"
-                        onClick={() => selectGuest(guest)}
-                        className="flex w-full items-center justify-between px-4 py-3 text-left transition hover:bg-accent/50"
-                      >
-                        <span className="text-sm">{guest.fullName}</span>
+                  <div
+                    className="absolute top-[calc(100%+0.35rem)] z-50 w-full overflow-hidden rounded-[2rem]
+                                  border border-border/40 bg-white/95 backdrop-blur-sm shadow-xl"
+                  >
+                    {/* Dropdown Title */}
+                    <div
+                      className=" h-3 w-full bg-gradient-to-r
+                        from-[#A8BBA3]
+                        via-[#C7D7C0]
+                        to-[#A8BBA3]
+                      "
+                    />
+                    <div className="pt-1 text-center">
+                      <div className="flex items-center gap-3">
+                        <div className="h-px flex-1 bg-border/90" />
 
-                        <span className="text-xs text-muted-foreground">
-                          {guest.guestCount} guest
-                          {guest.guestCount > 1 ? "s" : ""}
-                        </span>
-                      </button>
-                    ))}
+                        <p className="text-sm font-medium text-foreground whitespace-nowrap">Our Guest ✨</p>
+
+                        <div className="h-px flex-1 bg-border/90" />
+                      </div>
+
+                      <p className="mt-1 text-xs text-muted-foreground">Select your full name</p>
+                      <div className="mt-2 flex items-center justify-center gap-3 px-1"></div>
+                      <div
+                        className=" h-1 w-full bg-gradient-to-r
+                        from-[#A8BBA3]
+                        via-[#C7D7C0]
+                        to-[#A8BBA3]
+                      "
+                      />
+                    </div>
+
+                    {/* Guest List */}
+                    <div className="pb-0">
+                      {results.map((guest, index) => (
+                        <button
+                          key={index}
+                          type="button"
+                          onClick={() => selectGuest(guest)}
+                          className="
+                                flex w-full items-center
+                                border-b border-border/50
+                                px-4 py-2 text-left
+                                transition duration-200
+                                hover:bg-accent/10
+                                active:scale-[0.98]
+                                active:bg-accent/15"
+                        >
+                          {/* Guest Name */}
+                          <span className="text-sm font-medium">{guest.fullName}</span>
+
+                          {/* Divider */}
+                          <div className="ml-auto w-px h-8 bg-border/50" />
+
+                          {/* Guest Count Bubble */}
+                          <span
+                            className="
+                                ml-3 sm:ml-4
+                                min-w-[92px] sm:min-w-[105px]
+                                rounded-full
+                                border border-[#D3E0CF]
+                                bg-[#E4EEE0]
+                                px-4 py-2
+                                text-center text-sm
+                                text-[#6F806B]
+                              "
+                          >
+                            {guest.guestCount} Guest
+                            {guest.guestCount > 1 ? "s" : ""}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                    <div
+                      className="
+                        h-3 w-full
+                        bg-gradient-to-r
+                        from-[#A8BBA3]
+                        via-[#C7D7C0]
+                        to-[#A8BBA3]
+                      "
+                    />
                   </div>
                 )}
 
@@ -377,50 +467,106 @@ export function RSVP() {
                   </div>
                 )}
               </div>
+              {/* Premium Loading Card */}
+              {isLoadingGuest && (
+                <div
+                  className="
+                      relative overflow-hidden rounded-[2.5rem]
+                      border border-[#EADFD8]
+                      bg-gradient-to-br from-white via-[#FFFDFC] to-[#FAF6F2]
+                      px-8 py-10 text-center
+                      shadow-[0_15px_40px_rgba(0,0,0,0.08)]
+                      animate-in fade-in duration-500 "
+                >
+                  {/* Luxury Shimmer Glow */}
+                  <div
+                    className="
+                      absolute inset-0 -translate-x-full
+                      animate-[shimmer_2.8s_ease-in-out_infinite]
+                      bg-gradient-to-r from-transparent via-white/70 to-transparent
+                      blur-xl
+                    "
+                  />
+                  {/* Top Accent */}
+                  <div
+                    className="
+                        absolute top-0 left-0 h-1 w-full
+                        bg-gradient-to-r
+                        from-[#A8BBA3] via-[#C7D7C0] to-[#A8BBA3]
+                      "
+                  />
 
-              {showRSVPForm && (
+                  {/* Loading Message */}
+                  <p className="text-sm leading-7 text-muted-foreground font-(family-name:--font-montserrat)">
+                    Preparing your RSVP details ✨
+                  </p>
+
+                  {/* Soft Subtext */}
+                  <p className="mt-1 text-xs text-muted-foreground/70 font-(family-name:--font-montserrat)">
+                    Please wait while we prepare your invitation details
+                  </p>
+                </div>
+              )}
+              {/* RSVP Form */}
+              {showRSVPForm && !isLoadingGuest && (
                 <>
                   {/* Email */}
                   <div className="space-y-2">
                     <Label htmlFor="email" className="text-sm font-(family-name:--font-montserrat) tracking-wide">
-                      Email Address *
+                      Email Address:
                     </Label>
                     <Input
                       id="email"
-                      disabled={isLockedRSVP}
+                      disabled={isLockedRSVP || isLoadingGuest}
                       type="email"
-                      required
                       value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="border-border/50 focus:border-accent"
-                      placeholder="Enter your email"
+                      onChange={(e) => updateFormField("email", e.target.value)}
+                      className={`
+                            border-border/50
+                            focus:border-accent
+                            transition-all duration-300
+                            ${
+                              isLockedRSVP
+                                ? "bg-[#FAF7F4] border-[#E8DDD4] text-foreground cursor-not-allowed shadow-inner opacity-100 disabled:opacity-100 placeholder:text-muted-foreground/60"
+                                : "bg-white"
+                            }
+                          `}
+                      placeholder="Optional — for wedding photo sharing"
                     />
                   </div>
 
                   {/* Attendance */}
-                  <div className="space-y-3">
+                  <div className="space-y-2.5 sm:space-y-3">
                     <Label className="text-sm font-(family-name:--font-montserrat) tracking-wide">Will you be attending? *</Label>
 
-                    <div className="flex justify-start gap-3">
+                    {/* Attendance Options */}
+                    <div className="flex flex-wrap gap-3">
                       {/* Accept */}
                       <button
                         type="button"
-                        disabled={isLockedRSVP}
-                        onClick={() =>
-                          setFormData({
-                            ...formData,
-                            attendance: "Accept",
-                          })
-                        }
+                        disabled={isLockedRSVP || isLoadingGuest}
+                        onClick={() => updateFormField("attendance", "Accept")}
                         className={`
                             flex items-center justify-center gap-1.5
-                            rounded-full border px-7 py-2 text-sm
+                            rounded-full border px-5 py-2 text-sm sm:px-7
                             transition-all duration-300 font-medium
                             font-(family-name:--font-montserrat)
                             ${
                               formData.attendance === "Accept"
-                                ? "scale-105 bg-emerald-100 border-emerald-300 text-emerald-700 shadow-md"
-                                : "bg-white border-emerald-200 text-emerald-500 hover:bg-emerald-50"
+                                ? `
+                                scale-105
+                                bg-emerald-100
+                                border-emerald-300
+                                text-emerald-700
+                                shadow-md
+                                ${isLockedRSVP ? "opacity-90 cursor-not-allowed" : ""}
+                              `
+                                : `
+                                bg-white
+                                border-emerald-200
+                                text-emerald-500
+                                ${isLockedRSVP ? "opacity-70 cursor-not-allowed" : "hover:bg-emerald-50"}
+                              `
                             }
                           `}
                       >
@@ -431,22 +577,29 @@ export function RSVP() {
                       {/* Decline */}
                       <button
                         type="button"
-                        disabled={isLockedRSVP}
-                        onClick={() =>
-                          setFormData({
-                            ...formData,
-                            attendance: "Decline",
-                          })
-                        }
+                        disabled={isLockedRSVP || isLoadingGuest}
+                        onClick={() => updateFormField("attendance", "Decline")}
                         className={`
                             flex items-center justify-center gap-1.5
-                            rounded-full border px-7 py-2 text-sm
+                            rounded-full border px-5 py-2 text-sm sm:px-7
                             transition-all duration-300 font-medium
                             font-(family-name:--font-montserrat)
                             ${
                               formData.attendance === "Decline"
-                                ? "scale-105 bg-rose-100 border-rose-300 text-rose-600 shadow-md"
-                                : "bg-white border-rose-200 text-rose-400 hover:bg-rose-50"
+                                ? `
+                                scale-105
+                                bg-rose-100
+                                border-rose-300
+                                text-rose-600
+                                shadow-md
+                                ${isLockedRSVP ? "opacity-90 cursor-not-allowed" : ""}
+                              `
+                                : `
+                                bg-white
+                                border-rose-200
+                                text-rose-400
+                                ${isLockedRSVP ? "opacity-70 cursor-not-allowed" : "hover:bg-rose-50"}
+                              `
                             }
                           `}
                       >
@@ -456,23 +609,90 @@ export function RSVP() {
                     </div>
                   </div>
 
+                  {/* Finalize card  */}
+                  {isLockedRSVP && (
+                    <div
+                      className="
+                        relative overflow-hidden
+                        rounded-[2.5rem]
+                        border border-[#EADFD8]
+                        bg-white/90
+                        px-8 py-8 text-center
+                        shadow-[0_15px_40px_rgba(0,0,0,0.08)]
+                        backdrop-blur-sm
+                        animate-in fade-in duration-500"
+                    >
+                      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#A8BBA3] via-[#C7D7C0] to-[#A8BBA3]" />
+                      <h3 className="text-[1.2rem] font-light text-foreground tracking-[0.02em] sm:text-[1.35rem]">
+                        Your RSVP has been finalized 💍
+                      </h3>
+                      <div
+                        className="
+                          inline-flex items-center
+                          mt-3 rounded-full
+                          bg-[#F8F2ED]
+                          px-4 py-2
+                          text-xs tracking-[0.08em]
+                          text-[#9A7E6F]
+                          font-medium uppercase"
+                      >
+                        RSVP Finalized ✨
+                      </div>
+                      <p
+                        className="
+                          mt-4 text-sm text-muted-foreground
+                          leading-7 sm:leading-8 max-w-[290px] mx-auto
+                          font-(family-name:--font-montserrat)"
+                      >
+                        We have received your RSVP and your one allowed update has already been used.
+                        <br />
+                        Kindly contact the couple for further changes.
+                      </p>
+
+                      {formData.attendance === "Accept" ? (
+                        <a
+                          href="/seat-finder"
+                          className="
+                            inline-flex items-center justify-center
+                            mt-5 rounded-full
+                            bg-accent px-7 sm:px-6 py-3
+                            text-white shadow-sm
+                            transition-all duration-300
+                            hover:scale-105 hover:shadow-md"
+                        >
+                          Find My Seat ✨
+                        </a>
+                      ) : (
+                        <p
+                          className="
+                            mt-4 text-rose-500
+                            font-(family-name:--font-montserrat)"
+                        >
+                          We’re sorry you can’t celebrate with us 💔
+                        </p>
+                      )}
+                    </div>
+                  )}
+
                   {/* Allowed Guests */}
                   {formData.attendance === "Accept" && (
-                    <div className="space-y-2">
+                    <div className="space-y-1.5 sm:space-y-2">
                       <Label className="text-sm font-(family-name:--font-montserrat) tracking-wide">Allowed Guests:</Label>
 
                       <div
-                        className="
-                          rounded-[2rem] border border-blushpink/10
-                          bg-gradient-to-br from-white to-rose-50/40
-                          px-5 py-5 text-center
-                          shadow-[0_8px_25px_rgba(0,0,0,0.06)]
-                          transition-all duration-300
-                          hover:-translate-y-1 hover:shadow-md"
+                        className={`
+                            rounded-[2rem]
+                            border border-blushpink/10
+                            bg-gradient-to-br from-white to-rose-50/40
+                            px-5 py-4 sm:py-5 text-center
+                            shadow-[0_8px_25px_rgba(0,0,0,0.06)]
+                            transition-all duration-300
+                            ${isLockedRSVP ? "opacity-90 cursor-not-allowed" : "hover:-translate-y-1 hover:shadow-md"}
+                          `}
                       >
                         <p
                           className="
-                            text-xl font-medium text-foreground
+                            text-lg sm:text-xl font-medium text-foreground
                             tracking-[0.04em]
                             transition-transform duration-300
                             font-(family-name:--font-montserrat)"
@@ -495,29 +715,31 @@ export function RSVP() {
                   {formData.attendance === "Decline" && (
                     <div className="space-y-4">
                       {/* Decline Message */}
-                      <div
-                        className="
+                      {!isLockedRSVP && (
+                        <div
+                          className="
                           rounded-[2rem] border border-rose-100
                           bg-rose-50/40 px-5 py-3 text-center
                         "
-                      >
-                        <p
-                          className="
+                        >
+                          <p
+                            className="
                             text-sm leading-7 text-rose-600
                             font-(family-name:--font-montserrat)
                           "
-                        >
-                          We&apos;re sorry you can&apos;t celebrate with us 💔
-                          <br />
-                          Your presence will surely be missed.
-                        </p>
-                      </div>
+                          >
+                            We&apos;re sorry you can&apos;t celebrate with us 💔
+                            <br />
+                            Your presence will surely be missed.
+                          </p>
+                        </div>
+                      )}
 
                       {/* Optional Blessing / Offering */}
                       <div
                         className="
                           rounded-[2rem] border border-border/30
-                          bg-white/70 px-5 py-5 text-center
+                          bg-white/70 px-5 py-6 sm:py-5 text-center
                         "
                       >
                         <p
@@ -542,20 +764,19 @@ export function RSVP() {
                         {/* Replace '/mock-qr.png' with your real QR image later */}
                         <button type="button" onClick={() => setShowQRPreview(true)} className="mx-auto block mt-4">
                           <img
-                            src="/images/fulldoor_wedding.png"
+                            src="/images/BPI_Qrcode.png"
                             alt="QR Code"
                             className="
-                                h-44 w-44 rounded-2xl
-                                border border-border/20 object-cover
+                                h-40 w-40 sm:h-44 sm:w-44 rounded-2xl
+                                border border-border/20 object-cover -translate-x-[8px]
                                 shadow-sm transition-transform duration-300
                                 hover:scale-105
                               "
                           />
                         </button>
-
                         <p
                           className="
-                            mt-3 text-xs text-muted-foreground
+                            mt-4 text-xs text-muted-foreground
                             font-(family-name:--font-montserrat)
                           "
                         >
@@ -571,62 +792,34 @@ export function RSVP() {
                       Message for the Couple
                     </Label>
                     <Textarea
-                      disabled={isLockedRSVP}
+                      disabled={isLockedRSVP || isLoadingGuest}
                       id="message"
                       value={formData.message}
-                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      className="border-border/50 focus:border-accent min-h-[100px] resize-none"
+                      onChange={(e) => updateFormField("message", e.target.value)}
+                      className={`
+                            min-h-[90px] sm:min-h-[100px]
+                            resize-none
+                            border-border/50
+                            focus:border-accent
+                            transition-all duration-300
+                            ${
+                              isLockedRSVP
+                                ? `
+                                  bg-[#FAF7F4]
+                                  border-[#E8DDD4]
+                                  text-foreground
+                                  shadow-inner
+                                  cursor-not-allowed
+                                  opacity-100
+                                  disabled:opacity-100
+                                  placeholder:text-muted-foreground/60
+                                `
+                                : "bg-white"
+                            }
+                          `}
                       placeholder="Share your well wishes..."
                     />
                   </div>
-
-                  {isLockedRSVP && (
-                    <div
-                      className="
-                        rounded-[2rem]
-                        border border-border/30
-                        bg-white/80
-                        px-6 py-6 text-center
-                        shadow-[0_8px_25px_rgba(0,0,0,0.06)]
-                        animate-in fade-in duration-500"
-                    >
-                      <p className="text-lg font-medium text-foreground">Your RSVP has been finalized 💍</p>
-
-                      <p
-                        className="
-                          mt-2 text-sm text-muted-foreground
-                          leading-7
-                          font-(family-name:--font-montserrat)"
-                      >
-                        We have received your RSVP and your one allowed update has already been used.
-                        <br />
-                        Kindly contact the couple for further changes.
-                      </p>
-
-                      {formData.attendance === "Accept" ? (
-                        <a
-                          href="/seat-finder"
-                          className="
-                            inline-flex items-center justify-center
-                            mt-5 rounded-full
-                            bg-accent px-6 py-3
-                            text-white shadow-sm
-                            transition-all duration-300
-                            hover:scale-105 hover:shadow-md"
-                        >
-                          Find My Seat ✨
-                        </a>
-                      ) : (
-                        <p
-                          className="
-                            mt-4 text-rose-500
-                            font-(family-name:--font-montserrat)"
-                        >
-                          We’re sorry you can’t celebrate with us 💔
-                        </p>
-                      )}
-                    </div>
-                  )}
 
                   {error && (
                     <div className="text-destructive text-sm text-center font-(family-name:--font-montserrat) animate-pulse">{error}</div>
@@ -640,7 +833,7 @@ export function RSVP() {
                         disabled={isSubmitting || !selectedGuest}
                         className="
                       w-full rounded-[1.5rem]
-                      bg-primary py-6 text-sm uppercase
+                      bg-primary py-5 text-sm uppercase sm:py-6
                       tracking-[0.2em] text-primary-foreground
                       font-(family-name:--font-montserrat)
                       shadow-[0_8px_20px_rgba(0,0,0,0.12)]
@@ -681,22 +874,23 @@ export function RSVP() {
               onClick={(e) => e.stopPropagation()}
               className="
                   rounded-[2rem] bg-white
-                  p-4 shadow-2xl
+                  p-5 sm:p-4 shadow-2xl
                 "
             >
               <img
-                src="/images/fulldoor_wedding.png"
+                src="/images/BPI_Qrcode.png"
                 alt="QR Code Preview"
                 className="
                     h-[320px] w-[320px]
+                    sm:h-[320px] sm:w-[320px]
                     rounded-[1.5rem]
-                    object-cover
+                    object-contain object-center translate-x-[-4px]
                   "
               />
 
               <p
                 className="
-                    mt-3 text-center text-sm
+                    mt-4 text-center text-sm
                     text-muted-foreground
                     font-(family-name:--font-montserrat)
                   "

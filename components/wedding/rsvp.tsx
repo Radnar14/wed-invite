@@ -112,6 +112,7 @@ export function RSVP() {
 
     setQuery(guest.fullName);
     setResults([]);
+    setIsSearching(false);
 
     try {
       const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=checkGuest&q=${encodeURIComponent(guest.fullName)}`);
@@ -199,40 +200,134 @@ export function RSVP() {
   };
 
   if (submitted) {
+    const isAccepted = formData.attendance === "Accept";
+
     return (
       <section id="rsvp" className="py-24 md:py-32">
         <div className="container mx-auto px-6">
-          <div
-            className="max-w-xl mx-auto text-center
-              rounded-[2.5rem]
-              bg-white/80
-              shadow-[0_8px_30px_rgba(0,0,0,0.08)]
-              px-10 py-12"
-          >
-            <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-accent/10 flex items-center justify-center">
-              <Check className="w-8 h-8 text-accent" />
-            </div>
-            <h2 className="text-3xl md:text-4xl font-light text-foreground mb-4">Thank You!</h2>
-            <p className="text-muted-foreground font-(family-name:--font-montserrat) leading-8 max-w-lg mx-auto">
-              <span className="text-lg font-medium text-blushpink">
-                {submissionType === "Updated RSVP" ? "Your RSVP has been updated." : "Your RSVP has been confirmed."}
-              </span>
-              <br />
-              Please proceed to the <span className="font-semibold text-foreground">Find Seat</span> section to view your assigned table.
-              <br />
-              If your table is not yet available, kindly allow the hosts some time to finalize the seating arrangements.
+          {/* Keep RSVP Header */}
+          <div className="text-center mb-14">
+            <p className="text-sm tracking-[0.3em] uppercase font-(family-name:--font-montserrat) text-muted-foreground mb-4">
+              We Hope You Can Join Us
             </p>
 
-            {/* Find Seat Button */}
-            <a
-              href="/seat-finder"
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-foreground mb-4">RSVP</h2>
+
+            <p className="text-muted-foreground font-(family-name:--font-montserrat) max-w-md mx-auto">
+              Thank you for responding to our invitation.
+            </p>
+          </div>
+
+          {/* Success Card */}
+          <div
+            className="
+          relative overflow-hidden
+          max-w-xl mx-auto text-center
+          rounded-[2.8rem]
+          bg-white/90 backdrop-blur-sm
+          shadow-[0_20px_50px_rgba(0,0,0,0.08)]
+          border border-white/40
+          px-10 py-12
+
+          animate-in fade-in zoom-in-95 slide-in-from-bottom-4
+          duration-700
+          ease-out"
+          >
+            {/* Elegant top line */}
+            <div
               className="
-                      inline-flex items-center justify-center mt-8 px-8 py-4 rounded-full
-                      bg-accent text-white font-medium tracking-wide shadow-md
-                      transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-accent/90"
+            absolute top-0 left-0 w-full h-1
+            bg-gradient-to-r
+            from-[#E7C8D6]
+            via-[#D98EB2]
+            to-[#E7C8D6]
+          "
+            />
+
+            {/* Floating icon */}
+            <div
+              className={`
+            w-20 h-20 mx-auto mb-7 rounded-full
+            flex items-center justify-center
+            shadow-sm
+            ${isAccepted ? "bg-accent/10" : "bg-rose-100"}
+          `}
             >
-              Find Seat
-            </a>
+              {isAccepted ? <Check className="w-10 h-10 text-accent" /> : <Frown className="w-10 h-10 text-rose-500" />}
+            </div>
+
+            {/* Small tag */}
+            <div
+              className="
+            inline-flex items-center
+            rounded-full
+            bg-[#F8F2ED]
+            px-4 py-2
+            text-xs tracking-[0.12em]
+            text-[#9A7E6F]
+            uppercase font-medium
+            mb-5
+          "
+            >
+              {isAccepted ? "RSVP Confirmed ✨" : "RSVP Declined 💔"}
+            </div>
+
+            {/* Title */}
+            <h2 className="text-4xl font-light text-foreground mb-4">{isAccepted ? "Thank You!" : "We'll Miss You 💔"}</h2>
+
+            {/* ACCEPT CONTENT */}
+            {isAccepted ? (
+              <>
+                <p className="text-muted-foreground font-(family-name:--font-montserrat) leading-8 max-w-lg mx-auto">
+                  <span className="text-lg font-medium text-blushpink">
+                    {submissionType === "Updated RSVP" ? "Your RSVP has been updated." : "Your RSVP has been confirmed."}
+                  </span>
+                  <br />
+                  Please proceed to the <span className="font-semibold text-foreground">Find Seat</span> section to view your assigned
+                  table.
+                  <br />
+                  If your table is not yet available, kindly allow the hosts some time to finalize the seating arrangements.
+                </p>
+
+                <a
+                  href="/seat-finder"
+                  className="
+                inline-flex items-center justify-center
+                mt-8 px-8 py-4 rounded-full
+                bg-accent text-white font-medium
+                tracking-wide shadow-md
+                transition-all duration-300
+                hover:scale-105 hover:shadow-lg
+              "
+                >
+                  Find Seat ✨
+                </a>
+              </>
+            ) : (
+              <>
+                {/* DECLINE CONTENT */}
+                <p className="text-muted-foreground font-(family-name:--font-montserrat) leading-8 max-w-lg mx-auto">
+                  Thank you for letting us know.
+                  <br />
+                  Although we’re sad you can’t celebrate with us, we truly appreciate your response and will be thinking of you on our
+                  special day.
+                </p>
+
+                <a
+                  href="/"
+                  className="
+                inline-flex items-center justify-center
+                mt-8 px-8 py-4 rounded-full
+                bg-primary text-white font-medium
+                tracking-wide shadow-md
+                transition-all duration-300
+                hover:scale-105 hover:shadow-lg
+              "
+                >
+                  Back Home
+                </a>
+              </>
+            )}
           </div>
         </div>
       </section>
@@ -285,7 +380,7 @@ export function RSVP() {
                 />
 
                 {/* Dropdown Suggestions */}
-                {results.length > 0 && (
+                {results.length > 0 && !selectedGuest && query.trim().length >= 4 && (
                   <div
                     className="absolute top-[calc(100%+0.35rem)] z-50 w-full overflow-hidden rounded-[2rem]
                                   border border-border/40 bg-white/95 backdrop-blur-sm shadow-xl"
@@ -483,8 +578,8 @@ export function RSVP() {
                     className="
                       absolute inset-0 -translate-x-full
                       animate-[shimmer_2.8s_ease-in-out_infinite]
-                      bg-gradient-to-r from-transparent via-white/70 to-transparent
-                      blur-xl
+                      bg-gradient-to-r from-transparent via-blushpink/25 to-transparent
+                      blur-2xl
                     "
                   />
                   {/* Top Accent */}
@@ -644,7 +739,7 @@ export function RSVP() {
                           leading-7 sm:leading-8 max-w-[290px] mx-auto
                           font-(family-name:--font-montserrat)"
                       >
-                        We have received your RSVP and your one allowed update has already been used.
+                        Your RSVP has been finalized and can no longer be modified.
                         <br />
                         Kindly contact the couple for further changes.
                       </p>
@@ -663,19 +758,38 @@ export function RSVP() {
                           Find My Seat ✨
                         </a>
                       ) : (
-                        <p
-                          className="
-                            mt-4 text-rose-500
-                            font-(family-name:--font-montserrat)"
-                        >
-                          We’re sorry you can’t celebrate with us 💔
-                        </p>
+                        <div className="mt-5">
+                          <p
+                            className="
+                            text-rose-500
+                            font-(family-name:--font-montserrat)
+                              "
+                          >
+                            We’re sorry you can’t celebrate with us 💔
+                          </p>
+
+                          <button type="button" onClick={() => setShowQRPreview(true)} className="mx-auto block mt-4">
+                            <img
+                              src="/images/BPI_Qrcode.png"
+                              alt="QR Code"
+                              className="
+                                  h-28 w-28 rounded-2xl
+                                  border border-border/20
+                                  object-cover
+                                  shadow-sm transition-transform duration-300
+                                  hover:scale-105
+                                "
+                            />
+                          </button>
+
+                          <p className="mt-2 text-xs text-muted-foreground">Optional blessing 💕</p>
+                        </div>
                       )}
                     </div>
                   )}
 
                   {/* Allowed Guests */}
-                  {formData.attendance === "Accept" && (
+                  {formData.attendance === "Accept" && !isLockedRSVP && (
                     <div className="space-y-1.5 sm:space-y-2">
                       <Label className="text-sm font-(family-name:--font-montserrat) tracking-wide">Allowed Guests:</Label>
 
@@ -712,7 +826,7 @@ export function RSVP() {
                     </div>
                   )}
 
-                  {formData.attendance === "Decline" && (
+                  {formData.attendance === "Decline" && !isLockedRSVP && (
                     <div className="space-y-4">
                       {/* Decline Message */}
                       {!isLockedRSVP && (
@@ -787,16 +901,18 @@ export function RSVP() {
                   )}
 
                   {/* Message */}
-                  <div className="space-y-2">
-                    <Label htmlFor="message" className="text-sm font-(family-name:--font-montserrat) tracking-wide">
-                      Message for the Couple
-                    </Label>
-                    <Textarea
-                      disabled={isLockedRSVP || isLoadingGuest}
-                      id="message"
-                      value={formData.message}
-                      onChange={(e) => updateFormField("message", e.target.value)}
-                      className={`
+                  {!isLockedRSVP && (
+                    <div className="space-y-2">
+                      <Label htmlFor="message" className="text-sm font-(family-name:--font-montserrat) tracking-wide">
+                        Message for the Couple
+                      </Label>
+
+                      <Textarea
+                        disabled={isLockedRSVP || isLoadingGuest}
+                        id="message"
+                        value={formData.message}
+                        onChange={(e) => updateFormField("message", e.target.value)}
+                        className={`
                             min-h-[90px] sm:min-h-[100px]
                             resize-none
                             border-border/50
@@ -817,9 +933,10 @@ export function RSVP() {
                                 : "bg-white"
                             }
                           `}
-                      placeholder="Share your well wishes..."
-                    />
-                  </div>
+                        placeholder="Share your well wishes..."
+                      />
+                    </div>
+                  )}
 
                   {error && (
                     <div className="text-destructive text-sm text-center font-(family-name:--font-montserrat) animate-pulse">{error}</div>

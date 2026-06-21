@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 interface Guest {
@@ -16,6 +16,17 @@ interface HostGuestViewerProps {
 }
 
 /**
+ * Formats table number
+ */
+const formatTableNumber = (table: string) =>
+  String(table).padStart(2, "0");
+
+/**
+ * Host modal page-size options
+ */
+const PAGE_SIZE_OPTIONS = [10, 20, 30, 50, 100];
+
+/**
  * Hidden host/admin guest viewer modal
  */
 export default function HostGuestViewer({ isOpen, onClose, guests, isLoading }: HostGuestViewerProps) {
@@ -27,6 +38,11 @@ export default function HostGuestViewer({ isOpen, onClose, guests, isLoading }: 
    * Number of visible guests
    */
   const [pageSize, setPageSize] = useState(10);
+
+  /**
+   * Current page number
+   */
+  const [currentPage, setCurrentPage] = useState(1);
 
   /**
    * Filters guests by:
@@ -42,7 +58,7 @@ export default function HostGuestViewer({ isOpen, onClose, guests, isLoading }: 
     return guests.filter((guest) => {
       const fullName = guest.fullName.toLowerCase();
 
-      const tableNumber = String(guest.table).padStart(2, "0").toLowerCase();
+      const tableNumber = formatTableNumber(guest.table).toLowerCase();
 
       const tableLabel = `table ${tableNumber}`;
 
@@ -50,11 +66,38 @@ export default function HostGuestViewer({ isOpen, onClose, guests, isLoading }: 
     });
   }, [guests, searchQuery]);
   /**
-   * Guests displayed in table
+   * Guests sorted alphabetically by full name
+   */
+  const sortedGuests = useMemo(() => {
+    return [...filteredGuests].sort((a, b) => a.fullName.localeCompare(b.fullName));
+  }, [filteredGuests]);
+
+  /**
+   * Total number of pages
+   */
+  const totalPages = Math.max(1, Math.ceil(sortedGuests.length / pageSize));
+
+  /**
+   * Current page start index
+   */
+  const startIndex = (currentPage - 1) * pageSize;
+
+  /**
+   * Current page guests
    */
   const paginatedGuests = useMemo(() => {
-    return filteredGuests.slice(0, pageSize);
-  }, [filteredGuests, pageSize]);
+    return sortedGuests.slice(startIndex, startIndex + pageSize);
+  }, [sortedGuests, currentPage, pageSize, startIndex]);
+
+  /**
+   * Ensures current page remains valid
+   * after filtering or page-size changes.
+   */
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   return (
     <AnimatePresence>
@@ -88,9 +131,25 @@ export default function HostGuestViewer({ isOpen, onClose, guests, isLoading }: 
               "
             >
               <div>
-                <h2 className="text-xl text-[#6E4A43]">Guests</h2>
-
-                <p className="text-sm text-[#6E4A43]/90">Host/Admin View</p>
+                <h2
+                  className="
+                    text-2xl md:text-3xl
+                    font-medium
+                    text-[#5B3832]
+                    font-(family-name:--font-cormorant)
+                  "
+                >
+                  Guests
+                </h2>
+                <p
+                  className="
+                    text-sm md:text-base
+                    text-[#7A5B54]
+                    font-(family-name:--font-cormorant)
+                  "
+                >
+                  Host/Admin View
+                </p>
               </div>
 
               <button
@@ -111,11 +170,14 @@ export default function HostGuestViewer({ isOpen, onClose, guests, isLoading }: 
               <div className="mb-5">
                 <p
                   className="
-                    mb-3 text-base
-                    font-medium text-[#6E4A43]
+                    mb-3
+                    text-xl
+                    font-semibold
+                    text-[#5B3832]
+                    font-(family-name:--font-cormorant)
                   "
                 >
-                  {filteredGuests.length}  Guest Count
+                  {filteredGuests.length} Guest Count
                   {filteredGuests.length !== 1 ? "s" : ""}
                 </p>
 
@@ -123,13 +185,18 @@ export default function HostGuestViewer({ isOpen, onClose, guests, isLoading }: 
                   type="text"
                   placeholder="Search guest or table..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setCurrentPage(1);
+                  }}
                   className="
                     h-10 w-full max-w-[260px]
                     rounded-xl border border-[#A8BBA3]/20
                     bg-white/70 px-4
-                    text-sm text-[#6E4A43]
-                    placeholder:text-[#6E4A43]/50
+                    font-(family-name:--font-montserrat)
+                    text-sm font-medium
+                    text-[#5B3832]
+                    placeholder:text-[#8B6A62]
                     focus:outline-none
                   "
                 />
@@ -153,9 +220,10 @@ export default function HostGuestViewer({ isOpen, onClose, guests, isLoading }: 
                 >
                   <p
                     className="
-                          text-[0.72rem]
-                          uppercase tracking-[0.14em]
-                          text-[#6E4A43]
+                      font-(family-name:--font-montserrat)
+                      text-xs font-semibold
+                      uppercase tracking-[0.12em]
+                      text-[#7A5B54]
                         "
                   >
                     Full Name
@@ -163,9 +231,10 @@ export default function HostGuestViewer({ isOpen, onClose, guests, isLoading }: 
 
                   <p
                     className="
-                          text-[0.72rem]
-                          uppercase tracking-[0.14em]
-                          text-[#6E4A43]
+                      font-(family-name:--font-montserrat)
+                      text-xs font-semibold
+                      uppercase tracking-[0.12em]
+                      text-[#7A5B54]
                         "
                   >
                     Table
@@ -184,11 +253,11 @@ export default function HostGuestViewer({ isOpen, onClose, guests, isLoading }: 
                 >
                   <p
                     className="
-                        font-sans
-                        text-xs font-medium
-                        uppercase tracking-[0.12em]
-                        text-[#6E4A43]
-                      "
+                      font-(family-name:--font-montserrat)
+                      text-xs font-semibold
+                      uppercase tracking-[0.18em]
+                      text-[#7A5B54]
+                    "
                   >
                     Full Name
                   </p>
@@ -203,12 +272,12 @@ export default function HostGuestViewer({ isOpen, onClose, guests, isLoading }: 
 
                     <p
                       className="
-                        ml-4
-                        font-sans
-                        text-xs font-medium
-                        uppercase tracking-[0.12em]
-                        text-[#6E4A43]
-                      "
+                          ml-4
+                          font-(family-name:--font-montserrat)
+                          text-xs font-semibold
+                          uppercase tracking-[0.18em]
+                          text-[#7A5B54]
+                        "
                     >
                       Table
                     </p>
@@ -234,9 +303,11 @@ export default function HostGuestViewer({ isOpen, onClose, guests, isLoading }: 
                     >
                       <p
                         className="
-                            mb-5 text-sm
-                            tracking-[0.18em]
-                            text-[#6E4A43]/90
+                          mb-5
+                          font-(family-name:--font-montserrat)
+                          text-sm font-medium
+                          tracking-[0.18em]
+                          text-[#7A5B54]
                         "
                       >
                         Loading Guest List
@@ -291,7 +362,9 @@ export default function HostGuestViewer({ isOpen, onClose, guests, isLoading }: 
                       <h3
                         className="
                             mb-2 text-lg
-                            text-[#6E4A43]
+                            text-[#5B3832]
+                            font-semibold
+                            font-(family-name:--font-cormorant)
                           "
                       >
                         No accepted guests yet
@@ -299,8 +372,10 @@ export default function HostGuestViewer({ isOpen, onClose, guests, isLoading }: 
 
                       <p
                         className="
-                            max-w-sm text-sm
-                            leading-7 text-[#6E4A43]/70
+                            max-w-sm 
+                            font-(family-name:--font-montserrat)
+                            text-sm
+                            leading-7 text-[#7A5B54]
                           "
                       >
                         Guest confirmations will appear here once RSVPs have been submitted.
@@ -325,7 +400,9 @@ export default function HostGuestViewer({ isOpen, onClose, guests, isLoading }: 
                           <p
                             className="
                               min-w-0 flex-1 truncate
-                              text-[#6E4A43]
+                              font-(family-name:--font-montserrat)
+                              text-base font-medium
+                              text-[#5B3832]
                             "
                           >
                             {guest.fullName}
@@ -342,12 +419,13 @@ export default function HostGuestViewer({ isOpen, onClose, guests, isLoading }: 
 
                             <span
                               className="
-                                text-sm font-medium
-                                tracking-[0.03em]
-                                text-[#6E4A43]
+                                font-(family-name:--font-montserrat)
+                                text-base font-semibold
+                                tracking-normal
+                                text-[#5B3832]
                               "
                             >
-                              Table {String(guest.table).padStart(2, "0")}
+                              {formatTableNumber(guest.table)}
                             </span>
                           </div>
                         </div>
@@ -361,8 +439,9 @@ export default function HostGuestViewer({ isOpen, onClose, guests, isLoading }: 
                         >
                           <p
                             className="
-                              font-sans
-                              text-[#6E4A43]
+                              font-(family-name:--font-montserrat)
+                              font-medium
+                              text-[#5B3832]
                             "
                           >
                             {guest.fullName}
@@ -379,13 +458,13 @@ export default function HostGuestViewer({ isOpen, onClose, guests, isLoading }: 
                               className="
                                     ml-4 w-8
                                     text-center
-                                    font-sans
+                                    font-(family-name:--font-montserrat)
                                     text-base font-semibold
                                     tracking-normal
-                                    text-[#6E4A43]
+                                    text-[#5B3832]
                                   "
                             >
-                              {String(guest.table).padStart(2, "0")}
+                              {formatTableNumber(guest.table)}
                             </p>
                           </div>
                         </div>
@@ -395,28 +474,93 @@ export default function HostGuestViewer({ isOpen, onClose, guests, isLoading }: 
                 </div>
                 <div
                   className="
-                    flex justify-end
-                    border-t border-[#A8BBA3]/10
-                    bg-white/40 px-4 py-3
-                  "
+                      flex flex-wrap items-center justify-between gap-4
+                      border-t border-[#A8BBA3]
+                      bg-white/40 px-4 py-0.5
+                    "
                 >
-                  <select
-                    value={pageSize}
-                    onChange={(e) => setPageSize(Number(e.target.value))}
+                  {/* Pagination */}
+                  <div
                     className="
-                      rounded-lg border
-                      border-[#A8BBA3]/20
-                      bg-white/80 px-3 py-2
-                      text-sm text-[#6E4A43]
-                      focus:outline-none
+                      flex items-center gap-2
+                      font-(family-name:--font-montserrat)
+                      text-sm font-semibold
+                      text-[#5B3832]
                     "
                   >
-                    <option value={10}>Show 10</option>
-                    <option value={20}>Show 20</option>
-                    <option value={30}>Show 30</option>
-                    <option value={50}>Show 50</option>
-                    <option value={100}>Show 100</option>
-                  </select>
+                    <button
+                      type="button"
+                      disabled={currentPage === 1}
+                      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                      className="
+                          rounded-lg px-1.5
+                          transition-all duration-200
+                          hover:bg-white hover:shadow-md
+                          disabled:pointer-events-none
+                          disabled:opacity-30
+                        "
+                    >
+                      &lt;&lt;
+                    </button>
+
+                    <span className="text-center">
+                      {currentPage} of {totalPages}
+                    </span>
+
+                    <button
+                      type="button"
+                      disabled={currentPage === totalPages}
+                      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                      className="
+                          rounded-lg px-1.5
+                          transition-all duration-200
+                          hover:bg-white hover:shadow-md
+                          disabled:pointer-events-none
+                          disabled:opacity-30
+                        "
+                    >
+                      &gt;&gt;
+                    </button>
+                  </div>
+
+                  {/* Page Size */}
+                  <div
+                    className="
+                      flex items-center gap-2
+                      font-(family-name:--font-montserrat)
+                      text-sm font-medium
+                      text-[#5B3832]
+                    ">
+                    <span>Show</span>
+
+                    <select
+                      value={pageSize}
+                      onChange={(e) => {
+                        setPageSize(Number(e.target.value));
+                        setCurrentPage(1);
+                      }}
+                      className="
+                          rounded-lg border
+                          border-[#A8BBA3]/20
+                          bg-white/80 py-1
+                          text-sm text-[#6E4A43]
+                          transition-all duration-200
+                          hover:bg-white hover:shadow-md
+                          focus:outline-none
+                        "
+                    >
+                      {PAGE_SIZE_OPTIONS.map((size) => (
+                        <option key={size} value={size}>
+                          {size}
+                        </option>
+                      ))}
+                    </select>
+
+                    <span>
+                      of {paginatedGuests.length} guest
+                      {paginatedGuests.length !== 1 ? "s" : ""}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>

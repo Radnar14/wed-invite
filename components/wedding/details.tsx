@@ -16,6 +16,19 @@ const ImageShimmer = (
   />
 );
 
+const MobileImageShimmer = (
+  <div
+    className="
+      md:hidden
+      absolute inset-y-0 -left-1/2 w-1/2
+      bg-linear-to-r from-transparent via-white/40 to-transparent
+      skew-x-[-20deg]
+      animate-[mobileShimmer_4s_linear_infinite]
+      pointer-events-none
+    "
+  />
+);
+
 const ContReactEff = `
   relative w-fit transition-colors hover:text-accent after:absolute after:left-0 after:-bottom-0.5 after:h-[1px]
   after:w-0 after:bg-current after:transition-all after:duration-300
@@ -65,6 +78,7 @@ export function Details() {
               />
               {/* Luxury Glass Shimmer */}
               {ImageShimmer}
+              {MobileImageShimmer}
 
               {/* Optional soft overlay */}
               <div className="absolute inset-0 bg-black/10" />
@@ -129,6 +143,7 @@ export function Details() {
               />
               {/* Luxury Glass Shimmer */}
               {ImageShimmer}
+              {MobileImageShimmer}
 
               {/* Optional soft overlay */}
               <div className="absolute inset-0 bg-black/10" />

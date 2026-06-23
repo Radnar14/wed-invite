@@ -212,3 +212,14 @@
     transform: translateX(100%);
   }
 }
+
+/* Details.tsx image mobile shimmer effect */
+@keyframes mobileShimmer {
+  0% {
+    transform: translateX(0) skewX(-20deg);
+  }
+
+  100% {
+    transform: translateX(350%) skewX(-20deg);
+  }
+}

@@ -4,16 +4,8 @@ import { useState } from "react"
 import Image from "next/image"
 import { X, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react"
 import Link from "next/link"
+import { galleryImages } from "@/data/gallery";
 import { cn } from "@/lib/utils"
-
-const galleryImages = [
-  { src: "/images/gallery-1.jpg", alt: "John Mark and Chezza laughing together" },
-  { src: "/images/gallery-2.jpg", alt: "Wedding rings detail" },
-  { src: "/images/gallery-3.jpg", alt: "Beautiful bride portrait" },
-  { src: "/images/gallery-4.jpg", alt: "Wedding venue" },
-  { src: "/images/gallery-5.jpg", alt: "First dance" },
-  { src: "/images/gallery-6.jpg", alt: "Wedding bouquet" },
-]
 
 // Videos URLs here
 

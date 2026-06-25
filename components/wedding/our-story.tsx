@@ -16,7 +16,7 @@ export function OurStory() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center max-w-6xl mx-auto">
           {/* Image */}
           <div className="relative aspect-4/5 rounded-sm overflow-hidden">
-            <Image src="/images/gallery-1.jpg" alt="John Mark and Chezza together" fill className="object-cover" />
+            <Image src="/gallery/images/gallery-1.jpg" alt="John Mark and Chezza together" fill className="object-cover" />
           </div>
 
           {/* Text */}

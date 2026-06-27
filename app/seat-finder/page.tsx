@@ -8,8 +8,8 @@ export default function SeatFinderPage() {
     <main className="min-h-screen flex flex-col">
       <Navigation />
       
-      <section className="flex-grow pt-32 pb-24 md:pt-40 md:pb-32 bg-accent/5">
-        <div className="container mx-auto px-6 text-center mb-16">
+      <section className="flex-grow pt-24 pb-20 md:pt-28 md:pb-24 bg-accent/5">
+        <div className="container mx-auto px-6 text-center mb-8 md:mb-10">
           <p className="text-sm tracking-[0.3em] uppercase font-(family-name:--font-montserrat) text-muted-foreground mb-4">
             Find Your Table
           </p>

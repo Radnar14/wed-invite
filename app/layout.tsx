@@ -27,7 +27,7 @@ const greatVibes = Great_Vibes({
 
 export const metadata: Metadata = {
   title: 'John Mark & Chezza | Wedding',
-  description: 'Join us in celebrating our love - John Mark & Chezza Wedding, December 28, 2026',
+  description: 'Join us in celebrating our love - John Mark & Chezza Wedding, October 08, 2026',
   generator: 'v0.app',
   icons: {
     icon: [

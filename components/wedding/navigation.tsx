@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { Menu, X, Heart, MapPin } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { usePathname } from "next/navigation"
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { Menu, X, Heart, MapPin } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { usePathname } from "next/navigation";
 
 const navLinks = [
   { id: "home", label: "Home" },
@@ -16,111 +16,101 @@ const navLinks = [
   { id: "timeline", label: "Timeline" },
   { id: "gallery", label: "Gallery" },
   { id: "faq", label: "FAQ" },
-]
+];
 
-const rsvpLink = { id: "rsvp", label: "RSVP" }
-const seatFinderLink = { href: "/seat-finder", label: "Find Seat" }
+const rsvpLink = { id: "rsvp", label: "RSVP" };
+const seatFinderLink = { href: "/seat-finder", label: "Find Seat" };
 
 export function Navigation() {
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [activeHash, setActiveHash] = useState("")
-  const pathname = usePathname()
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeHash, setActiveHash] = useState("");
+  const pathname = usePathname();
 
-  const isAltPage = pathname !== "/"
+  const isAltPage = pathname !== "/";
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50)
-      
+      setIsScrolled(window.scrollY > 50);
+
       // Update active hash based on scroll position
       if (pathname === "/") {
-        const sections = navLinks.map(link => link.id)
+        const sections = ["home", "story", "entourage", "details", "attire", "timeline", "gallery", "rsvp", "faq"];
         for (const section of sections.reverse()) {
-          const el = document.getElementById(section)
+          const el = document.getElementById(section);
           if (el && el.getBoundingClientRect().top <= 100) {
-            setActiveHash(`#${section}`)
-            break
+            setActiveHash(`#${section}`);
+            break;
           }
         }
       }
-    }
+    };
 
     const handleHashChange = () => {
-      setActiveHash(window.location.hash)
-    }
+      setActiveHash(window.location.hash);
+    };
 
-    window.addEventListener("scroll", handleScroll)
-    window.addEventListener("hashchange", handleHashChange)
-    handleScroll() // Initial check
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("hashchange", handleHashChange);
+    handleScroll(); // Initial check
 
     return () => {
-      window.removeEventListener("scroll", handleScroll)
-      window.removeEventListener("hashchange", handleHashChange)
-    }
-  }, [pathname])
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("hashchange", handleHashChange);
+    };
+  }, [pathname]);
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     if (pathname === "/") {
-      e.preventDefault()
-      const el = document.getElementById(id)
+      e.preventDefault();
+      const el = document.getElementById(id);
       if (el) {
-        const offset = 80 // Offset for the fixed header
-        const bodyRect = document.body.getBoundingClientRect().top
-        const elementRect = el.getBoundingClientRect().top
-        const elementPosition = elementRect - bodyRect
-        const offsetPosition = elementPosition - offset
+        const offset = 80; // Offset for the fixed header
+        const bodyRect = document.body.getBoundingClientRect().top;
+        const elementRect = el.getBoundingClientRect().top;
+        const elementPosition = elementRect - bodyRect;
+        const offsetPosition = elementPosition - offset;
 
         window.scrollTo({
           top: offsetPosition,
-          behavior: "smooth"
-        })
-        
-        window.history.pushState(null, "", `#${id}`)
-        setActiveHash(`#${id}`)
-        setIsMobileMenuOpen(false)
+          behavior: "smooth",
+        });
+
+        window.history.pushState(null, "", `#${id}`);
+        setActiveHash(`#${id}`);
+        setIsMobileMenuOpen(false);
       }
     }
-  }
+  };
 
   const getHref = (id: string) => {
-    return pathname === "/" ? `#${id}` : `/#${id}`
-  }
+    return pathname === "/" ? `#${id}` : `/#${id}`;
+  };
 
   const isActive = (id: string) => {
-    if (pathname !== "/") return false
-    return activeHash === `#${id}` || (id === "home" && activeHash === "")
-  }
+    if (pathname !== "/") return false;
+    return activeHash === `#${id}` || (id === "home" && activeHash === "");
+  };
 
-  const navBgClass = isAltPage || isScrolled
-    ? "bg-background/95 backdrop-blur-md shadow-sm py-2"
-    : "bg-transparent py-3"
+  const navBgClass = isAltPage || isScrolled ? "bg-background/95 backdrop-blur-md shadow-sm py-2" : "bg-transparent py-3";
 
-  const textClass = isAltPage || isScrolled ? "text-foreground" : "text-white"
+  const textClass = isAltPage || isScrolled ? "text-foreground" : "text-white";
 
   return (
-    <header
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
-        navBgClass
-      )}
-    >
+    <header className={cn("fixed top-0 left-0 right-0 z-50 transition-all duration-500", navBgClass)}>
       <nav className="container mx-auto px-6 flex items-center justify-between">
         <Link
           href="/"
           scroll={true}
           onClick={(e) => {
             if (pathname === "/") {
-              e.preventDefault()
-              window.scrollTo({ top: 0, behavior: "smooth" })
-              window.history.pushState(null, "", "/")
-              setActiveHash("")
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: "smooth" });
+              window.history.pushState(null, "", "/");
+              setActiveHash("");
             }
           }}
-          className={cn(
-            "flex items-center justify-center transition-colors shrink-0",
-            textClass
-          )}
+          className={cn("flex items-center justify-center transition-colors shrink-0", textClass)}
         >
           <Image
             src="/images/logo.svg"
@@ -143,10 +133,8 @@ export function Navigation() {
                 className={cn(
                   "relative inline-block text-sm tracking-[0.2em] uppercase font-(family-name:--font-montserrat) transition-colors hover:text-accent",
                   "after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:h-[1px] after:bg-current after:transition-all after:duration-300",
-                  isActive(link.id)
-                    ? "after:w-full text-accent"
-                    : "after:w-0 hover:after:w-full",
-                  textClass
+                  isActive(link.id) ? "after:w-full text-accent" : "after:w-0 hover:after:w-full",
+                  textClass,
                 )}
               >
                 {link.label}
@@ -160,10 +148,8 @@ export function Navigation() {
               className={cn(
                 "relative inline-block text-sm tracking-[0.2em] uppercase font-(family-name:--font-montserrat) transition-colors hover:text-accent",
                 "after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:h-[1px] after:bg-current after:transition-all after:duration-300",
-                isActive(rsvpLink.id)
-                  ? "after:w-full text-accent"
-                  : "after:w-0 hover:after:w-full",
-                textClass
+                isActive(rsvpLink.id) ? "after:w-full text-accent" : "after:w-0 hover:after:w-full",
+                textClass,
               )}
             >
               {rsvpLink.label}
@@ -175,10 +161,8 @@ export function Navigation() {
               className={cn(
                 "relative inline-block text-sm tracking-[0.2em] uppercase font-(family-name:--font-montserrat) transition-colors hover:text-accent",
                 "after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:h-[1px] after:bg-current after:transition-all after:duration-300",
-                pathname === seatFinderLink.href
-                  ? "after:w-full text-accent"
-                  : "after:w-0 hover:after:w-full",
-                textClass
+                pathname === seatFinderLink.href ? "after:w-full text-accent" : "after:w-0 hover:after:w-full",
+                textClass,
               )}
             >
               {seatFinderLink.label}
@@ -192,7 +176,7 @@ export function Navigation() {
           className={cn(
             "lg:hidden p-2 rounded-xl border border-transparent transition-all duration-300",
             "hover:bg-accent/10 hover:border-accent/30 hover:text-accent active:scale-95",
-            textClass
+            textClass,
           )}
           aria-label="Toggle menu"
         >
@@ -204,9 +188,7 @@ export function Navigation() {
       <div
         className={cn(
           "lg:hidden absolute top-full left-0 right-0 bg-background/98 backdrop-blur-md transition-all duration-300 overflow-hidden",
-          isMobileMenuOpen
-            ? "max-h-[85vh] overflow-y-auto border-b border-border"
-            : "max-h-0"
+          isMobileMenuOpen ? "max-h-[85vh] overflow-y-auto border-b border-border" : "max-h-0",
         )}
       >
         <div className="container mx-auto px-6 py-6 flex flex-col">
@@ -265,7 +247,7 @@ export function Navigation() {
                     onClick={(e) => handleLinkClick(e, link.id)}
                     className={cn(
                       "group block w-full rounded-xl px-4 py-3 text-sm tracking-[0.2em] uppercase font-(family-name:--font-montserrat) text-foreground transition-all duration-300 border border-transparent hover:bg-accent/10 hover:border-accent/30 hover:text-accent active:bg-accent/10 active:border-accent/30 active:text-accent active:scale-[0.98]",
-                      isActive(link.id) && "bg-accent/10 border-accent/30 text-accent"
+                      isActive(link.id) && "bg-accent/10 border-accent/30 text-accent",
                     )}
                   >
                     {link.label}
@@ -277,5 +259,5 @@ export function Navigation() {
         </div>
       </div>
     </header>
-  )
+  );
 }

@@ -28,7 +28,7 @@ export function Hero() {
         </h1>
         <div className="w-24 h-px bg-white/60 mx-auto mb-6 animate-fade-in animation-delay-400" />
         <p className="text-lg md:text-xl tracking-[0.15em] font-(family-name:--font-montserrat) font-light animate-fade-in animation-delay-600">
-          December 28, 2026
+          October 8, 2026
         </p>
       </div>
 

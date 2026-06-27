@@ -3,21 +3,23 @@ import { Cormorant_Garamond, Great_Vibes, Montserrat } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import { MusicPlayer } from "@/components/wedding/music-player"
+import ClientMountProvider from '@/components/ClientMountProvider'
+import { Doors } from '@/components/wedding/doors'
 
 
-const cormorant = Cormorant_Garamond({ 
+const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ['300', '400', '500', '600', '700'],
   variable: '--font-cormorant'
 })
 
-const montserrat = Montserrat({ 
+const montserrat = Montserrat({
   subsets: ["latin"],
   weight: ['300', '400', '500', '600'],
   variable: '--font-montserrat'
 })
 
-const greatVibes = Great_Vibes({ 
+const greatVibes = Great_Vibes({
   subsets: ["latin"],
   weight: '400',
   variable: '--font-great-vibes'
@@ -54,7 +56,10 @@ export default function RootLayout({
   return (
     <html lang="en" data-scroll-behavior="smooth" className={`${cormorant.variable} ${montserrat.variable} ${greatVibes.variable} bg-background`}>
       <body className="font-serif antialiased">
-        {children}
+        <Doors />
+        <ClientMountProvider>
+          {children}
+        </ClientMountProvider>
         <MusicPlayer />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

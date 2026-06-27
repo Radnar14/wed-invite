@@ -124,9 +124,12 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
+    overflow-x: hidden;
   }
+
   html {
     scroll-behavior: smooth;
   }
@@ -135,7 +138,9 @@
 
 /* Arrow Tick Animation @ Gallery full view */
 @keyframes arrowTick {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateX(0);
   }
 
@@ -166,7 +171,9 @@
 
 /* Footer heartlogo */
 @keyframes heartBeat {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
   }
 
@@ -193,7 +200,9 @@
 
 /* Footer button back to Top */
 @keyframes floatSoft {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px);
   }
 

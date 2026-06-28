@@ -327,11 +327,21 @@ export function RSVP() {
               The RSVP period has now ended, and we are busy finalizing our guest list and seating
               arrangements.
               <br />
-              If you still need to reach us regarding your invitation, we&apos;d love to hear from you below.
+              For event information and how to reach us, please visit the Wedding Details section.
             </p>
 
-            {/* Need to reach us */}
-            <ReachUs className="mt-9" />
+            {/* Guide to Wedding Details */}
+            <a
+              href="#details"
+              className="
+                mt-9 inline-flex items-center justify-center gap-2
+                rounded-full bg-accent px-8 py-4
+                text-white font-medium tracking-wide shadow-md
+                transition-all duration-300
+                hover:scale-105 hover:shadow-lg"
+            >
+              View Wedding Details ✨
+            </a>
           </div>
         </div>
       </section>

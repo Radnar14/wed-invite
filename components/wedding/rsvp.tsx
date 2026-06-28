@@ -37,7 +37,7 @@ function ReachUs({ className = "" }: { className?: string }) {
       <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
         {/* John Mark */}
         <a
-          href="https://facebook.com/kingcoal214"
+          href="https://m.me/kingcoal214"
           target="_blank"
           rel="noopener noreferrer"
           className="
@@ -53,7 +53,7 @@ function ReachUs({ className = "" }: { className?: string }) {
 
         {/* Chezza */}
         <a
-          href="https://facebook.com/chezza214"
+          href="https://m.me/chezza214"
           target="_blank"
           rel="noopener noreferrer"
           className="

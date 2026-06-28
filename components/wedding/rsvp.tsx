@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { Check, Heart, CircleX, Frown } from "lucide-react";
+import { Check, Heart, CircleX, Frown, Search, ChevronLeft, Loader2 } from "lucide-react";
 
 export function RSVP() {
   const [submitted, setSubmitted] = useState(false);
@@ -46,8 +46,6 @@ export function RSVP() {
     message: "",
   });
 
-  const showRSVPForm = query.trim() === "" || selectedGuest;
-
   const GOOGLE_SCRIPT_URL = process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL;
 
   const resetForm = () => {
@@ -65,6 +63,19 @@ export function RSVP() {
       ...prev,
       [field]: value,
     }));
+  };
+
+  // Return to the "Find Your Name" step
+  const resetToSearch = () => {
+    setSelectedGuest(null);
+    setQuery("");
+    setResults([]);
+    setIsSearching(false);
+    setIsLoadingGuest(false);
+    setIsLockedRSVP(false);
+    setSubmitError("");
+    setError(null);
+    resetForm();
   };
 
   useEffect(() => {
@@ -338,7 +349,7 @@ export function RSVP() {
     <section id="rsvp" className="py-24 md:py-32">
       <div className="container mx-auto px-6">
         {/* Section Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-12">
           <p className="text-sm tracking-[0.3em] uppercase font-(family-name:--font-montserrat) text-muted-foreground mb-4">
             We Hope You Can Join Us
           </p>
@@ -348,42 +359,122 @@ export function RSVP() {
           </p>
         </div>
 
-        {/* RSVP Form */}
-        <Card className="max-w-xl mx-auto border-none shadow-lg">
-          {/* RSVP Card Content */}
-          <CardContent className="p-6 sm:p-8 md:p-10">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Guest Name */}
+        {/* Step Indicator */}
+        <div className="mx-auto mb-8 flex max-w-xl items-center justify-center gap-3">
+          {/* Step 1 — Find Your Name */}
+          <div className="flex items-center gap-2">
+            <span
+              className={`
+                flex h-7 w-7 items-center justify-center rounded-full text-xs font-medium
+                transition-all duration-500
+                ${selectedGuest ? "bg-[#E4EEE0] text-[#6F806B]" : "bg-accent text-white shadow-sm"}
+              `}
+            >
+              {selectedGuest ? <Check className="h-4 w-4" /> : "1"}
+            </span>
+            <span
+              className={`
+                text-xs tracking-[0.12em] uppercase font-(family-name:--font-montserrat) transition-colors duration-500
+                ${selectedGuest ? "text-muted-foreground" : "text-foreground"}
+              `}
+            >
+              Find Name
+            </span>
+          </div>
+
+          {/* Connector */}
+          <div className="h-px w-8 sm:w-12 bg-border/70" />
+
+          {/* Step 2 — RSVP Details */}
+          <div className="flex items-center gap-2">
+            <span
+              className={`
+                flex h-7 w-7 items-center justify-center rounded-full text-xs font-medium
+                transition-all duration-500
+                ${selectedGuest ? "bg-accent text-white shadow-sm" : "bg-secondary text-muted-foreground"}
+              `}
+            >
+              2
+            </span>
+            <span
+              className={`
+                text-xs tracking-[0.12em] uppercase font-(family-name:--font-montserrat) transition-colors duration-500
+                ${selectedGuest ? "text-foreground" : "text-muted-foreground"}
+              `}
+            >
+              RSVP Details
+            </span>
+          </div>
+        </div>
+
+        {/* ============================================================= */}
+        {/* STEP 1 — FIND YOUR NAME                                       */}
+        {/* ============================================================= */}
+        {!selectedGuest && (
+          <Card className="max-w-xl mx-auto border-none shadow-lg animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <CardContent className="p-6 sm:p-8 md:p-10">
+              {/* Step Heading */}
+              <div className="text-center mb-7">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent/10">
+                  <Search className="h-7 w-7 text-accent" />
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-light text-foreground">Find Your Name</h3>
+                <p className="mt-2 text-sm text-muted-foreground font-(family-name:--font-montserrat) max-w-sm mx-auto">
+                  Enter your full name as it appears on your invitation to begin your RSVP.
+                </p>
+              </div>
+
+              {/* Search Field */}
               <div className="space-y-2 relative">
-                <Label htmlFor="name">Full Name *</Label>
+                <Label htmlFor="name" className="sr-only">
+                  Full Name
+                </Label>
 
-                <Input
-                  id="name"
-                  value={selectedGuest ? formData.name : query}
-                  onChange={(e) => {
-                    const value = e.target.value;
+                <div className="relative">
+                  <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />
 
-                    setQuery(value);
-                    setSelectedGuest(null);
+                  <Input
+                    id="name"
+                    value={query}
+                    onChange={(e) => {
+                      const value = e.target.value;
 
-                    if (value.trim() === "") {
-                      setResults([]);
-                    }
+                      setQuery(value);
+                      setSelectedGuest(null);
 
-                    setIsLockedRSVP(false);
+                      if (value.trim() === "") {
+                        setResults([]);
+                      }
 
-                    resetForm();
-                  }}
-                  placeholder="Start typing your name..."
-                  autoComplete="off"
-                  required
-                />
+                      setIsLockedRSVP(false);
+
+                      resetForm();
+                    }}
+                    placeholder="Start typing your name..."
+                    autoComplete="off"
+                    required
+                    className="h-12 rounded-2xl pl-11 pr-11 text-base"
+                  />
+
+                  {/* Inline searching spinner */}
+                  {isSearching && query.trim().length >= 4 && (
+                    <Loader2 className="absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-accent" />
+                  )}
+                </div>
+
+                {/* Helper hint */}
+                {query.trim().length > 0 && query.trim().length < 4 && (
+                  <p className="pl-1 text-xs text-muted-foreground/80 font-(family-name:--font-montserrat)">
+                    Keep typing — at least 4 characters to search.
+                  </p>
+                )}
 
                 {/* Dropdown Suggestions */}
                 {results.length > 0 && !selectedGuest && query.trim().length >= 4 && (
                   <div
                     className="absolute top-[calc(100%+0.35rem)] z-50 w-full overflow-hidden rounded-[2rem]
-                                  border border-border/40 bg-white/95 backdrop-blur-sm shadow-xl"
+                                  border border-border/40 bg-white/95 backdrop-blur-sm shadow-xl
+                                  animate-in fade-in slide-in-from-top-2 duration-300"
                   >
                     {/* Dropdown Title */}
                     <div
@@ -466,6 +557,7 @@ export function RSVP() {
                   </div>
                 )}
 
+                {/* Not Found Message */}
                 {query.trim().length >= 4 && !selectedGuest && !isSearching && results.length === 0 && (
                   <div
                     className="
@@ -562,11 +654,66 @@ export function RSVP() {
                   </div>
                 )}
               </div>
-              {/* Premium Loading Card */}
-              {isLoadingGuest && (
+            </CardContent>
+          </Card>
+        )}
+
+        {/* ============================================================= */}
+        {/* STEP 2 — RSVP DETAILS                                         */}
+        {/* ============================================================= */}
+        {selectedGuest && (
+          <Card className="max-w-xl mx-auto border-none shadow-lg animate-in fade-in slide-in-from-bottom-6 duration-700 ease-out">
+            <CardContent className="p-6 sm:p-8 md:p-10">
+              {/* Found-You Banner */}
+              <div
+                className="
+                  relative overflow-hidden
+                  rounded-[2rem]
+                  border border-[#E4EEE0]
+                  bg-gradient-to-br from-[#F4F9F1] to-white
+                  px-5 py-4 sm:px-6
+                  shadow-[0_10px_30px_rgba(0,0,0,0.05)]
+                  animate-in fade-in zoom-in-95 duration-500"
+              >
+                <div className="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-[#A8BBA3] via-[#C7D7C0] to-[#A8BBA3]" />
+
+                <div className="flex items-center gap-4">
+                  {/* Check avatar */}
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#E4EEE0] text-[#6F806B]">
+                    <Check className="h-6 w-6" />
+                  </div>
+
+                  {/* Name */}
+                  <div className="min-w-0 flex-1 text-left">
+                    <p className="text-[0.65rem] uppercase tracking-[0.15em] text-[#9A7E6F] font-medium font-(family-name:--font-montserrat)">
+                      We found you ✨
+                    </p>
+                    <p className="truncate text-lg font-medium text-foreground">{selectedGuest.fullName}</p>
+                  </div>
+
+                  {/* Change Name */}
+                  <button
+                    type="button"
+                    onClick={resetToSearch}
+                    className="
+                      inline-flex shrink-0 items-center gap-1
+                      rounded-full border border-border/50 bg-white
+                      px-3 py-1.5 text-xs text-muted-foreground
+                      transition-all duration-300
+                      hover:bg-accent/10 hover:text-foreground active:scale-95
+                      font-(family-name:--font-montserrat)"
+                  >
+                    <ChevronLeft className="h-3.5 w-3.5" />
+                    Change
+                  </button>
+                </div>
+              </div>
+
+              {/* Loading guest details */}
+              {isLoadingGuest ? (
                 <div
                   className="
-                      relative overflow-hidden rounded-[2.5rem]
+                      relative mt-6 overflow-hidden rounded-[2.5rem]
                       border border-[#EADFD8]
                       bg-gradient-to-br from-white via-[#FFFDFC] to-[#FAF6F2]
                       px-8 py-10 text-center
@@ -591,6 +738,8 @@ export function RSVP() {
                       "
                   />
 
+                  <Loader2 className="mx-auto mb-3 h-6 w-6 animate-spin text-accent" />
+
                   {/* Loading Message */}
                   <p className="text-sm leading-7 text-muted-foreground font-(family-name:--font-montserrat)">
                     Preparing your RSVP details ✨
@@ -601,10 +750,17 @@ export function RSVP() {
                     Please wait while we prepare your invitation details
                   </p>
                 </div>
-              )}
-              {/* RSVP Form */}
-              {showRSVPForm && !isLoadingGuest && (
-                <>
+              ) : (
+                <form onSubmit={handleSubmit} className="mt-6 space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                  {/* RSVP Details divider */}
+                  <div className="flex items-center gap-3">
+                    <div className="h-px flex-1 bg-border/70" />
+                    <p className="text-xs tracking-[0.18em] uppercase text-muted-foreground font-(family-name:--font-montserrat)">
+                      RSVP Details
+                    </p>
+                    <div className="h-px flex-1 bg-border/70" />
+                  </div>
+
                   {/* Email */}
                   <div className="space-y-2">
                     <Label htmlFor="email" className="text-sm font-(family-name:--font-montserrat) tracking-wide">
@@ -970,11 +1126,11 @@ export function RSVP() {
                       )}
                     </>
                   )}
-                </>
+                </form>
               )}
-            </form>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        )}
 
         {/* QR Preview Modal */}
         {showQRPreview && (

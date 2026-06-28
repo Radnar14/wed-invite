@@ -8,7 +8,68 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { Check, Heart, CircleX, Frown, Search, ChevronLeft, Loader2 } from "lucide-react";
+import { Check, Heart, CircleX, Frown, Search, ChevronLeft, Loader2, Calendar, Lock } from "lucide-react";
+
+// RSVP deadline shown across the section
+const RSVP_DEADLINE = "September 8, 2026";
+
+// Flip to `true` once the RSVP period ends to close submissions
+// and show the "finalizing the guest list" notice instead of the form.
+const IS_RSVP_CLOSED = false;
+
+// Reusable "Need to reach us" contact block (Messenger).
+function ReachUs({ className = "" }: { className?: string }) {
+  return (
+    <div className={`mx-auto max-w-xl text-center ${className}`}>
+      {/* Divider label */}
+      <div className="mb-4 flex items-center gap-3">
+        <div className="h-px flex-1 bg-border/60" />
+        <p className="whitespace-nowrap text-xs tracking-[0.18em] uppercase text-muted-foreground font-(family-name:--font-montserrat)">
+          Need to reach us?
+        </p>
+        <div className="h-px flex-1 bg-border/60" />
+      </div>
+
+      <p className="mb-5 text-sm leading-relaxed text-muted-foreground font-(family-name:--font-montserrat)">
+        Message us directly on Messenger for any questions about your invitation or RSVP.
+      </p>
+
+      <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+        {/* John Mark */}
+        <a
+          href="https://facebook.com/kingcoal214"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="
+            inline-flex items-center gap-2
+            rounded-full border border-border/50 bg-white
+            px-5 py-2.5 shadow-sm
+            transition-all duration-300
+            hover:-translate-y-0.5 hover:border-blushpink/40 hover:shadow-md active:scale-95"
+        >
+          <FaFacebookMessenger className="text-blushpink" size={20} />
+          <span className="text-sm font-medium text-foreground font-(family-name:--font-montserrat)">John Mark</span>
+        </a>
+
+        {/* Chezza */}
+        <a
+          href="https://facebook.com/chezza214"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="
+            inline-flex items-center gap-2
+            rounded-full border border-border/50 bg-white
+            px-5 py-2.5 shadow-sm
+            transition-all duration-300
+            hover:-translate-y-0.5 hover:border-blushpink/40 hover:shadow-md active:scale-95"
+        >
+          <FaFacebookMessenger className="text-blushpink" size={20} />
+          <span className="text-sm font-medium text-foreground font-(family-name:--font-montserrat)">Chezza</span>
+        </a>
+      </div>
+    </div>
+  );
+}
 
 export function RSVP() {
   const [submitted, setSubmitted] = useState(false);
@@ -210,6 +271,73 @@ export function RSVP() {
     }
   };
 
+  // ===============================================================
+  // RSVP CLOSED — submissions ended, finalizing the guest list
+  // ===============================================================
+  if (IS_RSVP_CLOSED) {
+    return (
+      <section id="rsvp" className="py-24 md:py-32">
+        <div className="container mx-auto px-6">
+          {/* Section Header */}
+          <div className="text-center mb-12">
+            <p className="text-sm tracking-[0.3em] uppercase font-(family-name:--font-montserrat) text-muted-foreground mb-4">
+              We Hope You Can Join Us
+            </p>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-foreground mb-4">RSVP</h2>
+          </div>
+
+          {/* Closed Card */}
+          <div
+            className="
+              relative overflow-hidden
+              max-w-xl mx-auto text-center
+              rounded-[2.8rem]
+              bg-white/90 backdrop-blur-sm
+              shadow-[0_20px_50px_rgba(0,0,0,0.08)]
+              border border-white/40
+              px-8 sm:px-10 py-12
+              animate-in fade-in zoom-in-95 slide-in-from-bottom-4
+              duration-700 ease-out"
+          >
+            {/* Elegant top line */}
+            <div className="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-[#A8BBA3] via-[#C7D7C0] to-[#A8BBA3]" />
+
+            {/* Icon */}
+            <div className="mx-auto mb-7 flex h-20 w-20 items-center justify-center rounded-full bg-[#E4EEE0] shadow-sm">
+              <Lock className="h-9 w-9 text-[#6F806B]" />
+            </div>
+
+            {/* Tag */}
+            <div
+              className="
+                mb-5 inline-flex items-center rounded-full
+                bg-[#F8F2ED] px-4 py-2
+                text-xs uppercase tracking-[0.12em] font-medium text-[#9A7E6F]"
+            >
+              RSVP Closed 🌿
+            </div>
+
+            {/* Title */}
+            <h2 className="mb-4 text-4xl font-light text-foreground">RSVPs Are Now Closed</h2>
+
+            {/* Message */}
+            <p className="mx-auto max-w-lg text-muted-foreground font-(family-name:--font-montserrat) leading-8">
+              Thank you to everyone who responded — your love means the world to us! 💕
+              <br />
+              The RSVP period has now ended, and we are busy finalizing our guest list and seating
+              arrangements.
+              <br />
+              If you still need to reach us regarding your invitation, we&apos;d love to hear from you below.
+            </p>
+
+            {/* Need to reach us */}
+            <ReachUs className="mt-9" />
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   if (submitted) {
     const isAccepted = formData.attendance === "Accept";
 
@@ -357,6 +485,19 @@ export function RSVP() {
           <p className="text-muted-foreground font-(family-name:--font-montserrat) max-w-md mx-auto">
             We would appreciate your prompt response to help us plan for the attendance.
           </p>
+
+          {/* RSVP Deadline */}
+          <div
+            className="
+              mt-6 inline-flex items-center gap-2
+              rounded-full border border-blushpink/20 bg-blushpink/5
+              px-5 py-2"
+          >
+            <Calendar className="h-4 w-4 text-blushpink" />
+            <span className="text-sm font-medium text-foreground font-(family-name:--font-montserrat)">
+              Please respond before {RSVP_DEADLINE}
+            </span>
+          </div>
         </div>
 
         {/* Step Indicator */}
@@ -1131,6 +1272,9 @@ export function RSVP() {
             </CardContent>
           </Card>
         )}
+
+        {/* Need to reach us */}
+        <ReachUs className="mt-12" />
 
         {/* QR Preview Modal */}
         {showQRPreview && (

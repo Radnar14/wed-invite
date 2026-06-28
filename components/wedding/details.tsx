@@ -182,29 +182,7 @@ export function Details() {
         </div>
 
         {/* Additional Info Grid */}
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          {/* Schedule */}
-          <div className="bg-background/60 backdrop-blur-sm rounded-3xl p-8 md:p-10 border border-border/50 text-center shadow-sm hover:shadow-md transition-shadow duration-300">
-            <Clock className="w-6 h-6 mx-auto mb-6 text-muted-foreground opacity-70" strokeWidth={1.5} />
-            <h4 className="text-xl font-medium mb-6">Schedule</h4>
-            <ul className="space-y-4 text-sm text-muted-foreground font-(family-name:--font-montserrat)">
-              <li className="flex flex-col gap-1">
-                <span className="font-semibold text-foreground">2:00 PM</span>
-                <span className="text-blushpink">Ceremony</span>
-              </li>
-              <li className="w-8 h-px bg-border mx-auto" />
-              <li className="flex flex-col gap-1">
-                <span className="font-semibold text-foreground">4:30 PM</span>
-                <span className="text-blushpink">Cocktail Hour</span>
-              </li>
-              <li className="w-8 h-px bg-border mx-auto" />
-              <li className="flex flex-col gap-1">
-                <span className="font-semibold text-foreground">6:00 PM</span>
-                <span className="text-blushpink">Reception</span>
-              </li>
-            </ul>
-          </div>
-
+        <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
           {/* Dress Code */}
           <div className="bg-background/60 backdrop-blur-sm rounded-3xl p-8 md:p-10 border border-border/50 text-center shadow-sm hover:shadow-md transition-shadow duration-300">
             <Shirt className="w-6 h-6 mx-auto mb-6 text-muted-foreground opacity-70" strokeWidth={1.5} />

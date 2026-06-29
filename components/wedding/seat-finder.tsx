@@ -62,6 +62,20 @@ export function SeatFinder() {
   >([]);
 
   /**
+   * Per-representative confirmation summary for the host "By Representative" view
+   */
+  const [groupSummaries, setGroupSummaries] = useState<
+    {
+      representative: string;
+      total: number;
+      confirmedCount: number;
+      declinedCount: number;
+      confirmed: string[];
+      responded: boolean;
+    }[]
+  >([]);
+
+  /**
    * Host/admin guest loading state
    */
   const [isLoadingGuests, setIsLoadingGuests] = useState(false);
@@ -81,13 +95,17 @@ export function SeatFinder() {
        */
       setIsLoadingGuests(true);
 
-      fetch("/api/guests/search?action=allGuests")
-        .then((res) => res.json())
-        .then((data) => {
-          setAcceptedGuests(data.guests || []);
+      Promise.all([
+        fetch("/api/guests/search?action=allGuests").then((res) => res.json()),
+        fetch("/api/guests/search?action=groupSummary").then((res) => res.json()),
+      ])
+        .then(([allData, groupData]) => {
+          setAcceptedGuests(allData.guests || []);
+          setGroupSummaries(groupData.groups || []);
         })
         .catch(() => {
           setAcceptedGuests([]);
+          setGroupSummaries([]);
         })
         .finally(() => {
           setIsLoadingGuests(false);
@@ -157,6 +175,29 @@ export function SeatFinder() {
     }
   }, [initialGuest, searchGuests]);
 
+  /**
+   * Selects a guest and plays the "finding your table" transition.
+   * Shared by the dropdown click and the Enter-to-select handler.
+   */
+  const selectGuestByName = useCallback((fullName: string) => {
+    setQuery(fullName);
+
+    // Close mobile keyboard / remove input focus for a smoother transition
+    (document.activeElement as HTMLElement | null)?.blur();
+
+    // Reset the previous card + dropdown
+    setSelectedGuest(null);
+    setResults([]);
+
+    // Luxury loading state, then reveal the result
+    setIsFindingSeat(true);
+
+    setTimeout(() => {
+      setSelectedGuest(fullName);
+      setIsFindingSeat(false);
+    }, 1400);
+  }, []);
+
   return (
     <div className="w-full max-w-lg mx-auto px-4">
       {/* Search Input */}
@@ -182,6 +223,24 @@ export function SeatFinder() {
             onChange={(e) => {
               setQuery(e.target.value);
               setSelectedGuest(null);
+            }}
+            onKeyDown={(e) => {
+              /**
+               * Enter selects an exact name match (or the only result),
+               * so typing a full name works without tapping the dropdown.
+               */
+              if (e.key !== "Enter") return;
+              e.preventDefault();
+
+              const typed = query.trim().toLowerCase();
+              if (!typed) return;
+
+              const exact = results.find((guest) => guest.fullName.toLowerCase() === typed);
+              const match = exact || (results.length === 1 ? results[0] : null);
+
+              if (match) {
+                selectGuestByName(match.fullName);
+              }
             }}
             onBlur={(e) => {
               /**
@@ -212,29 +271,7 @@ export function SeatFinder() {
               results.map((guest) => (
                 <button
                   key={guest.fullName}
-                  onClick={() => {
-                    setQuery(guest.fullName);
-
-                    /**
-                     * Close mobile keyboard and remove input focus
-                     * for a smoother transition
-                     */
-                    (document.activeElement as HTMLElement | null)?.blur();
-
-                    // Clear previous seat card
-                    setSelectedGuest(null);
-
-                    // Instantly hide dropdown
-                    setResults([]);
-
-                    // Start luxury loading state
-                    setIsFindingSeat(true);
-
-                    setTimeout(() => {
-                      setSelectedGuest(guest.fullName);
-                      setIsFindingSeat(false);
-                    }, 1400);
-                  }}
+                  onClick={() => selectGuestByName(guest.fullName)}
                   className="
                     w-full px-5 py-4 text-left border-b border-[#A8BBA3]/12
                     transition-all duration-200 hover:bg-[#A8BBA3]/8 active:bg-[#A8BBA3]/10 last:border-b-0"
@@ -411,14 +448,14 @@ export function SeatFinder() {
                                 rounded-[1.5rem] border border-[#A8BBA3]/20 bg-white/45 backdrop-blur-sm px-7 py-6 
                                 shadow-[0_8px_30px_rgba(0,0,0,0.04)]"
                             >
-                              <p className="mb-4 text-[1.1rem] font-medium text-foreground">No Table Assignment Yet</p>
+                              <p className="mb-4 text-[1.1rem] font-medium text-foreground">Seating Is Being Finalized ✨</p>
 
                               <p className="text-sm leading-7 text-muted-foreground/80">
-                                There is no assigned table at the moment. Kindly wait for further updates.
+                                Your table is still being arranged and will appear here as soon as it&apos;s ready.
                               </p>
 
                               <p className="text-sm leading-7 text-muted-foreground/80 mt-2">
-                                If you have not been assigned a table yet, please feel free to reach out to us. Thank you.
+                                Thank you for your patience — kindly check back a little later, or reach out to us anytime.
                               </p>
                             </div>
                           </div>
@@ -448,6 +485,7 @@ export function SeatFinder() {
           setQuery("");
         }}
         guests={acceptedGuests}
+        groups={groupSummaries}
         isLoading={isLoadingGuests}
       />
     </div>

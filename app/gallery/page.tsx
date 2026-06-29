@@ -7,13 +7,19 @@ import { X, ChevronLeft, ChevronRight, Play, Maximize2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Navigation } from "@/components/wedding/navigation";
 import { Footer } from "@/components/wedding/footer";
-import { galleryMedia } from "@/data/gallery";
-
-
 
 export default function GalleryPage() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [touchStart, setTouchStart] = useState<number | null>(null);
+  type GalleryItem = {
+    type: "image" | "video";
+    src: string;
+    alt: string;
+    thumbnail?: string;
+  };
+
+  const [galleryMedia, setGalleryMedia] = useState<GalleryItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const openLightbox = (index: number) => setSelectedIndex(index);
   const closeLightbox = () => setSelectedIndex(null);
@@ -41,6 +47,28 @@ export default function GalleryPage() {
     setTouchStart(null);
   };
 
+  useEffect(() => {
+    const loadGallery = async () => {
+      try {
+        const response = await fetch("/api/gallery");
+
+        if (!response.ok) {
+          throw new Error("Failed to load gallery.");
+        }
+
+        const data = await response.json();
+
+        setGalleryMedia(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadGallery();
+  }, []);
+
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -57,7 +85,7 @@ export default function GalleryPage() {
 
   // Handle background music pause/resume
   useEffect(() => {
-    if (selectedIndex !== null && galleryMedia[selectedIndex].type === "video") {
+    if (selectedIndex !== null && galleryMedia[selectedIndex]?.type === "video") {
       window.dispatchEvent(new CustomEvent("wedding-pause-music"));
     } else {
       window.dispatchEvent(new CustomEvent("wedding-resume-music"));
@@ -65,11 +93,15 @@ export default function GalleryPage() {
 
     // Resume music when component unmounts or lightbox closes
     return () => {
-      if (selectedIndex !== null && galleryMedia[selectedIndex].type === "video") {
+      if (selectedIndex !== null && galleryMedia[selectedIndex]?.type === "video") {
         window.dispatchEvent(new CustomEvent("wedding-resume-music"));
       }
     };
-  }, [selectedIndex]);
+  }, [selectedIndex, galleryMedia]);
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading gallery...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -83,7 +115,7 @@ export default function GalleryPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="text-sm tracking-[0.3em] uppercase font-(family-name:--font-montserrat) text-muted-foreground mb-4"
+              className="text-sm tracking-[0.3em] uppercase font-(family-name:--font-montserrat) text-blushpink mb-4"
             >
               Our Love in Motion
             </motion.p>
@@ -121,12 +153,23 @@ export default function GalleryPage() {
                   />
                 ) : (
                   <div className="relative w-full h-full">
-                    <Image
-                      src={item.thumbnail || "/images/placeholder.jpg"}
-                      alt={item.alt}
-                      fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
+                    {item.src.includes("youtube.com") ? (
+                      <Image
+                        src={item.thumbnail || "/images/placeholder.jpg"}
+                        alt={item.alt}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                    ) : (
+                      <video
+                        src={item.src}
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        muted
+                        preload="metadata"
+                        playsInline
+                      />
+                    )}
+
                     <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors">
                       <div className="w-16 h-16 rounded-full border border-white/50 backdrop-blur-sm flex items-center justify-center text-white transition-transform duration-300 group-hover:scale-110">
                         <Play size={28} fill="white" className="ml-1" />
@@ -204,11 +247,11 @@ export default function GalleryPage() {
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
             >
-              {galleryMedia[selectedIndex].type === "image" ? (
+              {galleryMedia[selectedIndex]?.type === "image" ? (
                 <div className="relative w-full h-full">
                   <Image
-                    src={galleryMedia[selectedIndex].src}
-                    alt={galleryMedia[selectedIndex].alt}
+                    src={galleryMedia[selectedIndex]?.src ?? ""}
+                    alt={galleryMedia[selectedIndex]?.alt ?? ""}
                     fill
                     className="object-contain"
                     priority
@@ -217,8 +260,8 @@ export default function GalleryPage() {
               ) : (
                 <div className="w-full aspect-video bg-black rounded-lg overflow-hidden shadow-2xl">
                   <iframe
-                    src={galleryMedia[selectedIndex].src}
-                    title={galleryMedia[selectedIndex].alt}
+                    src={galleryMedia[selectedIndex]?.src ?? ""}
+                    title={galleryMedia[selectedIndex]?.alt ?? ""}
                     className="w-full h-full"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
@@ -228,9 +271,6 @@ export default function GalleryPage() {
 
               {/* Caption */}
               <div className="absolute -bottom-16 left-0 right-0 text-center">
-                <p className="text-foreground text-sm font-(family-name:--font-montserrat) tracking-[0.3em] uppercase">
-                  {galleryMedia[selectedIndex].alt}
-                </p>
                 <p className="text-muted-foreground text-xs mt-2 font-(family-name:--font-montserrat)">
                   {selectedIndex + 1} / {galleryMedia.length}
                 </p>

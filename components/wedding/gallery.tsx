@@ -4,18 +4,10 @@ import { useState } from "react"
 import Image from "next/image"
 import { X, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react"
 import Link from "next/link"
-import { galleryImages } from "@/data/gallery";
+import { galleryImages, galleryVideos } from "@/data/gallery";
 import { cn } from "@/lib/utils"
 
-// Videos URLs here
-
-const VIDEO_URLS = {
-  prenup:
-    "https://www.youtube.com/embed/YMKjUxJa6C4?enablejsapi=1",
-
-  saveTheDate:
-    "https://www.youtube.com/embed/vJ-oVgDNkmo",
-}
+// Videos URLs inport here on the data/gallery.ts
 
 
 export function Gallery() {
@@ -57,7 +49,7 @@ export function Gallery() {
                     <div className="overflow-hidden rounded-[28px] shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
                       <iframe
                         className="w-full aspect-video"
-                        src={VIDEO_URLS.prenup}
+                        src={galleryVideos.prenup.src}
                         title="Prenup Video"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
@@ -87,7 +79,7 @@ export function Gallery() {
                   <div className="overflow-hidden rounded-[28px] shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
                     <iframe
                       className="w-full aspect-video"
-                      src={VIDEO_URLS.saveTheDate}
+                      src={galleryVideos.saveTheDate.src}
                       title="Save The Date Video"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen />
@@ -104,7 +96,7 @@ export function Gallery() {
                     <div className="overflow-hidden rounded-[28px] shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
                       <iframe
                           className="w-full aspect-video"
-                          src={VIDEO_URLS.prenup}
+                          src={galleryVideos.prenup.src}
                           title="Prenup Video"
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                           allowFullScreen />
@@ -114,7 +106,7 @@ export function Gallery() {
                     <div className="overflow-hidden rounded-[28px] shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
                       <iframe
                       className="w-full aspect-video"
-                      src={VIDEO_URLS.saveTheDate}
+                      src={galleryVideos.saveTheDate.src}
                       title="Save The Date Video"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen />

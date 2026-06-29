@@ -50,16 +50,35 @@ export const galleryImages = [
   },
 ];
 
-export const galleryMedia = [
-  // =========================
-  // Featured Video
-  // =========================
-  {
-    type: "video",
+// ============================================================
+// Featured Gallery Videos
+// Used by the Homepage Gallery and Full Gallery
+// ============================================================
+
+export const galleryVideos = {
+  prenup: {
     src: "https://www.youtube.com/embed/YMKjUxJa6C4?enablejsapi=1",
     thumbnail: "https://img.youtube.com/vi/YMKjUxJa6C4/maxresdefault.jpg",
     alt: "Our Pre-Wedding Film",
   },
+
+  saveTheDate: {
+    src: "https://www.youtube.com/embed/vJ-oVgDNkmo?enablejsapi=1",
+    thumbnail: "https://img.youtube.com/vi/vJ-oVgDNkmo/maxresdefault.jpg",
+    alt: "Save the Date",
+  },
+};
+
+export const featuredGalleryVideos = Object.values(galleryVideos);
+
+export const galleryMedia = [
+  // =========================
+  // Featured Video youtube Urls
+  // =========================
+  ...featuredGalleryVideos.map((video) => ({
+    type: "video",
+    ...video,
+  })),
 
   // =========================
   // Gallery Images

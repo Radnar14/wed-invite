@@ -44,6 +44,7 @@ export async function GET() {
       ? fs
           .readdirSync(imageDirectory)
           .filter((file) => imageExtensions.includes(path.extname(file).toLowerCase()))
+          .sort()
           .map((file) => ({
             type: "image",
             src: `/gallery/images/${file}`,
@@ -71,7 +72,7 @@ export async function GET() {
             return {
               type: "video",
               src: `/gallery/videos/${file}`,
-              thumbnail: thumbnail ? `/gallery/videos/${name}${thumbnail}` : "/images/placeholder.jpg",
+              thumbnail: thumbnail ? `/gallery/videos/${name}${thumbnail}` : "/placeholder.jpg",
               alt: name,
             };
           })

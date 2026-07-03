@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaFacebookMessenger, FaInstagram } from "react-icons/fa6";
 
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,22 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { Check, Heart, CircleX, Frown, Search, ChevronLeft, Loader2, Calendar, Lock } from "lucide-react";
+import {
+  Check,
+  Heart,
+  CircleX,
+  Frown,
+  Search,
+  ChevronLeft,
+  ChevronDown,
+  Loader2,
+  Calendar,
+  Lock,
+  Pencil,
+  X,
+  UserPlus,
+  Plus,
+} from "lucide-react";
 
 // RSVP deadline shown across the section
 const RSVP_DEADLINE = "September 8, 2026";
@@ -65,6 +80,41 @@ export function RSVP() {
     guestCount: number;
   } | null>(null);
 
+  // Group (representative) RSVP — the selected guest is a representative
+  // confirming attendance for themselves and each of their members.
+  // `originalName` is the name as stored in the sheet (used to locate the
+  // row), while `name` is the editable, possibly-corrected display name.
+  // `confirmed` means the rep added this person to the attending list.
+  const [isGroup, setIsGroup] = useState(false);
+  const [groupAttendees, setGroupAttendees] = useState<
+    {
+      originalName: string;
+      name: string;
+      isRepresentative: boolean;
+      confirmed: boolean;
+    }[]
+  >([]);
+
+  // Index of the attendee whose name is currently being edited (pencil).
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+
+  // Custom "add a guest" dropdown open state + click-outside handling.
+  const [isGroupDropdownOpen, setIsGroupDropdownOpen] = useState(false);
+  const groupDropdownRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!isGroupDropdownOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (groupDropdownRef.current && !groupDropdownRef.current.contains(event.target as Node)) {
+        setIsGroupDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isGroupDropdownOpen]);
+
   const [isSearching, setIsSearching] = useState(false);
 
   const [isLoadingGuest, setIsLoadingGuest] = useState(false);
@@ -115,6 +165,22 @@ export function RSVP() {
     }));
   };
 
+  // Add a member to / remove a member from the confirmed (attending) list.
+  const setAttendeeConfirmed = (index: number, confirmed: boolean) => {
+    setGroupAttendees((prev) => prev.map((person, i) => (i === index ? { ...person, confirmed } : person)));
+  };
+
+  // Add a member to the attending list by their array index (from the dropdown).
+  const addAttendee = (index: number) => {
+    if (index < 0) return;
+    setAttendeeConfirmed(index, true);
+  };
+
+  // Correct a misspelled name (pencil edit).
+  const setAttendeeName = (index: number, name: string) => {
+    setGroupAttendees((prev) => prev.map((person, i) => (i === index ? { ...person, name } : person)));
+  };
+
   // Return to the "Find Your Name" step
   const resetToSearch = () => {
     setSelectedGuest(null);
@@ -123,6 +189,10 @@ export function RSVP() {
     setIsSearching(false);
     setIsLoadingGuest(false);
     setIsLockedRSVP(false);
+    setIsGroup(false);
+    setGroupAttendees([]);
+    setEditingIndex(null);
+    setIsGroupDropdownOpen(false);
     setSubmitError("");
     setError(null);
     resetForm();
@@ -161,8 +231,10 @@ export function RSVP() {
     setSelectedGuest(guest);
     setIsLoadingGuest(true);
 
-    // reset lock state
+    // reset lock + group state
     setIsLockedRSVP(false);
+    setIsGroup(false);
+    setGroupAttendees([]);
 
     // default form values
     setFormData((prev) => ({
@@ -174,6 +246,49 @@ export function RSVP() {
     setQuery(guest.fullName);
     setResults([]);
     setIsSearching(false);
+
+    // First, check whether this name is a representative of a group.
+    // If so, show the per-member confirmation UI instead of the
+    // single-guest form.
+    try {
+      const groupResponse = await fetch(`${GOOGLE_SCRIPT_URL}?action=group&q=${encodeURIComponent(guest.fullName)}`);
+      const groupData = await groupResponse.json();
+
+      if (groupData.isGroup) {
+        setIsGroup(true);
+        setIsLockedRSVP(Boolean(groupData.locked));
+
+        setEditingIndex(null);
+        setGroupAttendees(
+          (groupData.attendees || []).map((person: { name: string; isRepresentative?: boolean; status?: string }) => ({
+            originalName: person.name,
+            name: person.name,
+            isRepresentative: Boolean(person.isRepresentative),
+            // The rep starts already in the attending list; members start in
+            // the dropdown until added. A returning RSVP restores prior choices.
+            confirmed:
+              person.status === "Accept"
+                ? true
+                : person.status === "Decline"
+                  ? false
+                  : Boolean(person.isRepresentative),
+          })),
+        );
+
+        setFormData((prev) => ({
+          ...prev,
+          name: groupData.representative || guest.fullName,
+          email: groupData.email || "",
+          message: groupData.message || "",
+          guests: String(groupData.hc || guest.guestCount),
+        }));
+
+        setIsLoadingGuest(false);
+        return;
+      }
+    } catch (error) {
+      console.error("Group lookup failed:", error);
+    }
 
     try {
       const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=checkGuest&q=${encodeURIComponent(guest.fullName)}`);
@@ -210,13 +325,31 @@ export function RSVP() {
     setIsSubmitting(true);
     setError(null);
 
+    // Group representatives submit a per-member payload; everyone else
+    // submits the single-guest form as before.
+    const payload = isGroup
+      ? {
+          type: "group",
+          representative: formData.name,
+          email: formData.email,
+          message: formData.message,
+          attendees: groupAttendees.map((person) => ({
+            // originalName locates the sheet row; name carries any correction.
+            originalName: person.originalName,
+            name: person.name.trim() || person.originalName,
+            isRepresentative: person.isRepresentative,
+            attendance: person.confirmed ? "Accept" : "Decline",
+          })),
+        }
+      : formData;
+
     try {
       const response = await fetch("/api/rsvp", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       const data = await response.json();
@@ -228,7 +361,32 @@ export function RSVP() {
         return;
       }
 
-      // LOCKED RSVP
+      // LOCKED — GROUP RSVP
+      if (data.result === "locked" && data.group) {
+        setIsGroup(true);
+        setIsLockedRSVP(true);
+
+        setEditingIndex(null);
+        setGroupAttendees(
+          (data.group.attendees || []).map((person: { name: string; isRepresentative?: boolean; status?: string }) => ({
+            originalName: person.name,
+            name: person.name,
+            isRepresentative: Boolean(person.isRepresentative),
+            confirmed: person.status === "Accept",
+          })),
+        );
+
+        setSelectedGuest({
+          fullName: data.group.representative,
+          guestCount: data.group.hc,
+        });
+
+        setQuery(data.group.representative);
+
+        return;
+      }
+
+      // LOCKED — SINGLE GUEST RSVP
       if (data.result === "locked") {
         setIsLockedRSVP(true);
 
@@ -978,6 +1136,254 @@ export function RSVP() {
                     />
                   </div>
 
+                  {/* ============================================================= */}
+                  {/* GROUP CONFIRMATION — representative confirms each member     */}
+                  {/* ============================================================= */}
+                  {isGroup && (
+                    <div className="space-y-4">
+                      {/* Heading */}
+                      <div className="space-y-1.5">
+                        <Label className="text-sm font-(family-name:--font-montserrat) tracking-wide">
+                          Confirm your group&apos;s attendance *
+                        </Label>
+                        <p className="text-xs text-muted-foreground font-(family-name:--font-montserrat)">
+                          Add each guest from your group who will be attending. Your invitation allows {formData.guests} guest
+                          {Number(formData.guests) > 1 ? "s" : ""}.
+                        </p>
+                      </div>
+
+                      {/* Group finalized banner */}
+                      {isLockedRSVP && (
+                        <div className="rounded-[2rem] border border-[#EADFD8] bg-[#FAF7F4] px-5 py-4 text-center">
+                          <p className="text-sm text-[#9A7E6F] font-(family-name:--font-montserrat)">
+                            This group&apos;s RSVP has been finalized and can no longer be modified. 💍
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Add-member dropdown — themed custom dropdown */}
+                      {!isLockedRSVP && groupAttendees.some((p) => !p.confirmed) && (
+                        <div className="relative" ref={groupDropdownRef}>
+                          {/* Trigger */}
+                          <button
+                            type="button"
+                            onClick={() => setIsGroupDropdownOpen((open) => !open)}
+                            className="
+                              flex h-12 w-full items-center gap-3
+                              rounded-2xl border border-border/50 bg-white px-4 text-left text-sm
+                              transition-colors duration-300
+                              hover:border-accent/60 focus:border-accent focus:outline-none"
+                          >
+                            <UserPlus className="h-4 w-4 shrink-0 text-accent" />
+                            <span className="flex-1 text-muted-foreground font-(family-name:--font-montserrat)">
+                              Select a guest to confirm…
+                            </span>
+                            <ChevronDown
+                              className={`h-4 w-4 shrink-0 text-muted-foreground/60 transition-transform duration-300 ${
+                                isGroupDropdownOpen ? "rotate-180" : ""
+                              }`}
+                            />
+                          </button>
+
+                          {/* Menu */}
+                          {isGroupDropdownOpen && (
+                            <div
+                              className="
+                                absolute top-[calc(100%+0.35rem)] z-50 w-full overflow-hidden
+                                rounded-[2rem] border border-border/40 bg-white/95 backdrop-blur-sm shadow-xl
+                                animate-in fade-in slide-in-from-top-2 duration-300"
+                            >
+                              {/* Top gradient bar */}
+                              <div className="h-3 w-full bg-gradient-to-r from-[#A8BBA3] via-[#C7D7C0] to-[#A8BBA3]" />
+
+                              {/* Title */}
+                              <div className="pt-1 text-center">
+                                <div className="flex items-center gap-3">
+                                  <div className="h-px flex-1 bg-border/90" />
+                                  <p className="whitespace-nowrap text-sm font-medium text-foreground">Your Group ✨</p>
+                                  <div className="h-px flex-1 bg-border/90" />
+                                </div>
+                                <p className="mt-1 text-xs text-muted-foreground">Select who&apos;s attending</p>
+                                <div className="mt-2 h-1 w-full bg-gradient-to-r from-[#A8BBA3] via-[#C7D7C0] to-[#A8BBA3]" />
+                              </div>
+
+                              {/* Options */}
+                              <div className="max-h-64 overflow-y-auto">
+                                {groupAttendees.map((person, index) =>
+                                  !person.confirmed ? (
+                                    <button
+                                      key={index}
+                                      type="button"
+                                      onClick={() => addAttendee(index)}
+                                      className="
+                                        flex w-full items-center
+                                        border-b border-border/50 px-4 py-2.5 text-left
+                                        transition duration-200 hover:bg-accent/10
+                                        active:scale-[0.98] active:bg-accent/15"
+                                    >
+                                      <span className="text-sm font-medium">{person.name}</span>
+                                      {person.isRepresentative && (
+                                        <span className="ml-2 rounded-full bg-[#E4EEE0] px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.1em] text-[#6F806B]">
+                                          Rep
+                                        </span>
+                                      )}
+                                      <span className="ml-auto text-accent">
+                                        <Plus size={16} />
+                                      </span>
+                                    </button>
+                                  ) : null,
+                                )}
+                              </div>
+
+                              {/* Bottom gradient bar */}
+                              <div className="h-3 w-full bg-gradient-to-r from-[#A8BBA3] via-[#C7D7C0] to-[#A8BBA3]" />
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Confirmed (attending) list shown in the main UI */}
+                      <div className="space-y-3">
+                        {groupAttendees.some((p) => p.confirmed) ? (
+                          groupAttendees.map((person, index) =>
+                            person.confirmed ? (
+                              <div
+                                key={index}
+                                className="
+                                  flex items-center justify-between gap-3
+                                  rounded-2xl border border-[#D3E0CF] bg-[#F4F9F1]
+                                  px-4 py-3 shadow-[0_4px_15px_rgba(0,0,0,0.04)]"
+                              >
+                                {/* Person */}
+                                <div className="flex min-w-0 flex-1 items-center gap-2.5">
+                                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#E4EEE0] text-[#6F806B]">
+                                    <Check size={14} />
+                                  </span>
+
+                                  {editingIndex === index ? (
+                                    <Input
+                                      autoFocus
+                                      value={person.name}
+                                      disabled={isLockedRSVP}
+                                      onChange={(e) => setAttendeeName(index, e.target.value)}
+                                      onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                          e.preventDefault();
+                                          setEditingIndex(null);
+                                        }
+                                      }}
+                                      className="h-8 rounded-lg text-sm"
+                                    />
+                                  ) : (
+                                    <div className="min-w-0">
+                                      <p className="truncate text-sm font-medium text-foreground">{person.name}</p>
+                                      {person.isRepresentative && (
+                                        <span className="text-[0.6rem] uppercase tracking-[0.12em] text-[#6F806B] font-medium font-(family-name:--font-montserrat)">
+                                          Representative
+                                        </span>
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+
+                                {/* Actions: pencil (fix spelling) + remove */}
+                                {!isLockedRSVP && (
+                                  <div className="flex shrink-0 items-center gap-1">
+                                    <button
+                                      type="button"
+                                      title={editingIndex === index ? "Done" : "Correct spelling"}
+                                      onClick={() => setEditingIndex(editingIndex === index ? null : index)}
+                                      className="
+                                        flex h-8 w-8 items-center justify-center rounded-full
+                                        text-muted-foreground transition-colors
+                                        hover:bg-accent/10 hover:text-foreground"
+                                    >
+                                      {editingIndex === index ? <Check size={15} /> : <Pencil size={14} />}
+                                    </button>
+
+                                    <button
+                                      type="button"
+                                      title="Remove from list"
+                                      onClick={() => {
+                                        setAttendeeConfirmed(index, false);
+                                        if (editingIndex === index) setEditingIndex(null);
+                                        setIsGroupDropdownOpen(false);
+                                      }}
+                                      className="
+                                        flex h-8 w-8 items-center justify-center rounded-full
+                                        text-rose-400 transition-colors hover:bg-rose-50 hover:text-rose-600"
+                                    >
+                                      <X size={15} />
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                            ) : null,
+                          )
+                        ) : (
+                          /* Whole group declining (0 of N) — mirror the single-guest decline + QR */
+                          <div className="space-y-4">
+                            <div className="rounded-[2rem] border border-rose-100 bg-rose-50/40 px-5 py-4 text-center">
+                              <p className="text-sm leading-7 text-rose-600 font-(family-name:--font-montserrat)">
+                                We&apos;re sorry your group can&apos;t celebrate with us 💔
+                                <br />
+                                Your presence will surely be missed.
+                                {!isLockedRSVP && (
+                                  <>
+                                    <br />
+                                    You can still add a guest above if anyone can make it.
+                                  </>
+                                )}
+                              </p>
+                            </div>
+
+                            {/* Optional Blessing / Offering */}
+                            <div className="rounded-[2rem] border border-border/30 bg-white/70 px-5 py-6 text-center">
+                              <p className="text-sm text-muted-foreground font-(family-name:--font-montserrat)">
+                                Still want to send your love &amp; blessings? ✨
+                              </p>
+                              <p className="mt-1 text-xs text-muted-foreground/80 font-(family-name:--font-montserrat)">
+                                Your kindness is deeply appreciated.
+                              </p>
+
+                              <button type="button" onClick={() => setShowQRPreview(true)} className="mx-auto mt-4 block">
+                                <img
+                                  src="/images/BPI_Qrcode.png"
+                                  alt="QR Code"
+                                  className="
+                                    h-40 w-40 sm:h-44 sm:w-44 rounded-2xl
+                                    border border-border/20 object-cover
+                                    shadow-sm transition-transform duration-300 hover:scale-105"
+                                />
+                              </button>
+
+                              <p className="mt-4 text-xs text-muted-foreground font-(family-name:--font-montserrat)">
+                                Scan to send your optional gift or blessing 💕
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Attending tally */}
+                      <div
+                        className="
+                          rounded-[2rem] border border-blushpink/10
+                          bg-gradient-to-br from-white to-rose-50/40
+                          px-5 py-3 text-center shadow-[0_8px_25px_rgba(0,0,0,0.06)]"
+                      >
+                        <p className="text-sm font-medium text-foreground font-(family-name:--font-montserrat)">
+                          ✨ {groupAttendees.filter((p) => p.confirmed).length} of {groupAttendees.length} attending
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* ============================================================= */}
+                  {/* SINGLE-GUEST DETAILS                                          */}
+                  {/* ============================================================= */}
+                  {!isGroup && (
+                    <>
                   {/* Attendance */}
                   <div className="space-y-2.5 sm:space-y-3">
                     <Label className="text-sm font-(family-name:--font-montserrat) tracking-wide">Will you be attending? *</Label>
@@ -1246,6 +1652,8 @@ export function RSVP() {
                         </p>
                       </div>
                     </div>
+                  )}
+                    </>
                   )}
 
                   {/* Message */}

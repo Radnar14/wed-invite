@@ -2,63 +2,14 @@
 
 import { useState } from "react";
 import { Check } from "lucide-react";
-
-const greenShades = [
-  { name: "Celadon", hex: "#B7C8A6" },
-  { name: "Eucalyptus", hex: "#A8B89A" },
-  { name: "Sage Green", hex: "#9CAF88" },
-  { name: "Dusty Green", hex: "#8FA37D" },
-  { name: "Olive", hex: "#7F8F6E" },
-];
-
-const attireRoles = [
-  { id: "guests", label: "Guests" },
-  { id: "principal", label: "Principal" },
-  { id: "secondary", label: "Secondary" },
-] as const;
-
-const sponsorAttire = {
-  principal: {
-    role: "Principal Sponsors",
-    note: "Cream and white",
-    women: {
-      label: "Cream Gown",
-      color: "#F3E7D4",
-    },
-    men: {
-      label: "White Barong",
-      color: "#F8F5EE",
-    },
-  },
-  secondary: {
-    role: "Secondary Sponsors",
-    note: "Champagne and beige",
-    women: {
-      label: "Champagne Gown",
-      color: "#E5D1AE",
-    },
-    men: {
-      label: "Beige Barong",
-      color: "#D7C3A3",
-    },
-  },
-};
-
-const assignedColorLabels = [
-  {
-    name: "Men",
-    garment: "Barong",
-  },
-  {
-    name: "Women",
-    garment: "Gown",
-  },
-];
-
-type Shade = {
-  name: string;
-  hex: string;
-};
+import {
+  assignedColorLabels,
+  attireRoles,
+  attireText,
+  greenShades,
+  sponsorAttire,
+  type AttireShade,
+} from "@/data/attire";
 
 type AttireRole = (typeof attireRoles)[number]["id"];
 
@@ -228,7 +179,7 @@ function LadyFigure({ color }: { color: string }) {
 }
 
 export function Attire() {
-  const [selectedGreen, setSelectedGreen] = useState<Shade>(greenShades[2]);
+  const [selectedGreen, setSelectedGreen] = useState<AttireShade>(greenShades[2]);
   const [selectedRole, setSelectedRole] = useState<AttireRole>("guests");
 
   const activeAttire =
@@ -257,7 +208,7 @@ export function Attire() {
           <p className="mb-4 text-sm tracking-[0.3em] uppercase text-blushpink font-(family-name:--font-montserrat)">What to Wear</p>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-foreground">Dress Code</h2>
           <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-muted-foreground font-(family-name:--font-montserrat) md:text-base">
-            We kindly request our guests to wear shades of green to match our wedding theme.
+            {attireText.description}
           </p>
         </div>
 
@@ -269,7 +220,7 @@ export function Attire() {
 
               {isGuestRole && (
                 <p className="mt-2 text-[0.65rem] font-medium uppercase tracking-[0.2em] text-[#8A9A5B] font-(family-name:--font-montserrat) md:text-xs">
-                  Sage Green Recommended
+                  {attireText.guestRecommendation}
                 </p>
               )}
               <div className="mt-4 h-px w-12 bg-blushpink/50" />
@@ -285,7 +236,7 @@ export function Attire() {
                     </div>
                   </div>
                   <div className="text-center">
-                    <p className="text-base font-medium text-foreground md:text-lg">Gentlemen</p>
+                    <p className="text-base font-medium text-foreground md:text-lg">{attireText.gentlemenLabel}</p>
                     <p className="mt-1 text-[0.65rem] uppercase tracking-[0.14em] text-muted-foreground font-(family-name:--font-montserrat) md:text-xs">
                       {activeAttire.men.label}
                     </p>
@@ -299,7 +250,7 @@ export function Attire() {
                     </div>
                   </div>
                   <div className="text-center">
-                    <p className="text-base font-medium text-foreground md:text-lg">Ladies</p>
+                    <p className="text-base font-medium text-foreground md:text-lg">{attireText.ladiesLabel}</p>
                     <p className="mt-1 text-[0.65rem] uppercase tracking-[0.14em] text-muted-foreground font-(family-name:--font-montserrat) md:text-xs">
                       {activeAttire.women.label}
                     </p>
@@ -341,7 +292,7 @@ export function Attire() {
               {isGuestRole ? (
                 <>
                   <h4 className="mb-5 text-center text-sm font-light uppercase tracking-[0.15em] text-foreground font-(family-name:--font-montserrat)">
-                    Select A Shade
+                    {attireText.shadeHeading}
                   </h4>
 
                   <div className="flex flex-nowrap items-start justify-center gap-3 md:gap-4">
@@ -372,7 +323,7 @@ export function Attire() {
               ) : (
                 <>
                   <h4 className="mb-5 text-center text-sm font-light uppercase tracking-[0.15em] text-foreground font-(family-name:--font-montserrat)">
-                    Assigned Palette
+                    {attireText.assignedPaletteHeading}
                   </h4>
 
                   <div className="flex justify-center">
@@ -398,7 +349,7 @@ export function Attire() {
             </div>
 
             <div className="border-t border-border/40 pt-5 text-center">
-              <p className="text-xs italic text-muted-foreground md:text-sm">Cocktail or semi-formal attire is encouraged.</p>
+              <p className="text-xs italic text-muted-foreground md:text-sm">{attireText.footerNote}</p>
             </div>
           </div>
         </div>

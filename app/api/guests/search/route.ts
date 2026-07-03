@@ -10,7 +10,7 @@ export async function GET(request: Request) {
      * Hidden host/admin mode:
      * returns all accepted guests
      */
-    if (action === "allGuests") {
+    if (action === "allGuests" || action === "groupSummary") {
       const targetUrl = process.env.GOOGLE_APPS_SCRIPT_URL;
 
       if (!targetUrl) {
@@ -22,7 +22,7 @@ export async function GET(request: Request) {
         );
       }
 
-      const fetchUrl = `${targetUrl}?action=allGuests`;
+      const fetchUrl = `${targetUrl}?action=${action}`;
 
       const response = await fetch(fetchUrl, {
         method: "GET",

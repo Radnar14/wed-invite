@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { cn } from "@/lib/utils"
+import { timelineEvents } from "@/data/timeline"
 import { 
   Users, 
   Heart, 
@@ -13,56 +14,22 @@ import {
   Sparkles 
 } from "lucide-react"
 
-const timelineEvents = [
-  {
-    time: "1:30 PM",
-    title: "Guest Arrival",
-    description: "Guests arrive and are seated for the ceremony",
-    icon: Users,
-  },
-  {
-    time: "2:30 PM",
-    title: "Ceremony",
-    description: "Exchange of vows in the garden pavilion",
-    icon: Heart,
-  },
-  {
-    time: "3:45 PM",
-    title: "Family Photos",
-    description: "Family and wedding party photographs",
-    icon: Camera,
-  },
-  {
-    time: "4:30 PM",
-    title: "Cocktail Hour",
-    description: "Enjoy hors d'oeuvres and drinks on the terrace",
-    icon: GlassWater,
-  },
-  {
-    time: "6:00 PM",
-    title: "Reception",
-    description: "Dinner, toasts, and celebration begin",
-    icon: Utensils,
-  },
-  {
-    time: "7:30 PM",
-    title: "First Dance",
-    description: "The couple's first dance as newlyweds",
-    icon: Music,
-  },
-  {
-    time: "8:00 PM",
-    title: "Dancing & Celebration",
-    description: "Dance the night away with live music",
-    icon: Music2,
-  },
-  {
-    time: "11:00 PM",
-    title: "Sparkler Send-Off",
-    description: "Bid farewell to the happy couple",
-    icon: Sparkles,
-  },
-]
+const timelineIcons = {
+  users: Users,
+  heart: Heart,
+  camera: Camera,
+  drinks: GlassWater,
+  dinner: Utensils,
+  music: Music,
+  dancing: Music2,
+  sparkles: Sparkles,
+}
+
+function TimelineEventIcon({ name }: { name: keyof typeof timelineIcons }) {
+  const Icon = timelineIcons[name]
+
+  return <Icon className="w-5 h-5 text-accent transition-transform duration-500 group-hover:rotate-12" />
+}
 
 export function Timeline() {
   const [visibleItems, setVisibleItems] = useState<Set<number>>(new Set())
@@ -130,7 +97,7 @@ export function Timeline() {
 
                 {/* Icon Circle */}
                 <div className="absolute left-0 md:left-1/2 w-10 h-10 bg-background border border-accent/20 rounded-full flex items-center justify-center z-10 md:-translate-x-1/2 transition-all duration-500 group-hover:scale-110 group-hover:border-accent group-hover:shadow-[0_0_20px_rgba(var(--accent),0.2)]">
-                  <event.icon className="w-5 h-5 text-accent transition-transform duration-500 group-hover:rotate-12" />
+                  <TimelineEventIcon name={event.icon} />
                 </div>
 
                 {/* Content Card */}

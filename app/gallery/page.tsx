@@ -203,6 +203,7 @@ export default function GalleryPage() {
                               src={item.thumbnail || "/images/placeholder.jpg"}
                               alt={item.alt}
                               fill
+                              loading="eager"
                               className="object-cover transition-transform duration-700 group-hover:scale-105"
                             />
                           ) : (
@@ -254,40 +255,73 @@ export default function GalleryPage() {
                   <div className="mb-2 h-px flex-1 bg-linear-to-r from-border to-transparent" />
                 </div>
 
-                <Carousel opts={{ align: "start", loop: moments.length > 4 }} className="px-1 md:px-12">
-                  <CarouselContent className="-ml-5">
-                    {moments.map(({ item, originalIndex }) => (
-                      <CarouselItem
-                        key={`${item.src}-${originalIndex}`}
-                        className="basis-[78%] pl-5 sm:basis-1/2 md:basis-2/5 lg:basis-1/4"
-                      >
-                        <button
-                          type="button"
-                          className="group relative block aspect-4/5 w-full cursor-pointer overflow-hidden rounded-2xl bg-muted/30 text-left shadow-sm"
-                          onClick={() => openLightbox(originalIndex)}
-                          aria-label={`Open photo: ${item.alt}`}
-                        >
-                          <Image
-                            src={item.src}
-                            alt={item.alt}
-                            fill
-                            className="object-cover transition-transform duration-700 group-hover:scale-105"
-                          />
-                          <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/60 to-transparent p-5 pt-16 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                            <div className="flex items-center justify-between gap-4">
-                              <p className="truncate text-xs uppercase tracking-widest text-white font-(family-name:--font-montserrat)">
-                                {item.alt}
-                              </p>
-                              <Maximize2 size={16} className="shrink-0 text-white/70" />
+                <div className="moments-auto-scroll">
+                  <div className="moments-auto-scroll-track">
+                    {[0, 1].map((copyIndex) =>
+                      copyIndex === 1 ? (
+                        <div key={copyIndex} className="moments-auto-scroll-group" aria-hidden="true">
+                          {moments.map(({ item, originalIndex }) => (
+                            <div key={`${copyIndex}-${item.src}-${originalIndex}`} className="w-[clamp(17rem,78vw,19rem)] shrink-0">
+                              <button
+                                type="button"
+                                className="group relative block aspect-4/5 w-full cursor-pointer overflow-hidden rounded-2xl bg-muted/30 text-left shadow-sm"
+                                onClick={() => openLightbox(originalIndex)}
+                                aria-label={`Open photo: ${item.alt}`}
+                                tabIndex={-1}
+                              >
+                                <Image
+                                  src={item.src}
+                                  alt={item.alt}
+                                  fill
+                                  loading="eager"
+                                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                />
+                                <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/60 to-transparent p-5 pt-16 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                  <div className="flex items-center justify-between gap-4">
+                                    <p className="truncate text-xs uppercase tracking-widest text-white font-(family-name:--font-montserrat)">
+                                      {item.alt}
+                                    </p>
+                                    <Maximize2 size={16} className="shrink-0 text-white/70" />
+                                  </div>
+                                </div>
+                              </button>
                             </div>
-                          </div>
-                        </button>
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                  <CarouselPrevious className="hidden border-border/60 bg-background/90 shadow-md backdrop-blur-sm md:inline-flex" />
-                  <CarouselNext className="hidden border-border/60 bg-background/90 shadow-md backdrop-blur-sm md:inline-flex" />
-                </Carousel>
+                          ))}
+                        </div>
+                      ) : (
+                        <div key={copyIndex} className="moments-auto-scroll-group">
+                          {moments.map(({ item, originalIndex }) => (
+                            <div key={`${copyIndex}-${item.src}-${originalIndex}`} className="w-[clamp(17rem,78vw,19rem)] shrink-0">
+                              <button
+                                type="button"
+                                className="group relative block aspect-4/5 w-full cursor-pointer overflow-hidden rounded-2xl bg-muted/30 text-left shadow-sm"
+                                onClick={() => openLightbox(originalIndex)}
+                                aria-label={`Open photo: ${item.alt}`}
+                                tabIndex={0}
+                              >
+                                <Image
+                                  src={item.src}
+                                  alt={item.alt}
+                                  fill
+                                  loading="eager"
+                                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                />
+                                <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/60 to-transparent p-5 pt-16 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                  <div className="flex items-center justify-between gap-4">
+                                    <p className="truncate text-xs uppercase tracking-widest text-white font-(family-name:--font-montserrat)">
+                                      {item.alt}
+                                    </p>
+                                    <Maximize2 size={16} className="shrink-0 text-white/70" />
+                                  </div>
+                                </div>
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )
+                    )}
+                  </div>
+                </div>
               </motion.section>
             )}
           </div>
@@ -356,6 +390,7 @@ export default function GalleryPage() {
                     src={galleryMedia[selectedIndex]?.src ?? ""}
                     alt={galleryMedia[selectedIndex]?.alt ?? ""}
                     fill
+                    loading="eager"
                     className="object-contain"
                     priority
                   />

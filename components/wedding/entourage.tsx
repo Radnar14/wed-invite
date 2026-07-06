@@ -1,76 +1,16 @@
 "use client";
 
-interface EntourageMember {
-  name: string;
-  role: string;
-}
-
-interface Sponsor {
-  name: string;
-}
-
-const GroomsParents: EntourageMember[] = [
-  { name: "Glen Abad", role: "Father" },
-  { name: "Sarah Abad", role: "Mother" },
-];
-
-const BridesParents: EntourageMember[] = [
-  { name: "Tarcisio Dela Cruz", role: "Father" },
-  { name: "Amelita Dela Cruz ♱", role: "Mother" },
-];
-
-const bridesSide: EntourageMember[] = [
-  { name: "Chariss Ann Marqueses", role: "Matron of Honor" },
-  { name: "Shinn Everielle Booc", role: "Bridesmaid" },
-  { name: "Jemmelyn Pescadero", role: "Bridesmaid" },
-  { name: "Jomily Irisawa", role: "Bridesmaid" },
-  { name: "Majesca Shane Zamora", role: "Bridesmaid" },
-  { name: "Candice Pastor", role: "Bridesmaid" },
-  { name: "Sofia Garcia", role: "Bridesmaid" },
-];
-
-const groomsSide: EntourageMember[] = [
-  { name: "NAME", role: "Best Man" },
-  { name: "Niño Anton Liloan", role: "Groomsman" },
-  { name: "Eizel Jimenez", role: "Groomsman" },
-  { name: "Josh Nicolaus Abad", role: "Groomsman" },
-  { name: "Leonardo Berjame", role: "Groomsman" },
-  { name: "Axziel Bartolabac", role: "Groomsman" },
-  { name: "James Vincent Abad", role: "Groomsman" },
-];
-
-const primarySponsors: Sponsor[] = [
-  { name: "Mr. Elson Manlunas & Mrs. Fe Manlunas" },
-  { name: "Mr. Eric Esconde & Mrs. Mary Grace Esconde" },
-  { name: "Mr. Dante Argallon & Mrs. Arlene Argallon" },
-  { name: "Mr. Junrey Bartolabac & Mrs. Rowena Bartolabac" },
-  { name: "Mr. Engr. Paul Bugarin & Mrs. Mira Bugarin" },
-  { name: "Mr. Kap Alley Berdin & Mrs. Celyn Kinaadman" },
-  { name: "Mr. Allan Caballero & Mrs. Engr. Criselda Caballero" },
-  { name: "Mr. Jeson Agosto & Mrs. Elmarie Agosto" },
-  { name: "Mr. Eduardo Pino & Mrs. Myrna Ybañez" },
-  { name: "Mr. Elizady Abad & Mrs. Vangie Abad" },
-];
-
-const secondarySponsors = {
-  veil: ["Mr. Vincy Ceniza", "Mrs. Orje Marey Ceniza"],
-  cord: ["Mr. Charles Bott", "Mrs. Charmie Sheen Bott"],
-  candle: ["Mr. Louie Mendez", "Mrs. Florie Mae Mendez"],
-};
-
-const flowerGirls: EntourageMember[] = [
-  { name: "Gabriella Eloise Bott", role: "Flower Girl" },
-  { name: "Sophia Scarlett Marqueses", role: "Flower Girl" },
-  { name: "Sophia Syziel Bartolabac", role: "Flower Girl" },
-  { name: "Arianne Argallon", role: "Flower Girl" },
-  { name: "Hannah Mae Abad", role: "Flower Girl" },
-];
-
-const bearers: EntourageMember[] = [
-  { name: "Elias Caden Marqueses", role: "Ring Bearer" },
-  { name: "Abiel Jimenez", role: "Bible Bearer" },
-  { name: "Zeijan Wryle Ybañez", role: "Coin Bearer" },
-];
+import {
+  bearers,
+  bridesParents,
+  bridesSide,
+  flowerGirls,
+  groomsParents,
+  groomsSide,
+  primarySponsors,
+  secondarySponsors,
+  type EntourageMember,
+} from "@/data/entourage";
 
 // Component for Bride's Side and Groom's Side
 function EntourageSide({ title, lead, members }: { title: string; lead: EntourageMember; members: EntourageMember[] }) {
@@ -140,7 +80,7 @@ export function Entourage() {
             hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)]"
           >
             <div className="text-center">
-              {GroomsParents.map((parent) => (
+              {groomsParents.map((parent) => (
                 <div key={parent.name}>
                   <p className="text-sm md:text-base italic text-blushpink mt-1">{parent.role}</p>
 
@@ -163,7 +103,7 @@ export function Entourage() {
             hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)]"
           >
             <div className="text-center">
-              {BridesParents.map((parent) => (
+              {bridesParents.map((parent) => (
                 <div key={parent.name}>
                   <p className="text-sm md:text-base italic text-blushpink mt-1">{parent.role}</p>
 

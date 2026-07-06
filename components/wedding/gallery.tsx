@@ -4,11 +4,8 @@ import { useState } from "react"
 import Image from "next/image"
 import { X, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react"
 import Link from "next/link"
-import { galleryImages, galleryVideos } from "@/data/gallery";
+import { galleryVideos, homepageGalleryImages } from "@/data/gallery";
 import { cn } from "@/lib/utils"
-
-// Videos URLs inport here on the data/gallery.ts
-
 
 export function Gallery() {
   const [selectedImage, setSelectedImage] = useState<number | null>(null)
@@ -17,12 +14,12 @@ export function Gallery() {
   const closeLightbox = () => setSelectedImage(null)
   const nextImage = () =>
     setSelectedImage((prev) =>
-      prev !== null ? (prev + 1) % galleryImages.length : null
+      prev !== null ? (prev + 1) % homepageGalleryImages.length : null
     )
   const prevImage = () =>
     setSelectedImage((prev) =>
       prev !== null
-        ? (prev - 1 + galleryImages.length) % galleryImages.length
+        ? (prev - 1 + homepageGalleryImages.length) % homepageGalleryImages.length
         : null
     )
 
@@ -58,7 +55,7 @@ export function Gallery() {
 
                   {/* 6 Pictures */}
                   <div className="grid grid-cols-2 gap-4">
-                    {galleryImages.slice(0, 6).map((image, index) => (
+                    {homepageGalleryImages.slice(0, 6).map((image, index) => (
                       <button
                         key={index}
                         type="button"
@@ -116,7 +113,7 @@ export function Gallery() {
                   {/* RIGHT PHOTOS */}
                     <div className="grid grid-cols-2 gap-5 content-center my-auto">
 
-                      {galleryImages.slice(0, 6).map((image, index) => (
+                      {homepageGalleryImages.slice(0, 6).map((image, index) => (
                         <button
                           key={index}
                           type="button"
@@ -269,8 +266,8 @@ export function Gallery() {
             onClick={(e) => e.stopPropagation()}
           >
             <Image
-              src={galleryImages[selectedImage].src}
-              alt={galleryImages[selectedImage].alt}
+              src={homepageGalleryImages[selectedImage].src}
+              alt={homepageGalleryImages[selectedImage].alt}
               fill
               className="object-contain"
             />
@@ -278,7 +275,7 @@ export function Gallery() {
 
           {/* Counter */}
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/80 text-sm font-(family-name:--font-montserrat) tracking-widest">
-            {selectedImage + 1} / {galleryImages.length}
+            {selectedImage + 1} / {homepageGalleryImages.length}
           </div>
         </div>
       )}

@@ -206,6 +206,51 @@
   animation: floatSoft 2.8s ease-in-out infinite;
 }
 
+/* Full Gallery: slow, continuous movement for the image-only Our Moments row. */
+@keyframes momentsAutoScroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.moments-auto-scroll {
+  overflow: hidden;
+}
+
+.moments-auto-scroll-track {
+  display: flex;
+  width: max-content;
+  animation: momentsAutoScroll 55s linear infinite;
+  will-change: transform;
+}
+
+.moments-auto-scroll-group {
+  display: flex;
+  gap: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+/* Pause so a visitor can comfortably select a photo. */
+.moments-auto-scroll:hover .moments-auto-scroll-track,
+.moments-auto-scroll:active .moments-auto-scroll-track,
+.moments-auto-scroll:focus-within .moments-auto-scroll-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .moments-auto-scroll {
+    overflow-x: auto;
+  }
+
+  .moments-auto-scroll-track {
+    animation: none;
+  }
+}
+
 /* Premium RSVP shimmer */
 @keyframes shimmer {
   100% {

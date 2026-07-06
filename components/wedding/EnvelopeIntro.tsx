@@ -116,7 +116,7 @@ export function EnvelopeIntro({ onComplete }: EnvelopeIntroProps) {
   const cardVariants: Variants = {
     hidden: { y: "20%", opacity: 0 },
     open: {
-      y: "-14%",
+      y: "-38%",
       opacity: 1,
       transition: {
         duration: prefersReducedMotion ? 0.4 : 1.1,

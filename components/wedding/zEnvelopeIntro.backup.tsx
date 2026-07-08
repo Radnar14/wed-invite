@@ -48,7 +48,7 @@ export function EnvelopeIntro({ onComplete }: EnvelopeIntroProps) {
     timeoutsRef.current.push(timeoutId)
   }
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault()
       handleOpen()

@@ -205,11 +205,11 @@ export function SeatFinder() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.6 }}
-        className="relative mb-7 max-w-[30rem] mx-auto"
+        className="relative mb-7 max-w-120 mx-auto"
       >
         <div
           className="
-              relative overflow-hidden rounded-[2rem]
+              relative overflow-hidden rounded-4xl
               border border-[#A8BBA3]/35 bg-white/92 backdrop-blur-xl
               shadow-[0_10px_35px_rgba(0,0,0,0.08)] transition-all duration-300
               focus-within:border-[#A8BBA3]/40
@@ -300,14 +300,14 @@ export function SeatFinder() {
             exit={{ opacity: 0 }}
             className="relative overflow-hidden"
           >
-            <Card className="overflow-hidden rounded-[2rem] border border-[#F2D6E1]/30 bg-white/80 backdrop-blur-xl shadow-[0_18px_50px_rgba(0,0,0,0.08)]">
+            <Card className="overflow-hidden rounded-4xl border border-[#F2D6E1]/30 bg-white/80 backdrop-blur-xl shadow-[0_18px_50px_rgba(0,0,0,0.08)]">
               <CardContent className="relative px-8 py-14 text-center">
                 {/* blush shimmer */}
                 <div
                   className="
                   absolute inset-0 -translate-x-full
                   animate-[shimmer_2.8s_ease-in-out_infinite]
-                  bg-gradient-to-r
+                  bg-linear-to-r
                   from-transparent
                   via-[#F8D7E4]/70
                   to-transparent
@@ -384,7 +384,7 @@ export function SeatFinder() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{ delay: index * 0.1, duration: 0.4 }}
                 >
-                  <Card className="overflow-hidden rounded-[2rem] border border-[#A8BBA3]/20 bg-white/75 backdrop-blur-xl shadow-[0_18px_50px_rgba(0,0,0,0.08)]">
+                  <Card className="overflow-hidden rounded-4xl border border-[#A8BBA3]/20 bg-white/75 backdrop-blur-xl shadow-[0_18px_50px_rgba(0,0,0,0.08)]">
                     <CardContent className="relative px-6 pt-10 pb-10 text-center md:px-8 md:pt-12 md:pb-12">
                       {/* Decorative elements */}
                       <div className="absolute top-2 left-2 opacity-20">
@@ -433,7 +433,7 @@ export function SeatFinder() {
 
                             <div
                               className="
-                                  rounded-[2rem] border border-[#A8BBA3]/20 bg-white/55 backdrop-blur-sm px-10 py-5 
+                                  rounded-4xl border border-[#A8BBA3]/20 bg-white/55 backdrop-blur-sm px-10 py-5 
                                   shadow-[0_8px_30px_rgba(0,0,0,0.05)]"
                             >
                               <span className="text-[2.3rem] font-semibold tracking-[0.04em] text-[#6E4A43]">
@@ -445,7 +445,7 @@ export function SeatFinder() {
                           <div className="max-w-md mx-auto">
                             <div
                               className="
-                                rounded-[1.5rem] border border-[#A8BBA3]/20 bg-white/45 backdrop-blur-sm px-7 py-6 
+                                rounded-3xl border border-[#A8BBA3]/20 bg-white/45 backdrop-blur-sm px-7 py-6 
                                 shadow-[0_8px_30px_rgba(0,0,0,0.04)]"
                             >
                               <p className="mb-4 text-[1.1rem] font-medium text-foreground">Seating Is Being Finalized ✨</p>

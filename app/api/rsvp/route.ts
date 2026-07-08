@@ -1,12 +1,51 @@
 import { NextResponse } from "next/server";
 
-export async function POST(request: Request) {
+const MAX_BODY_SIZE = 64 * 1024;
+
+function isValidExternalUrl(value: string | undefined) {
+  if (!value) {
+    return false;
+  }
+
   try {
-    const body = await request.json();
+    const url = new URL(value);
+    return ["http:", "https:"].includes(url.protocol);
+  } catch {
+    return false;
+  }
+}
+
+export async function POST(request: Request) {
+  if (request.method !== "POST") {
+    return NextResponse.json({ error: "Method not allowed." }, { status: 405, headers: { Allow: "POST" } });
+  }
+
+  try {
+    const contentLength = request.headers.get("content-length");
+    if (contentLength && Number(contentLength) > MAX_BODY_SIZE) {
+      return NextResponse.json({ error: "Request payload is too large." }, { status: 413 });
+    }
+
+    const text = await request.text();
+    if (!text) {
+      return NextResponse.json({ error: "Request body is required." }, { status: 400 });
+    }
+
+    let body: unknown;
+    try {
+      body = JSON.parse(text);
+    } catch {
+      return NextResponse.json({ error: "Request body must be valid JSON." }, { status: 400 });
+    }
+
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+      return NextResponse.json({ error: "Request body must be a JSON object." }, { status: 400 });
+    }
+
     const targetUrl = process.env.GOOGLE_APPS_SCRIPT_URL;
 
-    if (!targetUrl) {
-      console.error("GOOGLE_APPS_SCRIPT_URL environment variable is missing.");
+    if (!isValidExternalUrl(targetUrl)) {
+      console.error("GOOGLE_APPS_SCRIPT_URL environment variable is missing or invalid.");
       return NextResponse.json({ error: "RSVP service is not fully configured." }, { status: 500 });
     }
 
@@ -16,6 +55,7 @@ export async function POST(request: Request) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
+      signal: AbortSignal.timeout(10000),
     });
 
     if (!response.ok) {
@@ -52,8 +92,8 @@ export async function POST(request: Request) {
       },
       { status: 400 },
     );
-  } catch (error: any) {
+  } catch (error) {
     console.error("RSVP API Route error:", error);
-    return NextResponse.json({ error: error?.message || "An unexpected error occurred." }, { status: 500 });
+    return NextResponse.json({ error: "An unexpected error occurred." }, { status: 500 });
   }
 }

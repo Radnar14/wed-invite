@@ -51,7 +51,7 @@ export function Countdown() {
                 <div className="text-4xl md:text-6xl lg:text-7xl font-light text-foreground mb-2">
                   --
                 </div>
-                <div className="text-xs md:text-sm tracking-[0.2em] uppercase font-[family-name:var(--font-montserrat)] text-muted-foreground">
+                <div className="text-xs md:text-sm tracking-[0.2em] uppercase font-(family-name:--font-montserrat) text-muted-foreground">
                   {label}
                 </div>
               </div>
@@ -76,7 +76,7 @@ export function Countdown() {
               <div className="text-4xl md:text-6xl lg:text-7xl font-light text-foreground mb-2 tabular-nums">
                 {item.value.toString().padStart(2, "0")}
               </div>
-              <div className="text-xs md:text-sm tracking-[0.2em] uppercase font-[family-name:var(--font-montserrat)] text-muted-foreground">
+              <div className="text-xs md:text-sm tracking-[0.2em] uppercase font-(family-name:--font-montserrat) text-muted-foreground">
                 {item.label}
               </div>
             </div>

@@ -13,6 +13,22 @@ import {
 
 type AttireRole = (typeof attireRoles)[number]["id"];
 
+const attireColorClasses: Record<string, string> = {
+  "#B7C8A6": "bg-[#B7C8A6]",
+  "#A8B89A": "bg-[#A8B89A]",
+  "#9CAF88": "bg-[#9CAF88]",
+  "#8FA37D": "bg-[#8FA37D]",
+  "#7F8F6E": "bg-[#7F8F6E]",
+  "#F3E7D4": "bg-[#F3E7D4]",
+  "#F8F5EE": "bg-[#F8F5EE]",
+  "#E5D1AE": "bg-[#E5D1AE]",
+  "#D7C3A3": "bg-[#D7C3A3]",
+};
+
+function getAttireColorClass(color: string) {
+  return attireColorClasses[color] ?? "bg-transparent";
+}
+
 /** Gentleman figure: shirt + trousers */
 function GentlemanFigure({ color }: { color: string }) {
   const darkColor = `color-mix(in srgb, ${color} 75%, #000)`;
@@ -304,15 +320,11 @@ export function Attire() {
                         aria-label={`Select ${color.name}`}
                       >
                         <div
-                          className={`rounded-full border-4 transition-all duration-300 flex items-center justify-center shadow-sm ${
+                          className={`rounded-full border-4 transition-all duration-300 flex items-center justify-center shadow-sm ${getAttireColorClass(color.hex)} ${
                             selectedGreen.name === color.name
-                              ? "w-14 h-14 md:w-16 md:h-16 scale-105"
+                              ? "w-14 h-14 md:w-16 md:h-16 scale-105 border-[#5E7D57]"
                               : "w-11 h-11 md:w-12 md:h-12 border-background hover:scale-105"
                           }`}
-                          style={{
-                            backgroundColor: color.hex,
-                            borderColor: selectedGreen.name === color.name ? "#5E7D57" : undefined,
-                          }}
                         >
                           {selectedGreen.name === color.name && <Check className="w-4 h-4 md:w-5 md:h-5 text-white drop-shadow-md" />}
                         </div>
@@ -333,8 +345,7 @@ export function Attire() {
                           return (
                             <div key={label.name} className="flex items-center gap-2.5 text-sm text-muted-foreground">
                               <span
-                                className="h-11 w-11 rounded-full border-4 border-background shadow-sm ring-1 ring-border/40 md:h-12 md:w-12"
-                                style={{ backgroundColor: attire.color }}
+                                className={`h-11 w-11 rounded-full border-4 border-background shadow-sm ring-1 ring-border/40 md:h-12 md:w-12 ${getAttireColorClass(attire.color)}`}
                               />
                               <span>
                                 {label.name}: {attire.label.replace(" Gown", "").replace(" Barong", "")}

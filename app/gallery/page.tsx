@@ -10,6 +10,8 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 
 export default function GalleryPage() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [activeMediaItems, setActiveMediaItems] = useState<GalleryItem[]>([]);
+  const [activeMediaType, setActiveMediaType] = useState<GalleryItem["type"] | null>(null);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   type GalleryItem = {
     type: "image" | "video";
@@ -27,12 +29,44 @@ export default function GalleryPage() {
     .map((item, originalIndex) => ({ item, originalIndex }))
     .filter(({ item }) => item.type === "image");
 
-  const openLightbox = (index: number) => setSelectedIndex(index);
-  const closeLightbox = () => setSelectedIndex(null);
+  const openLightbox = (index: number, type: GalleryItem["type"]) => {
+    const filteredItems = galleryMedia.filter((item) => item.type === type);
+    const itemIndex = filteredItems.findIndex((item) => item === galleryMedia[index]);
 
-  const nextMedia = () => setSelectedIndex((prev) => (prev !== null ? (prev + 1) % galleryMedia.length : null));
+    if (itemIndex === -1) {
+      return;
+    }
 
-  const prevMedia = () => setSelectedIndex((prev) => (prev !== null ? (prev - 1 + galleryMedia.length) % galleryMedia.length : null));
+    setActiveMediaItems(filteredItems);
+    setActiveMediaType(type);
+    setSelectedIndex(itemIndex);
+  };
+
+  const closeLightbox = () => {
+    setSelectedIndex(null);
+    setActiveMediaItems([]);
+    setActiveMediaType(null);
+  };
+
+  const nextMedia = () => {
+    setSelectedIndex((prev) => {
+      if (prev === null || activeMediaItems.length === 0) {
+        return null;
+      }
+
+      return (prev + 1) % activeMediaItems.length;
+    });
+  };
+
+  const prevMedia = () => {
+    setSelectedIndex((prev) => {
+      if (prev === null || activeMediaItems.length === 0) {
+        return null;
+      }
+
+      return (prev - 1 + activeMediaItems.length) % activeMediaItems.length;
+    });
+  };
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStart(e.touches[0].clientX);
@@ -90,23 +124,19 @@ export default function GalleryPage() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [selectedIndex]);
+  }, [selectedIndex, activeMediaItems]);
 
-  // Handle background music pause/resume
+  // Handle background music pause/resume only for video lightbox mode
   useEffect(() => {
-    if (selectedIndex !== null && galleryMedia[selectedIndex]?.type === "video") {
+    if (activeMediaType === "video") {
       window.dispatchEvent(new CustomEvent("wedding-pause-music"));
-    } else {
-      window.dispatchEvent(new CustomEvent("wedding-resume-music"));
+      return () => {
+        window.dispatchEvent(new CustomEvent("wedding-resume-music"));
+      };
     }
 
-    // Resume music when component unmounts or lightbox closes
-    return () => {
-      if (selectedIndex !== null && galleryMedia[selectedIndex]?.type === "video") {
-        window.dispatchEvent(new CustomEvent("wedding-resume-music"));
-      }
-    };
-  }, [selectedIndex, galleryMedia]);
+    return;
+  }, [activeMediaType]);
 
   // loading effects
 
@@ -195,7 +225,7 @@ export default function GalleryPage() {
                         <button
                           type="button"
                           className="group relative block aspect-video w-full cursor-pointer overflow-hidden rounded-2xl bg-muted/30 text-left shadow-sm"
-                          onClick={() => openLightbox(originalIndex)}
+                          onClick={() => openLightbox(originalIndex, "video")}
                           aria-label={`Open video: ${item.alt}`}
                         >
                           {item.src.includes("youtube.com") ? (
@@ -265,7 +295,7 @@ export default function GalleryPage() {
                               <button
                                 type="button"
                                 className="group relative block aspect-4/5 w-full cursor-pointer overflow-hidden rounded-2xl bg-muted/30 text-left shadow-sm"
-                                onClick={() => openLightbox(originalIndex)}
+                                onClick={() => openLightbox(originalIndex, "image")}
                                 aria-label={`Open photo: ${item.alt}`}
                                 tabIndex={-1}
                               >
@@ -295,7 +325,7 @@ export default function GalleryPage() {
                               <button
                                 type="button"
                                 className="group relative block aspect-4/5 w-full cursor-pointer overflow-hidden rounded-2xl bg-muted/30 text-left shadow-sm"
-                                onClick={() => openLightbox(originalIndex)}
+                                onClick={() => openLightbox(originalIndex, "image")}
                                 aria-label={`Open photo: ${item.alt}`}
                                 tabIndex={0}
                               >
@@ -384,11 +414,11 @@ export default function GalleryPage() {
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
             >
-              {galleryMedia[selectedIndex]?.type === "image" ? (
+              {activeMediaItems[selectedIndex]?.type === "image" ? (
                 <div className="relative w-full h-full">
                   <Image
-                    src={galleryMedia[selectedIndex]?.src ?? ""}
-                    alt={galleryMedia[selectedIndex]?.alt ?? ""}
+                    src={activeMediaItems[selectedIndex]?.src ?? ""}
+                    alt={activeMediaItems[selectedIndex]?.alt ?? ""}
                     fill
                     loading="eager"
                     className="object-contain"
@@ -398,8 +428,8 @@ export default function GalleryPage() {
               ) : (
                 <div className="w-full aspect-video bg-black rounded-lg overflow-hidden shadow-2xl">
                   <iframe
-                    src={galleryMedia[selectedIndex]?.src ?? ""}
-                    title={galleryMedia[selectedIndex]?.alt ?? ""}
+                    src={activeMediaItems[selectedIndex]?.src ?? ""}
+                    title={activeMediaItems[selectedIndex]?.alt ?? ""}
                     className="w-full h-full"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
@@ -410,7 +440,7 @@ export default function GalleryPage() {
               {/* Caption */}
               <div className="absolute -bottom-16 left-0 right-0 text-center">
                 <p className="text-muted-foreground text-xs mt-2 font-(family-name:--font-montserrat)">
-                  {selectedIndex + 1} / {galleryMedia.length}
+                  {selectedIndex + 1} / {activeMediaItems.length}
                 </p>
               </div>
             </motion.div>

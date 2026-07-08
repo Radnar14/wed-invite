@@ -12,7 +12,7 @@ export function Footer({
     <footer className="relative py-20 md:py-32 bg-primary text-primary-foreground overflow-hidden">
       {/* Decorative background elements */}
       <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-primary-foreground/20 to-transparent" />
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-primary-foreground opacity-5 rounded-full blur-3xl pointer-events-none -z-10" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-150 h-150 bg-primary-foreground opacity-5 rounded-full blur-3xl pointer-events-none -z-10" />
 
       {/* Large Monogram Background */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[15rem] md:text-[25rem] font-light opacity-5 pointer-events-none select-none whitespace-nowrap">

@@ -2,10 +2,9 @@
 
 import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
-import { Heart } from "lucide-react"
 import { motion, useReducedMotion, type Variants } from "framer-motion"
 
-const SESSION_STORAGE_KEY = "introPlayed"
+const INTRO_OPENED_EVENT = "wedding-intro-opened"
 
 interface EnvelopeIntroProps {
   /** Called once the opening sequence has finished and the site should be revealed. */
@@ -13,49 +12,31 @@ interface EnvelopeIntroProps {
 }
 
 /**
- * Full-screen "envelope opening" intro. Shown once per browser session
- * (gated by sessionStorage) before the homepage is revealed.
+ * Full-screen "envelope opening" intro. Shown on every fresh page load
+ * before the homepage is revealed.
  */
 export function EnvelopeIntro({ onComplete }: EnvelopeIntroProps) {
-  const [shouldRender, setShouldRender] = useState(true)
   const [opened, setOpened] = useState(false)
   const prefersReducedMotion = useReducedMotion()
   const completedRef = useRef(false)
   const timeoutsRef = useRef<number[]>([])
 
   useEffect(() => {
-    let alreadyPlayed = false
-    try {
-      alreadyPlayed = window.sessionStorage.getItem(SESSION_STORAGE_KEY) === "true"
-    } catch {
-      alreadyPlayed = false
-    }
-
-    if (alreadyPlayed) {
-      setShouldRender(false)
-      markComplete()
-    }
-
     return () => {
       timeoutsRef.current.forEach((id) => window.clearTimeout(id))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const markComplete = () => {
     if (completedRef.current) return
     completedRef.current = true
-    try {
-      window.sessionStorage.setItem(SESSION_STORAGE_KEY, "true")
-    } catch {
-      // sessionStorage unavailable (private mode, disabled storage) — safe to ignore
-    }
     onComplete()
   }
 
   const handleOpen = () => {
     if (opened) return
     setOpened(true)
+    window.dispatchEvent(new CustomEvent(INTRO_OPENED_EVENT))
 
     const openingDuration = prefersReducedMotion ? 500 : 1900
     const revealHold = prefersReducedMotion ? 150 : 450
@@ -73,8 +54,6 @@ export function EnvelopeIntro({ onComplete }: EnvelopeIntroProps) {
       handleOpen()
     }
   }
-
-  if (!shouldRender) return null
 
   const overlayVariants: Variants = {
     hidden: { opacity: 0 },
@@ -128,10 +107,7 @@ export function EnvelopeIntro({ onComplete }: EnvelopeIntroProps) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden px-6 py-10"
-      style={{
-        background: "radial-gradient(ellipse at center, #FDF8F3 0%, #F7EBE1 55%, #F1E1D2 100%)",
-      }}
+      className="fixed inset-0 z-100 flex flex-col items-center justify-center overflow-hidden px-6 py-10 envelope-intro-bg"
       variants={overlayVariants}
       initial="hidden"
       animate="visible"
@@ -139,38 +115,42 @@ export function EnvelopeIntro({ onComplete }: EnvelopeIntroProps) {
       role="region"
       aria-label="Wedding invitation envelope"
     >
+      <div className="mb-6 text-center">
+        <p className="text-xs uppercase tracking-[0.45em] text-primary/60 md:text-sm">We are getting</p>
+        <h1 className="mt-2 text-5xl font-(family-name:--font-cormorant) uppercase tracking-[0.18em] text-primary sm:text-6xl">
+          Married
+        </h1>
+      </div>
       <motion.div
-        className="relative w-[88vw] max-w-[440px] aspect-[4/3.1]"
-        style={{ perspective: 1400 }}
+        className="relative w-[88vw] max-w-110 aspect-[4/3.1] envelope-perspective cursor-pointer"
         animate={!opened && !prefersReducedMotion ? { y: [0, -8, 0] } : { y: 0 }}
         transition={
           !opened && !prefersReducedMotion
             ? { duration: 4.5, repeat: Infinity, ease: "easeInOut" }
             : { duration: 0.4 }
         }
+        onClick={handleOpen}
+        role="button"
+        tabIndex={opened ? -1 : 0}
+        onKeyDown={handleKeyDown}
+        aria-label="Open your wedding invitation"
       >
         {/* Envelope back / body */}
-        <div
-          className="absolute inset-0 rounded-[28px] shadow-[0_35px_70px_-25px_rgba(120,90,70,0.35)]"
-          style={{ background: "linear-gradient(160deg, #FDF9F4 0%, #F8EFE6 45%, #F2E3D5 100%)" }}
-        >
-          <div className="absolute inset-[7px] rounded-[22px] border border-[#E7D7BE]/60" />
+        <div className="absolute inset-0 rounded-[28px] shadow-[0_35px_70px_-25px_rgba(120,90,70,0.35)] overflow-hidden envelope-body">
+          <div className="absolute inset-0 opacity-70 envelope-body-pattern" />
+          <div className="absolute inset-1.75 rounded-[22px] border border-[#C68C99]/70" />
         </div>
 
         {/* Invitation card sliding up from inside */}
         <motion.div
-          className="absolute left-1/2 bottom-[8%] h-[76%] w-[80%] -translate-x-1/2 rounded-md bg-[#FFFDFA]"
-          style={{
-            border: "1px solid rgba(243,217,214,0.6)",
-            boxShadow: "0 18px 40px -18px rgba(120,90,70,0.4)",
-          }}
+          className="absolute left-1/2 bottom-[16%] h-[76%] w-[80%] -translate-x-1/2 rounded-md bg-[#FFFDFA] envelope-card"
           variants={cardVariants}
           initial="hidden"
           animate={opened ? "open" : "hidden"}
         >
           <div className="flex h-full flex-col items-center justify-center gap-2 px-4 text-center">
             <p className="font-(family-name:--font-great-vibes) text-2xl text-primary sm:text-3xl">
-              John Mark &amp; Chezza
+              John Mark <span className="text-[#F2B8C6]">&amp;</span> Chezza
             </p>
             <span className="h-px w-10 bg-[#9CAF88]/60" />
             <p className="font-(family-name:--font-montserrat) text-[10px] uppercase tracking-[0.3em] text-primary/70 sm:text-xs">
@@ -180,59 +160,36 @@ export function EnvelopeIntro({ onComplete }: EnvelopeIntroProps) {
         </motion.div>
 
         {/* Front pocket */}
-        <div
-          className="absolute bottom-0 left-0 right-0 h-[62%] rounded-b-[28px]"
-          style={{
-            background: "linear-gradient(180deg, #F6EBE0 0%, #F1E1D2 100%)",
-            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.5)",
-          }}
-        />
+        <div className="absolute bottom-0 left-0 right-0 h-[62%] rounded-b-[28px] overflow-hidden envelope-pocket">
+          <div className="absolute inset-0 opacity-70 envelope-pocket-pattern" />
+        </div>
 
         {/* Flap */}
         <motion.div
-          className="absolute left-0 right-0 top-0 h-[58%] origin-top"
-          style={{
-            clipPath: "polygon(0 0, 100% 0, 50% 100%)",
-            background: "linear-gradient(180deg, #FDF9F4 0%, #F5E9DC 100%)",
-            transformStyle: "preserve-3d",
-            backfaceVisibility: "hidden",
-          }}
+          className="absolute left-0 right-0 top-0 h-[58%] origin-top envelope-flap"
           variants={flapVariants}
           initial="closed"
           animate={opened ? "open" : "closed"}
         >
-          <div className="flex justify-center pt-[10%]">
-            <Image
-              src="/images/logo.svg"
-              alt="John Mark and Chezza monogram"
-              width={56}
-              height={56}
-              className="h-10 w-10 rounded-full object-contain opacity-90 sm:h-12 sm:w-12"
-              priority
-            />
-          </div>
+          <div className="absolute inset-x-0 top-0 h-full" />
         </motion.div>
 
-        {/* Wax seal — click / tap / Enter / Space to open */}
-        <motion.button
-          type="button"
-          onClick={handleOpen}
-          onKeyDown={handleKeyDown}
-          disabled={opened}
-          autoFocus
-          aria-label="Open your wedding invitation"
-          tabIndex={opened ? -1 : 0}
-          className="absolute left-1/2 top-[58%] flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9CAF88] sm:h-16 sm:w-16"
-          style={{
-            background: "radial-gradient(circle at 35% 30%, #B3C3A0 0%, #9CAF88 45%, #7E9670 100%)",
-            boxShadow: "0 8px 20px rgba(124,140,100,0.4), inset 0 1px 1px rgba(255,255,255,0.4)",
-          }}
+        {/* Wax seal — visual element (entire envelope is now clickable) */}
+        <motion.div
+          className="absolute left-1/2 top-[58%] flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full sm:h-20 sm:w-20 seal-button pointer-events-none"
           variants={sealVariants}
           initial="idle"
           animate={opened ? "open" : "idle"}
         >
-          <Heart className="h-5 w-5 text-[#FDF9F4]/90" strokeWidth={1.25} fill="currentColor" />
-        </motion.button>
+          <Image
+            src="/images/logo.svg"
+            alt="Wedding monogram"
+            width={40}
+            height={40}
+            className="h-10 w-10 sm:h-12 sm:w-12 object-contain"
+            priority
+          />
+        </motion.div>
       </motion.div>
 
       {/* Instruction label */}

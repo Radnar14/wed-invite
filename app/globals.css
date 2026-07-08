@@ -206,6 +206,15 @@
   animation: floatSoft 2.8s ease-in-out infinite;
 }
 
+.mobile-rsvp-link {
+  background: linear-gradient(135deg, lab(57% 51.78 -8.6), lab(44% 51.78 -8.6));
+  box-shadow: 0 4px 20px lab(51.93% 51.78 -8.6 / 0.30), inset 0 1px 0 oklch(1 0 0 / 0.10);
+}
+
+.mobile-rsvp-link-shine {
+  background: linear-gradient(90deg, transparent, oklch(1 0 0 / 0.08), transparent);
+}
+
 /* Full Gallery: slow, continuous movement for the image-only Our Moments row. */
 @keyframes momentsAutoScroll {
   from {
@@ -243,11 +252,11 @@
 
 @media (prefers-reduced-motion: reduce) {
   .moments-auto-scroll {
-    overflow-x: auto;
+    overflow: hidden;
   }
 
   .moments-auto-scroll-track {
-    animation: none;
+    animation: momentsAutoScroll 55s linear infinite;
   }
 }
 
@@ -266,5 +275,54 @@
 
   100% {
     transform: translateX(350%) skewX(-20deg);
+  }
+}
+
+@layer utilities {
+  .envelope-intro-bg {
+    background: radial-gradient(ellipse at center, #FDF8F3 0%, #F7EBE1 55%, #F1E1D2 100%);
+  }
+
+  .envelope-perspective {
+    perspective: 1400px;
+  }
+
+  .envelope-body {
+    background: linear-gradient(160deg, #FDE8EA 0%, #F7D1D6 50%, #F0BDC4 100%);
+    box-shadow: 0 0 0 1px rgba(192, 134, 145, 0.38), 0 35px 70px -25px rgba(120, 90, 70, 0.35);
+  }
+
+  .envelope-body-pattern {
+    background-image: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0 1px, transparent 1px 16px);
+  }
+
+  .envelope-card {
+    border: 1px solid rgba(243, 217, 214, 0.6);
+    box-shadow: 0 18px 40px -18px rgba(120, 90, 70, 0.4);
+  }
+
+  .envelope-pocket {
+    background: linear-gradient(180deg, #FBE4E7 0%, #F5C7CD 45%, #ECB4BC 100%);
+    box-shadow: inset 0 0 0 1px rgba(192, 134, 145, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  }
+
+  .envelope-pocket-pattern {
+    background-image: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0 1px, transparent 1px 20px);
+  }
+
+  .envelope-flap {
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    background: linear-gradient(180deg, #FDE7E9 0%, #F7C8CE 50%, #F0ADB7 100%), repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.34) 0 1px, transparent 1px 18px);
+    background-size: 100% 100%, 18px 18px;
+    background-repeat: no-repeat, repeat;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    box-shadow: inset 0 0 0 1px rgba(192, 134, 145, 0.25);
+  }
+
+  .seal-button {
+    background: radial-gradient(circle at 35% 30%, #E1E8D7 0%, #B3BF9C 40%, #83966D 100%);
+    box-shadow: 0 10px 24px rgba(114, 122, 102, 0.35), inset 0 2px 2px rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.18);
   }
 }

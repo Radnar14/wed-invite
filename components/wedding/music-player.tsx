@@ -4,11 +4,41 @@ import { useState, useRef, useEffect } from "react"
 import { Volume2, VolumeX } from "lucide-react"
 import { cn } from "@/lib/utils"
 
+const INTRO_OPENED_EVENT = "wedding-intro-opened"
+
 export function MusicPlayer() {
   const [isPlaying, setIsPlaying] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
   const audioRef = useRef<HTMLAudioElement>(null)
   const wasPlayingRef = useRef(false)
+  const introTimeoutRef = useRef<number | null>(null)
+
+  const startMusic = (delay = 0) => {
+    const audio = audioRef.current
+    if (!audio) return
+
+    const playAudio = () => {
+      if (!audio.paused) return
+
+      audio.play().then(() => {
+        setIsPlaying(true)
+        setIsLoaded(true)
+      }).catch(() => {
+        setIsLoaded(true)
+      })
+    }
+
+    if (delay > 0) {
+      if (introTimeoutRef.current !== null) {
+        window.clearTimeout(introTimeoutRef.current)
+      }
+
+      introTimeoutRef.current = window.setTimeout(playAudio, delay)
+      return
+    }
+
+    playAudio()
+  }
 
   useEffect(() => {
     const audio = audioRef.current
@@ -31,8 +61,14 @@ export function MusicPlayer() {
       }
     }
 
+    const handleIntroOpened = () => {
+      setIsLoaded(true)
+      startMusic(2000)
+    }
+
     window.addEventListener("wedding-pause-music", handlePauseRequest)
     window.addEventListener("wedding-resume-music", handleResumeRequest)
+    window.addEventListener(INTRO_OPENED_EVENT, handleIntroOpened)
 
     // Global listeners for native video elements
     const handleGlobalPlay = (e: Event) => {
@@ -73,42 +109,14 @@ export function MusicPlayer() {
 
     window.addEventListener("message", handleYoutubeMessage)
 
-    const handleCanPlay = () => {
-      setIsLoaded(true)
-      // Attempt to play on load (browsers might block this)
-      audio.play().then(() => {
-        setIsPlaying(true)
-      }).catch(() => {
-        // Autoplay prevented
-        console.log("Autoplay prevented on load")
-      })
-    }
-
-    audio.addEventListener("canplaythrough", handleCanPlay)
-
-    // Global click listener to start music on first interaction
-    const handleFirstInteraction = () => {
-      if (audio && audio.paused) {
-        audio.play().then(() => {
-          setIsPlaying(true)
-          window.removeEventListener("click", handleFirstInteraction)
-          window.removeEventListener("touchstart", handleFirstInteraction)
-          window.removeEventListener("scroll", handleFirstInteraction)
-        }).catch(() => {})
-      }
-    }
-
-    window.addEventListener("click", handleFirstInteraction)
-    window.addEventListener("touchstart", handleFirstInteraction)
-    window.addEventListener("scroll", handleFirstInteraction)
-
     return () => {
-      audio.removeEventListener("canplaythrough", handleCanPlay)
-      window.removeEventListener("click", handleFirstInteraction)
-      window.removeEventListener("touchstart", handleFirstInteraction)
-      window.removeEventListener("scroll", handleFirstInteraction)
+      if (introTimeoutRef.current !== null) {
+        window.clearTimeout(introTimeoutRef.current)
+      }
+
       window.removeEventListener("wedding-pause-music", handlePauseRequest)
       window.removeEventListener("wedding-resume-music", handleResumeRequest)
+      window.removeEventListener(INTRO_OPENED_EVENT, handleIntroOpened)
       document.removeEventListener("play", handleGlobalPlay, true)
       document.removeEventListener("pause", handleGlobalPause, true)
       document.removeEventListener("ended", handleGlobalPause, true)
@@ -124,11 +132,7 @@ export function MusicPlayer() {
       audio.pause()
       setIsPlaying(false)
     } else {
-      audio.play().then(() => {
-        setIsPlaying(true)
-      }).catch(() => {
-        console.log("Play failed")
-      })
+      startMusic()
     }
   }
 
@@ -171,7 +175,7 @@ export function MusicPlayer() {
       {/* Initial prompt to enable music */}
       {isLoaded && !isPlaying && (
         <div className="fixed bottom-20 md:bottom-24 right-4 md:right-6 z-50 animate-fade-in">
-          <div className="bg-background/95 backdrop-blur-sm border border-border rounded-lg px-3 py-2 md:px-4 md:py-2 shadow-lg max-w-[180px] md:max-w-none">
+          <div className="bg-background/95 backdrop-blur-sm border border-border rounded-lg px-3 py-2 md:px-4 md:py-2 shadow-lg max-w-45 md:max-w-none">
             <p className="text-xs md:text-sm text-muted-foreground">
               Tap to play music
             </p>

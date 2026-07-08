@@ -170,7 +170,7 @@ export default function HostGuestViewer({ isOpen, onClose, guests, groups = [], 
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="
-            fixed inset-0 z-[100] flex items-center justify-center
+            fixed inset-0 z-100 flex items-center justify-center
             bg-black/20 px-4 backdrop-blur-md
           "
         >
@@ -180,7 +180,7 @@ export default function HostGuestViewer({ isOpen, onClose, guests, groups = [], 
             exit={{ opacity: 0, scale: 0.96 }}
             transition={{ duration: 0.25 }}
             className="
-              relative w-full max-w-5xl overflow-hidden rounded-[2rem]
+              relative w-full max-w-5xl overflow-hidden rounded-4xl
               border border-white/20 bg-white/92 backdrop-blur-xl
               shadow-[0_20px_60px_rgba(0,0,0,0.15)]
             "
@@ -281,7 +281,7 @@ export default function HostGuestViewer({ isOpen, onClose, guests, groups = [], 
                     setCurrentPage(1);
                   }}
                   className="
-                    h-10 w-full max-w-[260px]
+                    h-10 w-full max-w-65
                     rounded-xl border border-[#A8BBA3]/20
                     bg-white/70 px-4
                     font-(family-name:--font-montserrat)
@@ -295,7 +295,7 @@ export default function HostGuestViewer({ isOpen, onClose, guests, groups = [], 
 
               <div
                 className="
-                    overflow-hidden rounded-[1.5rem]
+                    overflow-hidden rounded-3xl
                     border border-[#A8BBA3]
                   "
               >
@@ -379,7 +379,7 @@ export default function HostGuestViewer({ isOpen, onClose, guests, groups = [], 
                   className="
                       max-h-[50vh]
                       overflow-y-auto
-                      [scrollbar-width:none]
+                      scrollbar-none
                       [-ms-overflow-style:none]
                       [&::-webkit-scrollbar]:hidden
                     "
@@ -406,7 +406,7 @@ export default function HostGuestViewer({ isOpen, onClose, guests, groups = [], 
 
                       <div
                         className="
-                            relative h-[10px]
+                            relative h-2.5
                             w-full max-w-[320px]
                             overflow-hidden rounded-full
                             bg-[#EFC8D8]/40
@@ -754,6 +754,8 @@ export default function HostGuestViewer({ isOpen, onClose, guests, groups = [], 
                     <span>Show</span>
 
                     <select
+                      aria-label="Guests per page"
+                      title="Guests per page"
                       value={pageSize}
                       onChange={(e) => {
                         setPageSize(Number(e.target.value));

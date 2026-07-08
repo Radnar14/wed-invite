@@ -1,10 +1,42 @@
 import { NextResponse } from "next/server";
 
+const MAX_QUERY_LENGTH = 100;
+const ALLOWED_ACTIONS = new Set(["allGuests", "groupSummary"]);
+
+function isSafeQuery(value: string | null) {
+  if (!value) {
+    return false;
+  }
+
+  return value.length <= MAX_QUERY_LENGTH && /^[\p{L}\p{N}\s.'-]{1,100}$/u.test(value);
+}
+
+function isValidExternalUrl(value: string | undefined) {
+  if (!value) {
+    return false;
+  }
+
+  try {
+    const url = new URL(value);
+    return ["http:", "https:"].includes(url.protocol);
+  } catch {
+    return false;
+  }
+}
+
 export async function GET(request: Request) {
+  if (request.method !== "GET") {
+    return NextResponse.json({ error: "Method not allowed." }, { status: 405, headers: { Allow: "GET" } });
+  }
+
   try {
     const { searchParams } = new URL(request.url);
     const query = searchParams.get("q");
     const action = searchParams.get("action");
+
+    if (action && !ALLOWED_ACTIONS.has(action)) {
+      return NextResponse.json({ error: "Invalid action parameter." }, { status: 400 });
+    }
 
     /**
      * Hidden host/admin mode:
@@ -13,7 +45,8 @@ export async function GET(request: Request) {
     if (action === "allGuests" || action === "groupSummary") {
       const targetUrl = process.env.GOOGLE_APPS_SCRIPT_URL;
 
-      if (!targetUrl) {
+      if (!isValidExternalUrl(targetUrl)) {
+        console.error("GOOGLE_APPS_SCRIPT_URL environment variable is missing or invalid.");
         return NextResponse.json(
           {
             error: "Seat finder service is not configured.",
@@ -22,10 +55,11 @@ export async function GET(request: Request) {
         );
       }
 
-      const fetchUrl = `${targetUrl}?action=${action}`;
+      const fetchUrl = `${targetUrl}?action=${encodeURIComponent(action)}`;
 
       const response = await fetch(fetchUrl, {
         method: "GET",
+        signal: AbortSignal.timeout(10000),
       });
 
       const data = await response.json();
@@ -36,7 +70,7 @@ export async function GET(request: Request) {
     /**
      * Guest seat finder search
      */
-    if (!query) {
+    if (!isSafeQuery(query)) {
       return NextResponse.json({
         guests: [],
       });
@@ -44,8 +78,8 @@ export async function GET(request: Request) {
 
     const targetUrl = process.env.GOOGLE_APPS_SCRIPT_URL;
 
-    if (!targetUrl) {
-      console.error("GOOGLE_APPS_SCRIPT_URL environment variable is missing.");
+    if (!isValidExternalUrl(targetUrl)) {
+      console.error("GOOGLE_APPS_SCRIPT_URL environment variable is missing or invalid.");
       return NextResponse.json({ error: "Seat finder service is not fully configured." }, { status: 500 });
     }
 
@@ -55,6 +89,7 @@ export async function GET(request: Request) {
 
     const response = await fetch(fetchUrl, {
       method: "GET",
+      signal: AbortSignal.timeout(10000),
     });
 
     if (!response.ok) {

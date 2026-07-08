@@ -132,7 +132,7 @@ export function Navigation() {
                 onClick={(e) => handleLinkClick(e, link.id)}
                 className={cn(
                   "relative inline-block text-sm tracking-[0.2em] uppercase font-(family-name:--font-montserrat) transition-colors hover:text-accent",
-                  "after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:h-[1px] after:bg-current after:transition-all after:duration-300",
+                  "after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:h-px after:bg-current after:transition-all after:duration-300",
                   isActive(link.id) ? "after:w-full text-accent" : "after:w-0 hover:after:w-full",
                   textClass,
                 )}
@@ -147,7 +147,7 @@ export function Navigation() {
               onClick={(e) => handleLinkClick(e, rsvpLink.id)}
               className={cn(
                 "relative inline-block text-sm tracking-[0.2em] uppercase font-(family-name:--font-montserrat) transition-colors hover:text-accent",
-                "after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:h-[1px] after:bg-current after:transition-all after:duration-300",
+                "after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:h-px after:bg-current after:transition-all after:duration-300",
                 isActive(rsvpLink.id) ? "after:w-full text-accent" : "after:w-0 hover:after:w-full",
                 textClass,
               )}
@@ -160,7 +160,7 @@ export function Navigation() {
               href={seatFinderLink.href}
               className={cn(
                 "relative inline-block text-sm tracking-[0.2em] uppercase font-(family-name:--font-montserrat) transition-colors hover:text-accent",
-                "after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:h-[1px] after:bg-current after:transition-all after:duration-300",
+                "after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:h-px after:bg-current after:transition-all after:duration-300",
                 pathname === seatFinderLink.href ? "after:w-full text-accent" : "after:w-0 hover:after:w-full",
                 textClass,
               )}
@@ -198,19 +198,12 @@ export function Navigation() {
             <Link
               href={getHref(rsvpLink.id)}
               onClick={(e) => handleLinkClick(e, rsvpLink.id)}
-              className="group relative flex items-center justify-center gap-2.5 py-4 overflow-hidden transition-all duration-300 active:scale-[0.98]"
-              style={{
-                background: "linear-gradient(135deg, lab(57% 51.78 -8.6), lab(44% 51.78 -8.6))",
-                boxShadow: "0 4px 20px lab(51.93% 51.78 -8.6 / 0.30), inset 0 1px 0 oklch(1 0 0 / 0.10)",
-              }}
+              className="mobile-rsvp-link group relative flex items-center justify-center gap-2.5 overflow-hidden py-4 transition-all duration-300 active:scale-[0.98]"
             >
               {/* RSVP and Find Seat Button */}
               <span
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out"
-                style={{
-                  background: "linear-gradient(90deg, transparent, oklch(1 0 0 / 0.08), transparent)",
-                }}
+                className="mobile-rsvp-link-shine pointer-events-none absolute inset-0 -translate-x-full transition-transform duration-700 ease-in-out group-hover:translate-x-full"
               />
               {/* RSVP Button */}
               <Heart size={11} strokeWidth={1.5} className="text-primary-foreground/70 shrink-0" />

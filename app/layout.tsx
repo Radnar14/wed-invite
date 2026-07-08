@@ -1,10 +1,23 @@
+/**
+ * Root Layout - Server Component
+ * 
+ * Kept as a Server Component to support Next.js metadata exports.
+ * All client-side state and interactivity (envelope animation, music player)
+ * is delegated to RootLayoutClient component.
+ * 
+ * ARCHITECTURE:
+ * - layout.tsx (server): Metadata, fonts, static structure
+ * - layout-client.tsx (client): Envelope state, animations, music control
+ * - page.tsx (client): Wedding page content (simplified)
+ */
+
 import type { Metadata } from 'next'
 import { Cormorant_Garamond, Great_Vibes, Montserrat } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
-import { MusicPlayer } from "@/components/wedding/music-player"
+import { RootLayoutClient } from './layout-client'
 
-
+// Custom font definitions
 const cormorant = Cormorant_Garamond({ 
   subsets: ["latin"],
   weight: ['300', '400', '500', '600', '700'],
@@ -54,10 +67,11 @@ export default function RootLayout({
   return (
     <html lang="en" data-scroll-behavior="smooth" className={`${cormorant.variable} ${montserrat.variable} ${greatVibes.variable} bg-background`}>
       <body className="font-serif antialiased">
-        {children}
-        <MusicPlayer />
-        {process.env.NODE_ENV === 'production' && <Analytics />}
+        <RootLayoutClient>
+          {children}
+        </RootLayoutClient>
       </body>
     </html>
   )
 }
+

@@ -60,7 +60,7 @@ export function FAQ() {
         </Accordion>
 
         {/* Contact details stay in one place; this button only links to them. */}
-        <div className="mt-10 rounded-[32px] border border-blushpink/15 bg-background/75 px-6 py-9 text-center shadow-[0_12px_40px_rgba(68,45,40,0.05)] md:mt-12 md:px-10">
+        <div className="mt-10 rounded-4xl border border-blushpink/15 bg-background/75 px-6 py-9 text-center shadow-[0_12px_40px_rgba(68,45,40,0.05)] md:mt-12 md:px-10">
           <Heart className="mx-auto h-5 w-5 text-blushpink/70" fill="currentColor" strokeWidth={1} />
           <h3 className="mt-4 text-2xl font-light text-foreground md:text-3xl">Still have a question?</h3>
           <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-muted-foreground font-(family-name:--font-montserrat) md:text-base">

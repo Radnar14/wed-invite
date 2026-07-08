@@ -60,6 +60,7 @@ export function Gallery() {
                         key={index}
                         type="button"
                         onClick={() => openLightbox(index)}
+                        aria-label={`View photo: ${image.alt}`}
                         className="relative h-45 overflow-hidden rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.08)] group"
                       >
                         <Image
@@ -118,6 +119,7 @@ export function Gallery() {
                           key={index}
                           type="button"
                           onClick={() => openLightbox(index)}
+                          aria-label={`View photo: ${image.alt}`}
                           className="relative overflow-hidden rounded-[28px] bg-white/40 shadow-[0_8px_30px_rgba(0,0,0,0.08)] group transition-all duration-300 hover:scale-[1.02]"
                         >
                           <div className="relative w-full h-55 xl:h-65">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { FaFacebookMessenger, FaInstagram } from "react-icons/fa6";
 
 import { Button } from "@/components/ui/button";
@@ -26,11 +27,11 @@ import {
 } from "lucide-react";
 
 // RSVP deadline shown across the section
-const RSVP_DEADLINE = "September 8, 2026";
+const RSVP_DEADLINE = "September 20, 2026";
 
 // Exact moment the RSVP period ends: 12:00 AM (midnight) Philippine Time (UTC+8).
 // The `+08:00` offset pins this to PH time no matter where the guest's device is.
-const RSVP_DEADLINE_DATE = new Date("2026-09-08T00:00:00+08:00");
+const RSVP_DEADLINE_DATE = new Date("2026-09-20T00:00:00+08:00");
 
 // Manual override — flip to `true` to force submissions closed early.
 // Otherwise the RSVP closes automatically once RSVP_DEADLINE_DATE passes.
@@ -41,6 +42,23 @@ interface TimeLeft {
   hours: number;
   minutes: number;
   seconds: number;
+}
+
+type AttendanceStatus = "Accept" | "Decline";
+
+interface SubmissionAttendee {
+  name: string;
+  attendance: AttendanceStatus;
+}
+
+interface SubmissionSummary {
+  totalGuests: number;
+  acceptedCount: number;
+  declinedCount: number;
+  acceptedGuests: SubmissionAttendee[];
+  declinedGuests: SubmissionAttendee[];
+  hasAcceptedGuests: boolean;
+  hasDeclinedGuests: boolean;
 }
 
 const getTimeLeft = (): TimeLeft => {
@@ -58,6 +76,21 @@ const getTimeLeft = (): TimeLeft => {
   };
 };
 
+const buildSubmissionSummary = (attendees: SubmissionAttendee[]): SubmissionSummary => {
+  const acceptedGuests = attendees.filter((attendee) => attendee.attendance === "Accept");
+  const declinedGuests = attendees.filter((attendee) => attendee.attendance === "Decline");
+
+  return {
+    totalGuests: attendees.length,
+    acceptedCount: acceptedGuests.length,
+    declinedCount: declinedGuests.length,
+    acceptedGuests,
+    declinedGuests,
+    hasAcceptedGuests: acceptedGuests.length > 0,
+    hasDeclinedGuests: declinedGuests.length > 0,
+  };
+};
+
 export function RSVP() {
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -65,6 +98,7 @@ export function RSVP() {
   const [error, setError] = useState<string | null>(null);
 
   const [submissionType, setSubmissionType] = useState("");
+  const [submissionSummary, setSubmissionSummary] = useState<SubmissionSummary | null>(null);
   const [isLockedRSVP, setIsLockedRSVP] = useState(false);
 
   const [query, setQuery] = useState("");
@@ -165,7 +199,7 @@ export function RSVP() {
     }));
   };
 
-  // Add a member to / remove a member from the confirmed (attending) list.
+  // Add a member to / mark a member as declined from the confirmed (attending) list.
   const setAttendeeConfirmed = (index: number, confirmed: boolean) => {
     setGroupAttendees((prev) => prev.map((person, i) => (i === index ? { ...person, confirmed } : person)));
   };
@@ -183,6 +217,8 @@ export function RSVP() {
 
   // Return to the "Find Your Name" step
   const resetToSearch = () => {
+    setSubmitted(false);
+    setSubmissionType("");
     setSelectedGuest(null);
     setQuery("");
     setResults([]);
@@ -193,8 +229,10 @@ export function RSVP() {
     setGroupAttendees([]);
     setEditingIndex(null);
     setIsGroupDropdownOpen(false);
+    setShowQRPreview(false);
     setSubmitError("");
     setError(null);
+    setSubmissionSummary(null);
     resetForm();
   };
 
@@ -325,6 +363,28 @@ export function RSVP() {
     setIsSubmitting(true);
     setError(null);
 
+    const attendanceChoice: AttendanceStatus = formData.attendance === "Decline" ? "Decline" : "Accept";
+
+    const groupPayloadAttendees = groupAttendees.map((person) => ({
+      // originalName locates the sheet row; name carries any correction.
+      originalName: person.originalName,
+      name: person.name.trim() || person.originalName,
+      isRepresentative: person.isRepresentative,
+      attendance: person.confirmed ? ("Accept" as AttendanceStatus) : ("Decline" as AttendanceStatus),
+    }));
+
+    const submittedAttendees: SubmissionAttendee[] = isGroup
+      ? groupPayloadAttendees.map((person) => ({
+          name: person.name,
+          attendance: person.attendance,
+        }))
+      : [
+          {
+            name: (formData.name.trim() || selectedGuest?.fullName || "Guest").trim(),
+            attendance: attendanceChoice,
+          },
+        ];
+
     // Group representatives submit a per-member payload; everyone else
     // submits the single-guest form as before.
     const payload = isGroup
@@ -333,15 +393,12 @@ export function RSVP() {
           representative: formData.name,
           email: formData.email,
           message: formData.message,
-          attendees: groupAttendees.map((person) => ({
-            // originalName locates the sheet row; name carries any correction.
-            originalName: person.originalName,
-            name: person.name.trim() || person.originalName,
-            isRepresentative: person.isRepresentative,
-            attendance: person.confirmed ? "Accept" : "Decline",
-          })),
+          attendees: groupPayloadAttendees,
         }
-      : formData;
+      : {
+          ...formData,
+          attendance: attendanceChoice,
+        };
 
     try {
       const response = await fetch("/api/rsvp", {
@@ -357,6 +414,7 @@ export function RSVP() {
       // SUCCESS
       if (data.result === "success") {
         setSubmissionType(data.submissionType);
+        setSubmissionSummary(buildSubmissionSummary(submittedAttendees));
         setSubmitted(true);
         return;
       }
@@ -447,7 +505,7 @@ export function RSVP() {
               duration-700 ease-out"
           >
             {/* Elegant top line */}
-            <div className="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-[#A8BBA3] via-[#C7D7C0] to-[#A8BBA3]" />
+            <div className="absolute top-0 left-0 h-1 w-full bg-linear-to-r from-[#A8BBA3] via-[#C7D7C0] to-[#A8BBA3]" />
 
             {/* Icon */}
             <div className="mx-auto mb-7 flex h-20 w-20 items-center justify-center rounded-full bg-[#E4EEE0] shadow-sm">
@@ -496,13 +554,22 @@ export function RSVP() {
   }
 
   if (submitted) {
-    const isAccepted = formData.attendance === "Accept";
+    const summary = submissionSummary;
+
+    if (!summary) {
+      return null;
+    }
+
+    const isEveryoneDeclined = summary.acceptedCount === 0;
+    const isMixedAttendance = summary.hasAcceptedGuests && summary.hasDeclinedGuests;
+    const showConfirmationCard = !isEveryoneDeclined;
 
     return (
-      <section id="rsvp" className="py-24 md:py-32">
-        <div className="container mx-auto px-6">
+      <>
+        <section id="rsvp" className="py-24 md:py-32">
+          <div className="container mx-auto px-6">
           {/* Keep RSVP Header */}
-          <div className="text-center mb-14">
+            <div className="text-center mb-14">
             <p className="text-sm tracking-[0.3em] uppercase font-(family-name:--font-montserrat) text-muted-foreground mb-4">
               We Hope You Can Join Us
             </p>
@@ -514,8 +581,8 @@ export function RSVP() {
             </p>
           </div>
 
-          {/* Success Card */}
-          <div
+            {/* Success Card */}
+            <div
             className="
           relative overflow-hidden
           max-w-xl mx-auto text-center
@@ -529,31 +596,31 @@ export function RSVP() {
           duration-700
           ease-out"
           >
-            {/* Elegant top line */}
-            <div
+              {/* Elegant top line */}
+              <div
               className="
             absolute top-0 left-0 w-full h-1
-            bg-gradient-to-r
+            bg-linear-to-r
             from-[#E7C8D6]
             via-[#D98EB2]
             to-[#E7C8D6]
           "
             />
 
-            {/* Floating icon */}
-            <div
+              {/* Floating icon */}
+              <div
               className={`
             w-20 h-20 mx-auto mb-7 rounded-full
             flex items-center justify-center
             shadow-sm
-            ${isAccepted ? "bg-accent/10" : "bg-rose-100"}
+            ${showConfirmationCard ? "bg-accent/10" : "bg-rose-100"}
           `}
             >
-              {isAccepted ? <Check className="w-10 h-10 text-accent" /> : <Frown className="w-10 h-10 text-rose-500" />}
+              {showConfirmationCard ? <Check className="w-10 h-10 text-accent" /> : <Frown className="w-10 h-10 text-rose-500" />}
             </div>
 
-            {/* Small tag */}
-            <div
+              {/* Small tag */}
+              <div
               className="
             inline-flex items-center
             rounded-full
@@ -565,16 +632,16 @@ export function RSVP() {
             mb-5
           "
             >
-              {isAccepted ? "RSVP Confirmed ✨" : "RSVP Declined 💔"}
+              {showConfirmationCard ? "RSVP Confirmed ✨" : "Response Saved 🌷"}
             </div>
 
-            {/* Title */}
-            <h2 className="text-4xl font-light text-foreground mb-4">{isAccepted ? "Thank You!" : "We'll Miss You 💔"}</h2>
+              {/* Title */}
+              <h2 className="text-4xl font-light text-foreground mb-4">{showConfirmationCard ? "Thank You!" : "We’ll Miss You"}</h2>
 
-            {/* ACCEPT CONTENT */}
-            {isAccepted ? (
-              <>
-                <p className="text-muted-foreground font-(family-name:--font-montserrat) leading-8 max-w-lg mx-auto">
+              {/* ACCEPT + MIXED CONTENT */}
+              {showConfirmationCard ? (
+                <>
+                  <p className="text-muted-foreground font-(family-name:--font-montserrat) leading-8 max-w-lg mx-auto">
                   <span className="text-lg font-medium text-blushpink">
                     {submissionType === "Updated RSVP" ? "Your RSVP has been updated." : "Your RSVP has been confirmed."}
                   </span>
@@ -585,7 +652,57 @@ export function RSVP() {
                   If your table is not yet available, kindly allow the hosts some time to finalize the seating arrangements.
                 </p>
 
-                <a
+                  {isMixedAttendance && (
+                    <>
+                      <div className="mt-6 rounded-4xl border border-rose-100 bg-rose-50/40 px-5 py-4 text-left">
+                      <p className="text-sm leading-7 text-rose-600 font-(family-name:--font-montserrat)">
+                        Some members of your group are unable to attend and will be missed.
+                      </p>
+
+                      <p className="mt-2 text-sm font-medium text-foreground font-(family-name:--font-montserrat)">We&apos;ll miss:</p>
+
+                      <ul className="mt-2 space-y-1 text-sm text-muted-foreground font-(family-name:--font-montserrat)">
+                        {summary.declinedGuests.map((guest, index) => (
+                          <li key={`${guest.name}-${index}`}>
+                            • {guest.name}
+                          </li>
+                        ))}
+                      </ul>
+
+                      <p className="mt-3 text-sm leading-7 text-muted-foreground font-(family-name:--font-montserrat)">
+                        Only the confirmed guests may proceed to Find Seat.
+                      </p>
+                    </div>
+
+                      <div className="mt-6 rounded-4xl border border-border/30 bg-white/70 px-5 py-6 sm:py-5 text-center">
+                      <p className="text-sm text-muted-foreground font-(family-name:--font-montserrat)">
+                        Still want to send your love &amp; blessings? ✨
+                      </p>
+
+                      <p className="mt-1 text-xs text-muted-foreground/80 font-(family-name:--font-montserrat)">
+                        Your kindness is deeply appreciated.
+                      </p>
+
+                      <button type="button" onClick={() => setShowQRPreview(true)} className="mx-auto block mt-4">
+                        <img
+                          src="/images/BPI_Qrcode.png"
+                          alt="QR Code"
+                          className="
+                                h-40 w-40 sm:h-44 sm:w-44 rounded-2xl
+                                border border-border/20 object-cover -translate-x-2
+                                shadow-sm transition-transform duration-300
+                                hover:scale-105
+                              "
+                        />
+                      </button>
+                      <p className="mt-4 text-xs text-muted-foreground font-(family-name:--font-montserrat)">
+                        Scan to send your optional gift or blessing 💕
+                      </p>
+                      </div>
+                    </>
+                  )}
+
+                  <Link
                   href="/seat-finder"
                   className="
                 inline-flex items-center justify-center
@@ -595,38 +712,108 @@ export function RSVP() {
                 transition-all duration-300
                 hover:scale-105 hover:shadow-lg
               "
-                >
-                  Find Seat ✨
-                </a>
-              </>
-            ) : (
-              <>
-                {/* DECLINE CONTENT */}
-                <p className="text-muted-foreground font-(family-name:--font-montserrat) leading-8 max-w-lg mx-auto">
-                  Thank you for letting us know.
+                  >
+                    Find Seat ✨
+                  </Link>
+                </>
+              ) : (
+                <>
+                  {/* DECLINE CONTENT */}
+                  <p className="text-muted-foreground font-(family-name:--font-montserrat) leading-8 max-w-lg mx-auto">
+                  Your response has been saved.
                   <br />
-                  Although we’re sad you can’t celebrate with us, we truly appreciate your response and will be thinking of you on our
-                  special day.
-                </p>
+                  Thank you for letting us know, and for sharing your love and support from afar.
+                  <br />
+                  You will be missed, but you’ll still be in our hearts on the day.
+                  </p>
 
-                <a
-                  href="/"
+                  <div className="mt-6 rounded-4xl border border-border/30 bg-white/70 px-5 py-6 sm:py-5 text-center">
+                  <p className="text-sm text-muted-foreground font-(family-name:--font-montserrat)">
+                    Still want to send your love &amp; blessings? ✨
+                  </p>
+
+                  <p className="mt-1 text-xs text-muted-foreground/80 font-(family-name:--font-montserrat)">
+                    Your kindness is deeply appreciated.
+                  </p>
+
+                  <button type="button" onClick={() => setShowQRPreview(true)} className="mx-auto block mt-4">
+                    <img
+                      src="/images/BPI_Qrcode.png"
+                      alt="QR Code"
+                      className="
+                                h-40 w-40 sm:h-44 sm:w-44 rounded-2xl
+                                border border-border/20 object-cover -translate-x-2
+                                shadow-sm transition-transform duration-300
+                                hover:scale-105
+                              "
+                    />
+                  </button>
+                  <p className="mt-4 text-xs text-muted-foreground font-(family-name:--font-montserrat)">
+                    Scan to send your optional gift or blessing 💕
+                  </p>
+                  </div>
+
+                  <button
+                  type="button"
+                  onClick={resetToSearch}
                   className="
-                inline-flex items-center justify-center
-                mt-8 px-8 py-4 rounded-full
-                bg-primary text-white font-medium
-                tracking-wide shadow-md
-                transition-all duration-300
-                hover:scale-105 hover:shadow-lg
-              "
-                >
-                  Back Home
-                </a>
-              </>
-            )}
+                  mt-8 inline-flex items-center justify-center
+                  rounded-full border border-rose-200
+                  bg-white px-8 py-4
+                  font-medium tracking-wide text-rose-600 shadow-sm
+                  transition-all duration-300
+                  hover:scale-105 hover:shadow-md
+                "
+                  >
+                    Back Home
+                  </button>
+                </>
+              )}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+
+        {showQRPreview && (
+          <div
+            onClick={() => setShowQRPreview(false)}
+            className="
+                fixed inset-0 z-100
+                flex items-center justify-center
+                bg-black/60 backdrop-blur-sm
+                px-6
+              "
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="
+                  rounded-4xl bg-white
+                  p-5 sm:p-4 shadow-2xl
+                "
+            >
+              <img
+                src="/images/BPI_Qrcode.png"
+                alt="QR Code Preview"
+                className="
+                    h-80 w-[320px]
+                    sm:h-80 sm:w-[320px]
+                    rounded-3xl
+                    object-contain object-center -translate-x-1
+                  "
+              />
+
+              <p
+                className="
+                    mt-4 text-center text-sm
+                    text-muted-foreground
+                    font-(family-name:--font-montserrat)
+                  "
+              >
+                Scan to send your optional gift or blessing 💕
+              </p>
+            </div>
+          </div>
+        )}
+      </>
     );
   }
 
@@ -822,13 +1009,13 @@ export function RSVP() {
                 {/* Dropdown Suggestions */}
                 {results.length > 0 && !selectedGuest && query.trim().length >= 4 && (
                   <div
-                    className="absolute top-[calc(100%+0.35rem)] z-50 w-full overflow-hidden rounded-[2rem]
+                    className="absolute top-[calc(100%+0.35rem)] z-50 w-full overflow-hidden rounded-4xl
                                   border border-border/40 bg-white/95 backdrop-blur-sm shadow-xl
                                   animate-in fade-in slide-in-from-top-2 duration-300"
                   >
                     {/* Dropdown Title */}
                     <div
-                      className=" h-3 w-full bg-gradient-to-r
+                      className=" h-3 w-full bg-linear-to-r
                         from-[#A8BBA3]
                         via-[#C7D7C0]
                         to-[#A8BBA3]
@@ -846,7 +1033,7 @@ export function RSVP() {
                       <p className="mt-1 text-xs text-muted-foreground">Select your full name</p>
                       <div className="mt-2 flex items-center justify-center gap-3 px-1"></div>
                       <div
-                        className=" h-1 w-full bg-gradient-to-r
+                        className=" h-1 w-full bg-linear-to-r
                         from-[#A8BBA3]
                         via-[#C7D7C0]
                         to-[#A8BBA3]
@@ -880,7 +1067,7 @@ export function RSVP() {
                           <span
                             className="
                                 ml-3 sm:ml-4
-                                min-w-[92px] sm:min-w-[105px]
+                                min-w-23 sm:min-w-26.25
                                 rounded-full
                                 border border-[#D3E0CF]
                                 bg-[#E4EEE0]
@@ -898,7 +1085,7 @@ export function RSVP() {
                     <div
                       className="
                         h-3 w-full
-                        bg-gradient-to-r
+                        bg-linear-to-r
                         from-[#A8BBA3]
                         via-[#C7D7C0]
                         to-[#A8BBA3]
@@ -1018,14 +1205,14 @@ export function RSVP() {
               <div
                 className="
                   relative overflow-hidden
-                  rounded-[2rem]
+                  rounded-4xl
                   border border-[#E4EEE0]
-                  bg-gradient-to-br from-[#F4F9F1] to-white
+                  bg-linear-to-br from-[#F4F9F1] to-white
                   px-5 py-4 sm:px-6
                   shadow-[0_10px_30px_rgba(0,0,0,0.05)]
                   animate-in fade-in zoom-in-95 duration-500"
               >
-                <div className="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-[#A8BBA3] via-[#C7D7C0] to-[#A8BBA3]" />
+                <div className="absolute top-0 left-0 h-1 w-full bg-linear-to-r from-[#A8BBA3] via-[#C7D7C0] to-[#A8BBA3]" />
 
                 <div className="flex items-center gap-4">
                   {/* Check avatar */}
@@ -1038,7 +1225,7 @@ export function RSVP() {
                     <p className="text-[0.65rem] uppercase tracking-[0.15em] text-[#9A7E6F] font-medium font-(family-name:--font-montserrat)">
                       We found you ✨
                     </p>
-                    <p className="text-lg font-medium text-foreground leading-snug break-words">{selectedGuest.fullName}</p>
+                    <p className="text-lg font-medium text-foreground leading-snug wrap-break-word">{selectedGuest.fullName}</p>
                   </div>
 
                   {/* Change Name */}
@@ -1065,7 +1252,7 @@ export function RSVP() {
                   className="
                       relative mt-6 overflow-hidden rounded-[2.5rem]
                       border border-[#EADFD8]
-                      bg-gradient-to-br from-white via-[#FFFDFC] to-[#FAF6F2]
+                      bg-linear-to-br from-white via-[#FFFDFC] to-[#FAF6F2]
                       px-8 py-10 text-center
                       shadow-[0_15px_40px_rgba(0,0,0,0.08)]
                       animate-in fade-in duration-500 "
@@ -1075,7 +1262,7 @@ export function RSVP() {
                     className="
                       absolute inset-0 -translate-x-full
                       animate-[shimmer_2.8s_ease-in-out_infinite]
-                      bg-gradient-to-r from-transparent via-blushpink/25 to-transparent
+                      bg-linear-to-r from-transparent via-blushpink/25 to-transparent
                       blur-2xl
                     "
                   />
@@ -1083,7 +1270,7 @@ export function RSVP() {
                   <div
                     className="
                         absolute top-0 left-0 h-1 w-full
-                        bg-gradient-to-r
+                        bg-linear-to-r
                         from-[#A8BBA3] via-[#C7D7C0] to-[#A8BBA3]
                       "
                   />
@@ -1154,7 +1341,7 @@ export function RSVP() {
 
                       {/* Group finalized banner */}
                       {isLockedRSVP && (
-                        <div className="rounded-[2rem] border border-[#EADFD8] bg-[#FAF7F4] px-5 py-4 text-center">
+                        <div className="rounded-4xl border border-[#EADFD8] bg-[#FAF7F4] px-5 py-4 text-center">
                           <p className="text-sm text-[#9A7E6F] font-(family-name:--font-montserrat)">
                             This group&apos;s RSVP has been finalized and can no longer be modified. 💍
                           </p>
@@ -1190,11 +1377,11 @@ export function RSVP() {
                             <div
                               className="
                                 absolute top-[calc(100%+0.35rem)] z-50 w-full overflow-hidden
-                                rounded-[2rem] border border-border/40 bg-white/95 backdrop-blur-sm shadow-xl
+                                rounded-4xl border border-border/40 bg-white/95 backdrop-blur-sm shadow-xl
                                 animate-in fade-in slide-in-from-top-2 duration-300"
                             >
                               {/* Top gradient bar */}
-                              <div className="h-3 w-full bg-gradient-to-r from-[#A8BBA3] via-[#C7D7C0] to-[#A8BBA3]" />
+                              <div className="h-3 w-full bg-linear-to-r from-[#A8BBA3] via-[#C7D7C0] to-[#A8BBA3]" />
 
                               {/* Title */}
                               <div className="pt-1 text-center">
@@ -1204,7 +1391,7 @@ export function RSVP() {
                                   <div className="h-px flex-1 bg-border/90" />
                                 </div>
                                 <p className="mt-1 text-xs text-muted-foreground">Select who&apos;s attending</p>
-                                <div className="mt-2 h-1 w-full bg-gradient-to-r from-[#A8BBA3] via-[#C7D7C0] to-[#A8BBA3]" />
+                                <div className="mt-2 h-1 w-full bg-linear-to-r from-[#A8BBA3] via-[#C7D7C0] to-[#A8BBA3]" />
                               </div>
 
                               {/* Options */}
@@ -1223,7 +1410,7 @@ export function RSVP() {
                                     >
                                       <span className="text-sm font-medium">{person.name}</span>
                                       {person.isRepresentative && (
-                                        <span className="ml-2 rounded-full bg-[#E4EEE0] px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.1em] text-[#6F806B]">
+                                        <span className="ml-2 rounded-full bg-[#E4EEE0] px-2 py-0.5 text-[0.6rem] uppercase tracking-widest text-[#6F806B]">
                                           Rep
                                         </span>
                                       )}
@@ -1236,7 +1423,7 @@ export function RSVP() {
                               </div>
 
                               {/* Bottom gradient bar */}
-                              <div className="h-3 w-full bg-gradient-to-r from-[#A8BBA3] via-[#C7D7C0] to-[#A8BBA3]" />
+                              <div className="h-3 w-full bg-linear-to-r from-[#A8BBA3] via-[#C7D7C0] to-[#A8BBA3]" />
                             </div>
                           )}
                         </div>
@@ -1303,7 +1490,7 @@ export function RSVP() {
 
                                     <button
                                       type="button"
-                                      title="Remove from list"
+                                      title="Mark as declined"
                                       onClick={() => {
                                         setAttendeeConfirmed(index, false);
                                         if (editingIndex === index) setEditingIndex(null);
@@ -1323,7 +1510,7 @@ export function RSVP() {
                         ) : (
                           /* Whole group declining (0 of N) — mirror the single-guest decline + QR */
                           <div className="space-y-4">
-                            <div className="rounded-[2rem] border border-rose-100 bg-rose-50/40 px-5 py-4 text-center">
+                            <div className="rounded-4xl border border-rose-100 bg-rose-50/40 px-5 py-4 text-center">
                               <p className="text-sm leading-7 text-rose-600 font-(family-name:--font-montserrat)">
                                 We&apos;re sorry your group can&apos;t celebrate with us 💔
                                 <br />
@@ -1338,7 +1525,7 @@ export function RSVP() {
                             </div>
 
                             {/* Optional Blessing / Offering */}
-                            <div className="rounded-[2rem] border border-border/30 bg-white/70 px-5 py-6 text-center">
+                            <div className="rounded-4xl border border-border/30 bg-white/70 px-5 py-6 text-center">
                               <p className="text-sm text-muted-foreground font-(family-name:--font-montserrat)">
                                 Still want to send your love &amp; blessings? ✨
                               </p>
@@ -1368,8 +1555,8 @@ export function RSVP() {
                       {/* Attending tally */}
                       <div
                         className="
-                          rounded-[2rem] border border-blushpink/10
-                          bg-gradient-to-br from-white to-rose-50/40
+                          rounded-4xl border border-blushpink/10
+                          bg-linear-to-br from-white to-rose-50/40
                           px-5 py-3 text-center shadow-[0_8px_25px_rgba(0,0,0,0.06)]"
                       >
                         <p className="text-sm font-medium text-foreground font-(family-name:--font-montserrat)">
@@ -1471,7 +1658,7 @@ export function RSVP() {
                         backdrop-blur-sm
                         animate-in fade-in duration-500"
                     >
-                      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#A8BBA3] via-[#C7D7C0] to-[#A8BBA3]" />
+                      <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-[#A8BBA3] via-[#C7D7C0] to-[#A8BBA3]" />
                       <h3 className="text-[1.2rem] font-light text-foreground tracking-[0.02em] sm:text-[1.35rem]">
                         Your RSVP has been finalized 💍
                       </h3>
@@ -1490,7 +1677,7 @@ export function RSVP() {
                       <p
                         className="
                           mt-4 text-sm text-muted-foreground
-                          leading-7 sm:leading-8 max-w-[290px] mx-auto
+                          leading-7 sm:leading-8 max-w-72.5 mx-auto
                           font-(family-name:--font-montserrat)"
                       >
                         Your RSVP has been finalized and can no longer be modified.
@@ -1549,9 +1736,9 @@ export function RSVP() {
 
                       <div
                         className={`
-                            rounded-[2rem]
+                            rounded-4xl
                             border border-blushpink/10
-                            bg-gradient-to-br from-white to-rose-50/40
+                            bg-linear-to-br from-white to-rose-50/40
                             px-5 py-4 sm:py-5 text-center
                             shadow-[0_8px_25px_rgba(0,0,0,0.06)]
                             transition-all duration-300
@@ -1586,7 +1773,7 @@ export function RSVP() {
                       {!isLockedRSVP && (
                         <div
                           className="
-                          rounded-[2rem] border border-rose-100
+                          rounded-4xl border border-rose-100
                           bg-rose-50/40 px-5 py-3 text-center
                         "
                         >
@@ -1606,7 +1793,7 @@ export function RSVP() {
                       {/* Optional Blessing / Offering */}
                       <div
                         className="
-                          rounded-[2rem] border border-border/30
+                          rounded-4xl border border-border/30
                           bg-white/70 px-5 py-6 sm:py-5 text-center
                         "
                       >
@@ -1636,7 +1823,7 @@ export function RSVP() {
                             alt="QR Code"
                             className="
                                 h-40 w-40 sm:h-44 sm:w-44 rounded-2xl
-                                border border-border/20 object-cover -translate-x-[8px]
+                                border border-border/20 object-cover -translate-x-2
                                 shadow-sm transition-transform duration-300
                                 hover:scale-105
                               "
@@ -1669,7 +1856,7 @@ export function RSVP() {
                         value={formData.message}
                         onChange={(e) => updateFormField("message", e.target.value)}
                         className={`
-                            min-h-[90px] sm:min-h-[100px]
+                            min-h-22.5 sm:min-h-25
                             resize-none
                             border-border/50
                             focus:border-accent
@@ -1705,7 +1892,7 @@ export function RSVP() {
                         type="submit"
                         disabled={isSubmitting || !selectedGuest}
                         className="
-                      w-full rounded-[1.5rem]
+                      w-full rounded-3xl
                       bg-primary py-5 text-sm uppercase sm:py-6
                       tracking-[0.2em] text-primary-foreground
                       font-(family-name:--font-montserrat)
@@ -1737,7 +1924,7 @@ export function RSVP() {
           <div
             onClick={() => setShowQRPreview(false)}
             className="
-                fixed inset-0 z-[100]
+                fixed inset-0 z-100
                 flex items-center justify-center
                 bg-black/60 backdrop-blur-sm
                 px-6
@@ -1746,7 +1933,7 @@ export function RSVP() {
             <div
               onClick={(e) => e.stopPropagation()}
               className="
-                  rounded-[2rem] bg-white
+                  rounded-4xl bg-white
                   p-5 sm:p-4 shadow-2xl
                 "
             >
@@ -1754,10 +1941,10 @@ export function RSVP() {
                 src="/images/BPI_Qrcode.png"
                 alt="QR Code Preview"
                 className="
-                    h-[320px] w-[320px]
-                    sm:h-[320px] sm:w-[320px]
-                    rounded-[1.5rem]
-                    object-contain object-center translate-x-[-4px]
+                    h-80 w-[320px]
+                    sm:h-80 sm:w-[320px]
+                    rounded-3xl
+                    object-contain object-center -translate-x-1
                   "
               />
 

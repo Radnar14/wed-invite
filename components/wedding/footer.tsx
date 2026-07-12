@@ -36,7 +36,7 @@ export function Footer({
         </h2>
         
         <p className="text-sm md:text-base tracking-[0.3em] uppercase font-(family-name:--font-montserrat) mb-12 text-primary-foreground/80">
-          December 28, 2026
+          October 08, 2026
         </p>
         
         <div className="flex items-center justify-center w-full max-w-sm mx-auto mb-12">

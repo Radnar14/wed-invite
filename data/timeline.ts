@@ -40,12 +40,12 @@ export const timelineEvents = [
   },
   {
     time: "8:00 PM",
-    title: "Dancing & Celebration",
-    description: "Dance the night away with live music",
-    icon: "dancing",
+    title: "Photo Together with Guests",
+    description: "Capture memories with group photos",
+    icon: "camera",
   },
   {
-    time: "11:00 PM",
+    time: "10:00 PM",
     title: "Sparkler Send-Off",
     description: "Bid farewell to the happy couple",
     icon: "sparkles",

@@ -52,9 +52,9 @@ export const primarySponsors = [
 ];
 
 export const secondarySponsors = {
-  veil: ["Mr. Vincy Ceniza", "Mrs. Orje Marey Ceniza"],
+  candle: ["Mr. Vincy Ceniza", "Mrs. Orje Marey Ceniza"],
   cord: ["Mr. Charles Bott", "Mrs. Charmie Sheen Bott"],
-  candle: ["Mr. Louie Mendez", "Mrs. Florie Mae Mendez"],
+  veil: ["Mr. Louie Mendez", "Mrs. Florie Mae Mendez"],
 };
 
 export const flowerGirls: EntourageMember[] = [

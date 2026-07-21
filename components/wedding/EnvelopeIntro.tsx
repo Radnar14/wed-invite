@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import { motion, useReducedMotion, type Variants } from "framer-motion"
+import { COUPLE_NAMES, WEDDING_DISPLAY_DATE } from "@/lib/wedding-config"
 
 const INTRO_OPENED_EVENT = "wedding-intro-opened"
 
@@ -150,11 +151,11 @@ export function EnvelopeIntro({ onComplete }: EnvelopeIntroProps) {
         >
           <div className="flex h-full flex-col items-center justify-center gap-2 px-4 text-center">
             <p className="font-(family-name:--font-great-vibes) text-2xl text-primary sm:text-3xl">
-              John Mark <span className="text-[#F2B8C6]">&amp;</span> Chezza
+              {COUPLE_NAMES.groom} <span className="text-[#F2B8C6]">&amp;</span> {COUPLE_NAMES.bride}
             </p>
             <span className="h-px w-10 bg-[#9CAF88]/60" />
             <p className="font-(family-name:--font-montserrat) text-[10px] uppercase tracking-[0.3em] text-primary/70 sm:text-xs">
-              October 8, 2026
+              {WEDDING_DISPLAY_DATE}
             </p>
           </div>
         </motion.div>

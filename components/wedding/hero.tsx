@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 import { ChevronDown, Send } from "lucide-react"
+import { COUPLE_NAMES, WEDDING_DISPLAY_DATE } from "@/lib/wedding-config"
 
 export function Hero() {
   return (
@@ -24,11 +25,11 @@ export function Hero() {
           We&apos;re Getting Married
         </p>
         <h1 className="text-5xl md:text-7xl lg:text-8xl font-light mb-6 animate-fade-in animation-delay-200 font-(family-name:--font-great-vibes)">
-          John Mark <span className="text-accent">&</span> Chezza
+          {COUPLE_NAMES.groom} <span className="text-accent">&</span> {COUPLE_NAMES.bride}
         </h1>
         <div className="w-24 h-px bg-white/60 mx-auto mb-6 animate-fade-in animation-delay-400" />
         <p className="text-lg md:text-xl tracking-[0.15em] font-(family-name:--font-montserrat) font-light animate-fade-in animation-delay-600">
-          October 8, 2026
+          {WEDDING_DISPLAY_DATE}
         </p>
         <a
           href="#rsvp"

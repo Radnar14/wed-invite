@@ -16,6 +16,7 @@ import { Cormorant_Garamond, Great_Vibes, Montserrat } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import { RootLayoutClient } from './layout-client'
+import { COUPLE_NAMES, WEDDING_DISPLAY_DATE_LONG } from '@/lib/wedding-config'
 
 // Custom font definitions
 const cormorant = Cormorant_Garamond({ 
@@ -37,8 +38,8 @@ const greatVibes = Great_Vibes({
 })
 
 export const metadata: Metadata = {
-  title: 'John Mark & Chezza | Wedding',
-  description: 'Join us in celebrating our love - John Mark & Chezza Wedding, October 08, 2026',
+  title: `${COUPLE_NAMES.groom} & ${COUPLE_NAMES.bride} | Wedding`,
+  description: `Join us in celebrating our love - ${COUPLE_NAMES.groom} & ${COUPLE_NAMES.bride} Wedding, ${WEDDING_DISPLAY_DATE_LONG}`,
   generator: 'v0.app',
   icons: {
     icon: [

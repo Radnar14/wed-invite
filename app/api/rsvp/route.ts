@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 const MAX_BODY_SIZE = 64 * 1024;
 
-function isValidExternalUrl(value: string | undefined) {
+function isValidExternalUrl(value: string | undefined): value is string {
   if (!value) {
     return false;
   }

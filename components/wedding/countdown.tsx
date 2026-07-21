@@ -1,8 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-
-const WEDDING_DATE = new Date("2026-10-08T15:00:00")
+import { WEDDING_DATE } from "@/lib/wedding-config"
 
 interface TimeLeft {
   days: number

@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 const MAX_QUERY_LENGTH = 100;
 const ALLOWED_ACTIONS = new Set(["allGuests", "groupSummary"]);
 
-function isSafeQuery(value: string | null) {
+function isSafeQuery(value: string | null): value is string {
   if (!value) {
     return false;
   }
@@ -11,7 +11,7 @@ function isSafeQuery(value: string | null) {
   return value.length <= MAX_QUERY_LENGTH && /^[\p{L}\p{N}\s.'-]{1,100}$/u.test(value);
 }
 
-function isValidExternalUrl(value: string | undefined) {
+function isValidExternalUrl(value: string | undefined): value is string {
   if (!value) {
     return false;
   }

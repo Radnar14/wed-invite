@@ -1,6 +1,7 @@
 "use client"
 
 import { Heart } from "lucide-react"
+import { COUPLE_NAMES, WEDDING_DISPLAY_DATE_LONG } from "@/lib/wedding-config"
 
 // Footer component with enhanced design and optional "Back to Top" button only in homepage
 export function Footer({
@@ -32,11 +33,11 @@ export function Footer({
         </div>
         
         <h2 className="text-4xl md:text-5xl lg:text-6xl font-light mb-6">
-          John Mark <span className="text-accent">&</span> Chezza
+          {COUPLE_NAMES.groom} <span className="text-accent">&</span> {COUPLE_NAMES.bride}
         </h2>
         
         <p className="text-sm md:text-base tracking-[0.3em] uppercase font-(family-name:--font-montserrat) mb-12 text-primary-foreground/80">
-          October 08, 2026
+          {WEDDING_DISPLAY_DATE_LONG}
         </p>
         
         <div className="flex items-center justify-center w-full max-w-sm mx-auto mb-12">

@@ -4,7 +4,7 @@
 export const faqs = [
   {
     question: "When is the RSVP deadline?",
-    answer: ["Kindly RSVP by September 08, 2026, so we can have an accurate headcount for the venue and catering."],
+    answer: ["Kindly RSVP by September 20, 2026, so we can have an accurate headcount for the venue and catering."],
   },
   {
     question: "What is the dress code?",

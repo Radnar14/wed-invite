@@ -1,7 +1,8 @@
 "use client"
 
 import Image from "next/image"
-import { ChevronDown } from "lucide-react"
+import { ChevronDown, Send } from "lucide-react"
+import { COUPLE_NAMES, WEDDING_DISPLAY_DATE } from "@/lib/wedding-config"
 
 export function Hero() {
   return (
@@ -24,12 +25,20 @@ export function Hero() {
           We&apos;re Getting Married
         </p>
         <h1 className="text-5xl md:text-7xl lg:text-8xl font-light mb-6 animate-fade-in animation-delay-200 font-(family-name:--font-great-vibes)">
-          John Mark <span className="text-accent">&</span> Chezza
+          {COUPLE_NAMES.groom} <span className="text-accent">&</span> {COUPLE_NAMES.bride}
         </h1>
         <div className="w-24 h-px bg-white/60 mx-auto mb-6 animate-fade-in animation-delay-400" />
         <p className="text-lg md:text-xl tracking-[0.15em] font-(family-name:--font-montserrat) font-light animate-fade-in animation-delay-600">
-          October 8, 2026
+          {WEDDING_DISPLAY_DATE}
         </p>
+        <a
+          href="#rsvp"
+          className="group relative mx-auto mt-24 flex h-10 w-60 items-center justify-center gap-2 overflow-hidden rounded-full border border-white/55 bg-white/18 px-6 text-[0.65rem] font-medium uppercase tracking-[0.22em] text-white shadow-[0_12px_32px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.45)] backdrop-blur-md transition-all duration-300 active:scale-[0.98] md:hidden animate-fade-in animation-delay-800"
+        >
+          <span className="pointer-events-none absolute inset-y-0 -left-1/2 w-1/2 skew-x-[-18deg] bg-gradient-to-r from-transparent via-white/45 to-transparent transition-transform duration-700 group-hover:translate-x-[320%]" />
+          <Send size={12} strokeWidth={1.8} className="relative" aria-hidden="true" />
+          <span className="relative ">RSVP NOW</span>
+        </a>
       </div>
 
       {/* Scroll Indicator */}
@@ -65,6 +74,10 @@ export function Hero() {
         }
         .animation-delay-600 {
           animation-delay: 0.6s;
+          opacity: 0;
+        }
+        .animation-delay-800 {
+          animation-delay: 0.8s;
           opacity: 0;
         }
       `}</style>

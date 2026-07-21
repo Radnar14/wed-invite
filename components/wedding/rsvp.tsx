@@ -25,13 +25,7 @@ import {
   UserPlus,
   Plus,
 } from "lucide-react";
-
-// RSVP deadline shown across the section
-const RSVP_DEADLINE = "September 20, 2026";
-
-// Exact moment the RSVP period ends: 12:00 AM (midnight) Philippine Time (UTC+8).
-// The `+08:00` offset pins this to PH time no matter where the guest's device is.
-const RSVP_DEADLINE_DATE = new Date("2026-09-20T00:00:00+08:00");
+import { RSVP_DEADLINE, RSVP_DEADLINE_DATE } from "@/lib/wedding-config";
 
 // Manual override — flip to `true` to force submissions closed early.
 // Otherwise the RSVP closes automatically once RSVP_DEADLINE_DATE passes.

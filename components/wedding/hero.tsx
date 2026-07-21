@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { ChevronDown } from "lucide-react"
+import { ChevronDown, Send } from "lucide-react"
 
 export function Hero() {
   return (
@@ -30,6 +30,14 @@ export function Hero() {
         <p className="text-lg md:text-xl tracking-[0.15em] font-(family-name:--font-montserrat) font-light animate-fade-in animation-delay-600">
           October 8, 2026
         </p>
+        <a
+          href="#rsvp"
+          className="group relative mx-auto mt-24 flex h-10 w-60 items-center justify-center gap-2 overflow-hidden rounded-full border border-white/55 bg-white/18 px-6 text-[0.65rem] font-medium uppercase tracking-[0.22em] text-white shadow-[0_12px_32px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.45)] backdrop-blur-md transition-all duration-300 active:scale-[0.98] md:hidden animate-fade-in animation-delay-800"
+        >
+          <span className="pointer-events-none absolute inset-y-0 -left-1/2 w-1/2 skew-x-[-18deg] bg-gradient-to-r from-transparent via-white/45 to-transparent transition-transform duration-700 group-hover:translate-x-[320%]" />
+          <Send size={12} strokeWidth={1.8} className="relative" aria-hidden="true" />
+          <span className="relative ">RSVP NOW</span>
+        </a>
       </div>
 
       {/* Scroll Indicator */}
@@ -65,6 +73,10 @@ export function Hero() {
         }
         .animation-delay-600 {
           animation-delay: 0.6s;
+          opacity: 0;
+        }
+        .animation-delay-800 {
+          animation-delay: 0.8s;
           opacity: 0;
         }
       `}</style>

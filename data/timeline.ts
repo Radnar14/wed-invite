@@ -3,15 +3,15 @@
 // users, heart, camera, drinks, dinner, music, dancing, or sparkles.
 export const timelineEvents = [
   {
-    time: "1:30 PM",
+    time: "1:50 PM",
     title: "Guest Arrival",
     description: "Guests arrive and are seated for the ceremony",
     icon: "users",
   },
   {
-    time: "2:30 PM",
+    time: "2:15 PM",
     title: "Ceremony",
-    description: "Exchange of vows in the garden pavilion",
+    description: "Archdiocesan Shrine of St. Thérèse",
     icon: "heart",
   },
   {
@@ -27,7 +27,7 @@ export const timelineEvents = [
     icon: "drinks",
   },
   {
-    time: "6:00 PM",
+    time: "5:00 PM",
     title: "Reception",
     description: "Dinner, toasts, and celebration begin",
     icon: "dinner",
@@ -45,7 +45,7 @@ export const timelineEvents = [
     icon: "camera",
   },
   {
-    time: "10:00 PM",
+    time: "09:00 PM",
     title: "Sparkler Send-Off",
     description: "Bid farewell to the happy couple",
     icon: "sparkles",

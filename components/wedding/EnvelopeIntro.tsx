@@ -135,6 +135,7 @@ export function EnvelopeIntro({ onComplete }: EnvelopeIntroProps) {
           alt=""
           width={400}
           height={280}
+          priority
           className={`pointer-events-none absolute -left-20 -bottom-12 w-40 sm:w-52 h-auto object-contain select-none transition-[z-index] ${opened ? "z-0" : "z-10"}`}
           aria-hidden="true"
         />
@@ -143,6 +144,7 @@ export function EnvelopeIntro({ onComplete }: EnvelopeIntroProps) {
           alt=""
           width={400}
           height={280}
+          priority
           className={`pointer-events-none absolute -right-16 -top-14 w-36 sm:w-48 h-auto object-contain select-none -scale-x-100 ${opened ? "z-0" : "z-10"}`}
           aria-hidden="true"
         />

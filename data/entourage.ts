@@ -63,6 +63,7 @@ export const flowerGirls: EntourageMember[] = [
   { name: "Sophia Syziel Bartolabac", role: "Flower Girl" },
   { name: "Arianne Argallon", role: "Flower Girl" },
   { name: "Hannah Mae Abad", role: "Flower Girl" },
+  { name: "Shairah Myrene Ybañez", role: "Flower Girl" },
 ];
 
 export const bearers: EntourageMember[] = [

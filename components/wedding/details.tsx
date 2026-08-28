@@ -99,7 +99,7 @@ export function Details() {
 
               <div className="flex justify-center items-center gap-2 text-muted-foreground mb-6">
                 <Clock className="w-4 h-4" />
-                <p>Oct 08, 2026 · 2:30 PM</p>
+                <p>Oct 08, 2026 · 2:00 PM</p>
               </div>
 
               <a
@@ -155,7 +155,11 @@ export function Details() {
                 <p className="text-xs tracking-[0.3em] uppercase text-muted-foreground leading-none">Reception</p>
               </div>
 
-              <h3 className="text-3xl font-light mb-4">Beverly View Events Pavilion</h3>
+              <h3 className="text-3xl font-light">Beverly View Events Pavilion</h3>
+
+              <div className="flex justify-center items-center text-black mb-4">
+                <p>(Rustic Hall)</p>
+              </div>
 
               <div className="flex justify-center items-center gap-2 text-blushpink mb-2">
                 <MapPin className="w-4 h-4" />
@@ -164,7 +168,7 @@ export function Details() {
 
               <div className="flex justify-center items-center gap-2 text-muted-foreground mb-6">
                 <Clock className="w-4 h-4" />
-                <p>Oct 08, 2026 · 6:00 PM</p>
+                <p>Oct 08, 2026 · 5:00 PM</p>
               </div>
               <a
                 href="https://maps.google.com/?q=Beverly+View+Events+Pavilion"

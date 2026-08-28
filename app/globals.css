@@ -124,9 +124,11 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
   html {
     scroll-behavior: smooth;
   }
@@ -135,7 +137,9 @@
 
 /* Arrow Tick Animation @ Gallery full view */
 @keyframes arrowTick {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateX(0);
   }
 
@@ -166,7 +170,9 @@
 
 /* Footer heartlogo */
 @keyframes heartBeat {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
   }
 
@@ -193,7 +199,9 @@
 
 /* Footer button back to Top */
 @keyframes floatSoft {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px);
   }
 
@@ -288,41 +296,39 @@
   }
 
   .envelope-body {
-    background: linear-gradient(160deg, #FDE8EA 0%, #F7D1D6 50%, #F0BDC4 100%);
-    box-shadow: 0 0 0 1px rgba(192, 134, 145, 0.38), 0 35px 70px -25px rgba(120, 90, 70, 0.35);
+    background: linear-gradient(160deg, #FFFFFF 0%, #FDEEF0 45%, #F8D9DE 100%);
+    box-shadow: 0 0 0 1px rgba(230, 195, 205, 0.4), 0 35px 70px -25px rgba(120, 90, 70, 0.25);
   }
 
   .envelope-body-pattern {
-    background-image: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0 1px, transparent 1px 16px);
+    display: none;
   }
 
   .envelope-card {
-    border: 1px solid rgba(243, 217, 214, 0.6);
-    box-shadow: 0 18px 40px -18px rgba(120, 90, 70, 0.4);
+    border: 1px solid rgba(243, 217, 222, 0.7);
+    box-shadow: 0 18px 40px -18px rgba(120, 90, 70, 0.35);
   }
 
   .envelope-pocket {
-    background: linear-gradient(180deg, #FBE4E7 0%, #F5C7CD 45%, #ECB4BC 100%);
-    box-shadow: inset 0 0 0 1px rgba(192, 134, 145, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+    background: linear-gradient(180deg, #FFFFFF 0%, #FDEBEE 45%, #F6D3D8 100%);
+    box-shadow: inset 0 0 0 1px rgba(230, 195, 205, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.7);
   }
 
   .envelope-pocket-pattern {
-    background-image: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0 1px, transparent 1px 20px);
+    display: none;
   }
 
   .envelope-flap {
     clip-path: polygon(0 0, 100% 0, 50% 100%);
-    background: linear-gradient(180deg, #FDE7E9 0%, #F7C8CE 50%, #F0ADB7 100%), repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.34) 0 1px, transparent 1px 18px);
-    background-size: 100% 100%, 18px 18px;
-    background-repeat: no-repeat, repeat;
+    background: linear-gradient(180deg, #FFFFFF 0%, #FDECEF 50%, #F5D0D6 100%);
     transform-style: preserve-3d;
     backface-visibility: hidden;
-    box-shadow: inset 0 0 0 1px rgba(192, 134, 145, 0.25);
+    box-shadow: inset 0 0 0 1px rgba(230, 195, 205, 0.3);
   }
 
   .seal-button {
-    background: radial-gradient(circle at 35% 30%, #E1E8D7 0%, #B3BF9C 40%, #83966D 100%);
-    box-shadow: 0 10px 24px rgba(114, 122, 102, 0.35), inset 0 2px 2px rgba(255, 255, 255, 0.18);
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: #FFFFFF;
+    box-shadow: 0 8px 20px rgba(230, 190, 200, 0.35), inset 0 0 0 1px rgba(243, 201, 209, 0.6), inset 0 2px 2px rgba(255, 255, 255, 0.8);
+    border: 1px solid #F6DCE2;
   }
 }

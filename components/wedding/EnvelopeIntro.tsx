@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import { useEffect, useRef, useState } from "react"
-import Image from "next/image"
-import { motion, useReducedMotion, type Variants } from "framer-motion"
-import { COUPLE_NAMES, WEDDING_DISPLAY_DATE } from "@/lib/wedding-config"
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
+import { COUPLE_NAMES, WEDDING_DISPLAY_DATE } from "@/lib/wedding-config";
 
-const INTRO_OPENED_EVENT = "wedding-intro-opened"
+const INTRO_OPENED_EVENT = "wedding-intro-opened";
 
 interface EnvelopeIntroProps {
   /** Called once the opening sequence has finished and the site should be revealed. */
-  onComplete: () => void
+  onComplete: () => void;
 }
 
 /**
@@ -17,44 +17,44 @@ interface EnvelopeIntroProps {
  * before the homepage is revealed.
  */
 export function EnvelopeIntro({ onComplete }: EnvelopeIntroProps) {
-  const [opened, setOpened] = useState(false)
-  const prefersReducedMotion = useReducedMotion()
-  const completedRef = useRef(false)
-  const timeoutsRef = useRef<number[]>([])
+  const [opened, setOpened] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
+  const completedRef = useRef(false);
+  const timeoutsRef = useRef<number[]>([]);
 
   useEffect(() => {
     return () => {
-      timeoutsRef.current.forEach((id) => window.clearTimeout(id))
-    }
-  }, [])
+      timeoutsRef.current.forEach((id) => window.clearTimeout(id));
+    };
+  }, []);
 
   const markComplete = () => {
-    if (completedRef.current) return
-    completedRef.current = true
-    onComplete()
-  }
+    if (completedRef.current) return;
+    completedRef.current = true;
+    onComplete();
+  };
 
   const handleOpen = () => {
-    if (opened) return
-    setOpened(true)
-    window.dispatchEvent(new CustomEvent(INTRO_OPENED_EVENT))
+    if (opened) return;
+    setOpened(true);
+    window.dispatchEvent(new CustomEvent(INTRO_OPENED_EVENT));
 
-    const openingDuration = prefersReducedMotion ? 500 : 1900
-    const revealHold = prefersReducedMotion ? 150 : 450
+    const openingDuration = prefersReducedMotion ? 500 : 1900;
+    const revealHold = prefersReducedMotion ? 150 : 450;
 
     const timeoutId = window.setTimeout(() => {
-      markComplete()
-    }, openingDuration + revealHold)
+      markComplete();
+    }, openingDuration + revealHold);
 
-    timeoutsRef.current.push(timeoutId)
-  }
+    timeoutsRef.current.push(timeoutId);
+  };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault()
-      handleOpen()
+      event.preventDefault();
+      handleOpen();
     }
-  }
+  };
 
   const overlayVariants: Variants = {
     hidden: { opacity: 0 },
@@ -66,7 +66,7 @@ export function EnvelopeIntro({ onComplete }: EnvelopeIntroProps) {
       opacity: 0,
       transition: { duration: prefersReducedMotion ? 0.25 : 0.7, ease: "easeInOut" },
     },
-  }
+  };
 
   const flapVariants: Variants = {
     closed: { rotateX: 0, opacity: 1 },
@@ -81,7 +81,7 @@ export function EnvelopeIntro({ onComplete }: EnvelopeIntroProps) {
         },
       },
     },
-  }
+  };
 
   const sealVariants: Variants = {
     idle: { scale: 1, opacity: 1, rotate: 0 },
@@ -91,7 +91,7 @@ export function EnvelopeIntro({ onComplete }: EnvelopeIntroProps) {
       rotate: prefersReducedMotion ? 0 : 12,
       transition: { duration: prefersReducedMotion ? 0.25 : 0.5, ease: "easeInOut" },
     },
-  }
+  };
 
   const cardVariants: Variants = {
     hidden: { y: "20%", opacity: 0 },
@@ -104,7 +104,7 @@ export function EnvelopeIntro({ onComplete }: EnvelopeIntroProps) {
         ease: [0.22, 1, 0.36, 1],
       },
     },
-  }
+  };
 
   return (
     <motion.div
@@ -118,24 +118,34 @@ export function EnvelopeIntro({ onComplete }: EnvelopeIntroProps) {
     >
       <div className="mb-6 text-center">
         <p className="text-xs uppercase tracking-[0.45em] text-primary/60 md:text-sm">We are getting</p>
-        <h1 className="mt-2 text-5xl font-(family-name:--font-cormorant) uppercase tracking-[0.18em] text-primary sm:text-6xl">
-          Married
-        </h1>
+        <h1 className="mt-2 text-5xl font-(family-name:--font-cormorant) uppercase tracking-[0.18em] text-primary sm:text-6xl">Married</h1>
       </div>
       <motion.div
         className="relative w-[88vw] max-w-110 aspect-[4/3.1] envelope-perspective cursor-pointer"
         animate={!opened && !prefersReducedMotion ? { y: [0, -8, 0] } : { y: 0 }}
-        transition={
-          !opened && !prefersReducedMotion
-            ? { duration: 4.5, repeat: Infinity, ease: "easeInOut" }
-            : { duration: 0.4 }
-        }
+        transition={!opened && !prefersReducedMotion ? { duration: 4.5, repeat: Infinity, ease: "easeInOut" } : { duration: 0.4 }}
         onClick={handleOpen}
         role="button"
         tabIndex={opened ? -1 : 0}
         onKeyDown={handleKeyDown}
         aria-label="Open your wedding invitation"
       >
+        <Image
+          src="/images/bouquet.png"
+          alt=""
+          width={400}
+          height={280}
+          className={`pointer-events-none absolute -left-20 -bottom-12 w-40 sm:w-52 h-auto object-contain select-none transition-[z-index] ${opened ? "z-0" : "z-10"}`}
+          aria-hidden="true"
+        />
+        <Image
+          src="/images/bouquet.png"
+          alt=""
+          width={400}
+          height={280}
+          className={`pointer-events-none absolute -right-16 -top-14 w-36 sm:w-48 h-auto object-contain select-none -scale-x-100 ${opened ? "z-0" : "z-10"}`}
+          aria-hidden="true"
+        />
         {/* Envelope back / body */}
         <div className="absolute inset-0 rounded-[28px] shadow-[0_35px_70px_-25px_rgba(120,90,70,0.35)] overflow-hidden envelope-body">
           <div className="absolute inset-0 opacity-70 envelope-body-pattern" />
@@ -202,5 +212,5 @@ export function EnvelopeIntro({ onComplete }: EnvelopeIntroProps) {
         Tap to Open
       </motion.p>
     </motion.div>
-  )
+  );
 }

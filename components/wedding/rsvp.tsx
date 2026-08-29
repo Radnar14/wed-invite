@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Check,
+  CheckCheck,
   Heart,
   CircleX,
   Frown,
@@ -203,6 +204,14 @@ export function RSVP() {
     if (index < 0) return;
     setAttendeeConfirmed(index, true);
   };
+
+  const addAllAttendees = () => {
+    setGroupAttendees((prev) => prev.map((person) => ({ ...person, confirmed: true })));
+    setIsGroupDropdownOpen(false);
+  };
+
+  const unconfirmedAttendeeCount = groupAttendees.filter((person) => !person.confirmed).length;
+  const showAddAllAttendees = unconfirmedAttendeeCount >= 5;
 
   // Correct a misspelled name (pencil edit).
   const setAttendeeName = (index: number, name: string) => {
@@ -1003,7 +1012,7 @@ export function RSVP() {
                 {/* Dropdown Suggestions */}
                 {results.length > 0 && !selectedGuest && query.trim().length >= 4 && (
                   <div
-                    className="absolute top-[calc(100%+0.35rem)] z-50 w-full overflow-hidden rounded-4xl
+                    className="relative z-30 mt-2 w-full overflow-hidden rounded-4xl
                                   border border-border/40 bg-white/95 backdrop-blur-sm shadow-xl
                                   animate-in fade-in slide-in-from-top-2 duration-300"
                   >
@@ -1036,7 +1045,7 @@ export function RSVP() {
                     </div>
 
                     {/* Guest List */}
-                    <div className="pb-0">
+                    <div className="max-h-72 overflow-y-auto pb-0">
                       {results.map((guest, index) => (
                         <button
                           key={index}
@@ -1390,6 +1399,21 @@ export function RSVP() {
 
                               {/* Options */}
                               <div className="max-h-64 overflow-y-auto">
+                                {showAddAllAttendees && (
+                                  <button
+                                    type="button"
+                                    onClick={addAllAttendees}
+                                    className="
+                                      flex w-full items-center gap-2.5
+                                      border-b border-[#D3E0CF] bg-[#F4F9F1] px-4 py-3 text-left
+                                      font-medium text-[#6F806B] transition duration-200
+                                      hover:bg-[#E4EEE0]
+                                      active:scale-[0.98] active:bg-[#D8E6D3]"
+                                  >
+                                    <CheckCheck className="h-4 w-4 shrink-0 text-[#6F806B]" />
+                                    <span className="text-sm font-semibold">Confirm all guests ({unconfirmedAttendeeCount})</span>
+                                  </button>
+                                )}
                                 {groupAttendees.map((person, index) =>
                                   !person.confirmed ? (
                                     <button

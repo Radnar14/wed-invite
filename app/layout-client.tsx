@@ -24,7 +24,8 @@
  * - MusicPlayer catches this event and plays music with 1-second delay
  */
 
-import { useState, ReactNode } from 'react'
+import { useEffect, useRef, useState, ReactNode } from 'react'
+import { useRouter } from 'next/navigation'
 import { AnimatePresence } from 'framer-motion'
 import { Analytics } from '@vercel/analytics/next'
 import { MusicPlayer } from "@/components/wedding/music-player"
@@ -35,6 +36,9 @@ export function RootLayoutClient({
 }: Readonly<{
   children: ReactNode
 }>) {
+  const router = useRouter()
+  const didInitialUrlReset = useRef(false)
+
   /**
    * Envelope completion state
    * - false: Show envelope overlay, hide main content
@@ -44,6 +48,22 @@ export function RootLayoutClient({
    * in the same browser session
    */
   const [introFinished, setIntroFinished] = useState(false)
+
+  useEffect(() => {
+    if (didInitialUrlReset.current) return
+    didInitialUrlReset.current = true
+
+    const { pathname, hash } = window.location
+
+    if (pathname === '/' && hash) {
+      window.history.replaceState(null, '', '/')
+      return
+    }
+
+    if (pathname === '/gallery' || pathname === '/seat-finder') {
+      router.replace('/')
+    }
+  }, [router])
 
   return (
     <>

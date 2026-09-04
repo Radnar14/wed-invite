@@ -29,7 +29,7 @@ export const bridesSide: EntourageMember[] = [
 ];
 
 export const groomsSide: EntourageMember[] = [
-  { name: "NAME", role: "Best Man" },
+  { name: "Ryan Dainne Espinosa", role: "Best Man" },
   { name: "Niño Anton Liloan", role: "Groomsman" },
   { name: "Eizel Jimenez", role: "Groomsman" },
   { name: "Josh Nicolaus Abad", role: "Groomsman" },
@@ -44,7 +44,7 @@ export const primarySponsors = [
   { name: "Mr. Dante Argallon & Mrs. Arlene Argallon" },
   { name: "Mr. Junrey Bartolabac & Mrs. Rowena Bartolabac" },
   { name: "Mr. Engr. Paul Bugarin & Mrs. Mira Bugarin" },
-  { name: "Mr. Kap Alley Berdin & Mrs. Celyn Kinaadman" },
+  { name: "Mr. Capt. Alley Berdin & Mrs. Celyn Kinaadman" },
   { name: "Mr. Allan Caballero & Mrs. Engr. Criselda Caballero" },
   { name: "Mr. Jeson Agosto & Mrs. Elmarie Agosto" },
   { name: "Mr. Eduardo Pino & Mrs. Myrna Ybañez" },

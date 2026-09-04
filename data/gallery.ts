@@ -35,8 +35,8 @@ export const homepageGalleryImages = [
 // Use YouTube embed and thumbnail URLs, following the examples below.
 export const galleryVideos = {
   prenup: {
-    src: "https://www.youtube.com/embed/YMKjUxJa6C4?enablejsapi=1",
-    thumbnail: "https://img.youtube.com/vi/YMKjUxJa6C4/maxresdefault.jpg",
+    src: "https://www.youtube.com/embed/glr0vUOp56k",
+    thumbnail: "https://img.youtube.com/vi/glr0vUOp56k/maxresdefault.jpg",
     alt: "Our Pre-Wedding Film",
   },
   saveTheDate: {

@@ -25,4 +25,13 @@ export const faqs = [
       "Yes, both the Archdiocesan Shrine of St. Thérèse church and Beverly View Events Pavilion have ample parking spaces available for our guests.",
     ],
   },
+  {
+    question: "🚗 What are the transportation options to and from the venue?",
+    answer: [
+      "Our reception venue is located inside a subdivision in a mountainous area.",
+      "Guests may travel by private vehicle or use our designated vans to get to the venue.",
+      "Please note that Angkas, Move It, and Maxim motorcycles are not allowed to enter the venue.",
+      "After the celebration, the venue offers complimentary rides to the highway for guests who need assistance with transportation.",
+    ],
+  },
 ] as const;

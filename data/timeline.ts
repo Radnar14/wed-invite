@@ -16,14 +16,14 @@ export const timelineEvents = [
   },
   {
     time: "3:45 PM",
-    title: "Family Photos",
-    description: "Family and wedding party photographs",
+    title: "Post-Ceremony Photos",
+    description: "Capturing memories with everyone after the ceremony",
     icon: "camera",
   },
   {
     time: "4:30 PM",
     title: "Cocktail Hour",
-    description: "Enjoy hors d'oeuvres and drinks on the terrace",
+    description: "Relax, mingle, and enjoy some refreshments before the reception",
     icon: "drinks",
   },
   {
@@ -46,8 +46,8 @@ export const timelineEvents = [
   },
   {
     time: "09:00 PM",
-    title: "Sparkler Send-Off",
-    description: "Bid farewell to the happy couple",
+    title: "The Celebration Comes to a Close",
+    description: "Thank you for celebrating with us",
     icon: "sparkles",
   },
 ] as const;

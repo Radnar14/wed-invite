@@ -1353,7 +1353,9 @@ export function RSVP() {
 
                       {/* Add-member dropdown — themed custom dropdown */}
                       {!isLockedRSVP && groupAttendees.some((p) => !p.confirmed) && (
-                        <div className="relative" ref={groupDropdownRef}>
+                        <>
+                          <div className="hidden sm:block">
+                            <div className="relative" ref={groupDropdownRef}>
                           {/* Trigger */}
                           <button
                             type="button"
@@ -1444,7 +1446,50 @@ export function RSVP() {
                               <div className="h-3 w-full bg-linear-to-r from-[#A8BBA3] via-[#C7D7C0] to-[#A8BBA3]" />
                             </div>
                           )}
-                        </div>
+                            </div>
+                          </div>
+
+                          <div className="sm:hidden rounded-[1.75rem] border border-dashed border-blushpink/40 bg-blushpink/5 px-4 py-4">
+                            <div className="flex items-center justify-between">
+                              <p className="text-xs font-bold tracking-wide text-blushpink">
+                                {unconfirmedAttendeeCount} GUEST{unconfirmedAttendeeCount === 1 ? "" : "S"} STILL PENDING
+                              </p>
+                              {unconfirmedAttendeeCount > 1 && (
+                                <button
+                                  type="button"
+                                  onClick={addAllAttendees}
+                                  className="rounded-full bg-blushpink px-4 py-1.5 text-xs font-medium text-white"
+                                >
+                                  Confirm all
+                                </button>
+                              )}
+                            </div>
+
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              {groupAttendees.map((person, index) =>
+                                !person.confirmed ? (
+                                  <button
+                                    key={index}
+                                    type="button"
+                                    onClick={() => addAttendee(index)}
+                                    className="inline-flex items-center gap-2 rounded-full border border-blushpink/40 bg-white px-3 py-2 text-sm"
+                                  >
+                                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-blushpink/15 text-xs text-blushpink">
+                                      +
+                                    </span>
+                                    <span className="font-(family-name:--font-montserrat)">
+                                      {person.name}
+                                    </span>
+                                  </button>
+                                ) : null,
+                              )}
+                            </div>
+
+                            <p className="mt-3 text-center text-xs text-muted-foreground">
+                              Tap a name to confirm, or use &quot;Confirm all&quot;
+                            </p>
+                          </div>
+                        </>
                       )}
 
                       {/* Confirmed (attending) list shown in the main UI */}
@@ -1571,15 +1616,23 @@ export function RSVP() {
                       </div>
 
                       {/* Attending tally */}
-                      <div
-                        className="
-                          rounded-4xl border border-blushpink/10
-                          bg-linear-to-br from-white to-rose-50/40
-                          px-5 py-3 text-center shadow-[0_8px_25px_rgba(0,0,0,0.06)]"
-                      >
-                        <p className="text-sm font-medium text-foreground font-(family-name:--font-montserrat)">
-                          ✨ {groupAttendees.filter((p) => p.confirmed).length} of {groupAttendees.length} attending
-                        </p>
+                      <div className="hidden sm:block">
+                        <div
+                          className="
+                            rounded-4xl border border-blushpink/10
+                            bg-linear-to-br from-white to-rose-50/40
+                            px-5 py-3 text-center shadow-[0_8px_25px_rgba(0,0,0,0.06)]"
+                        >
+                          <p className="text-sm font-medium text-foreground font-(family-name:--font-montserrat)">
+                            ✨ {groupAttendees.filter((p) => p.confirmed).length} of {groupAttendees.length} attending
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="sm:hidden rounded-full bg-blushpink/10 px-5 py-3 text-center text-sm font-medium text-blushpink">
+                        🎉 {groupAttendees.filter((p) => p.confirmed).length} of {groupAttendees.length} attending
+                        {unconfirmedAttendeeCount > 0 &&
+                          ` — ${unconfirmedAttendeeCount} guest${unconfirmedAttendeeCount === 1 ? "" : "s"} still need confirming`}
                       </div>
                     </div>
                   )}

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 const MAX_BODY_SIZE = 64 * 1024;
+const RSVP_REQUEST_TIMEOUT_MS = 30000;
 
 function isValidExternalUrl(value: string | undefined): value is string {
   if (!value) {
@@ -55,7 +56,7 @@ export async function POST(request: Request) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
-      signal: AbortSignal.timeout(10000),
+      signal: AbortSignal.timeout(RSVP_REQUEST_TIMEOUT_MS),
     });
 
     if (!response.ok) {

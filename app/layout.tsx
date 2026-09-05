@@ -41,6 +41,21 @@ export const metadata: Metadata = {
   title: `${COUPLE_NAMES.groom} & ${COUPLE_NAMES.bride} | Wedding`,
   description: `Join us in celebrating our love - ${COUPLE_NAMES.groom} & ${COUPLE_NAMES.bride} Wedding, ${WEDDING_DISPLAY_DATE_LONG}`,
   generator: 'v0.app',
+
+  openGraph: {
+    title: `${COUPLE_NAMES.groom} & ${COUPLE_NAMES.bride} | Wedding`,
+    description: `Join us in celebrating our love - ${COUPLE_NAMES.groom} & ${COUPLE_NAMES.bride} Wedding, ${WEDDING_DISPLAY_DATE_LONG}`,
+    images: [
+      {
+        url: '/images/hero-couple.jpg',
+        width: 1200,
+        height: 630,
+        alt: `${COUPLE_NAMES.groom} & ${COUPLE_NAMES.bride} Wedding`,
+      },
+    ],
+    type: 'website',
+  },
+
   icons: {
     icon: [
       {

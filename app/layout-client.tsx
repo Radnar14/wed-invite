@@ -5,7 +5,7 @@
  * 
  * Manages all client-side state and interactivity at the layout level:
  * - Envelope intro animation and completion state
- * - Music player (always mounted and ready)
+ * - Music player (mounted for the main wedding experience)
  * - Main content visibility
  * - Analytics
  * 
@@ -25,7 +25,7 @@
  */
 
 import { useEffect, useRef, useState, ReactNode } from 'react'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { AnimatePresence } from 'framer-motion'
 import { Analytics } from '@vercel/analytics/next'
 import { MusicPlayer } from "@/components/wedding/music-player"
@@ -37,7 +37,10 @@ export function RootLayoutClient({
   children: ReactNode
 }>) {
   const router = useRouter()
+  const pathname = usePathname()
   const didInitialUrlReset = useRef(false)
+  // QR guests enter directly into the finder, without the invitation intro or music.
+  const isQrSeatFinder = pathname === '/qr-seat-finder'
 
   /**
    * Envelope completion state
@@ -70,18 +73,18 @@ export function RootLayoutClient({
       {/* Envelope Animation Overlay */}
       {/* Only shows when introFinished is false (fresh load or page refresh) */}
       <AnimatePresence>
-        {!introFinished && <EnvelopeIntro onComplete={() => setIntroFinished(true)} />}
+        {!introFinished && !isQrSeatFinder && <EnvelopeIntro onComplete={() => setIntroFinished(true)} />}
       </AnimatePresence>
       
       {/* Music Player */}
-      {/* ALWAYS MOUNTED (not conditional) so it can listen for the envelope event */}
+      {/* Mounted for the main wedding experience so it can listen for the envelope event. */}
       {/* EnvelopeIntro dispatches a custom event when the seal is clicked and opened */}
       {/* MusicPlayer listens for this event and starts music with 1s delay */}
-      <MusicPlayer />
+      {!isQrSeatFinder && <MusicPlayer />}
       
       {/* Main Content */}
       {/* Only renders after envelope animation completes (introFinished === true) */}
-      {introFinished && (
+      {(introFinished || isQrSeatFinder) && (
         <>
           {children}
           {process.env.NODE_ENV === 'production' && <Analytics />}

@@ -31,7 +31,12 @@ function useDebounce<T>(value: T, delay: number): T {
   return debouncedValue;
 }
 
-export function SeatFinder() {
+interface SeatFinderProps {
+  /** Public QR mode keeps guest search available but hides host-only tools. */
+  enableAdminViewer?: boolean;
+}
+
+export function SeatFinder({ enableAdminViewer = true }: SeatFinderProps) {
   const searchParams = useSearchParams();
   const initialGuest = searchParams.get("guest") || "";
 
@@ -85,6 +90,10 @@ export function SeatFinder() {
    * Detect hidden host/admin trigger
    */
   useEffect(() => {
+    if (!enableAdminViewer) {
+      return;
+    }
+
     /**
      * Detect hidden host/admin trigger
      */
@@ -126,7 +135,7 @@ export function SeatFinder() {
       // Close mobile keyboard
       (document.activeElement as HTMLElement | null)?.blur();
     }
-  }, [query]);
+  }, [enableAdminViewer, query]);
 
   const searchGuests = useCallback(async (searchQuery: string) => {
     if (!searchQuery.trim()) {
@@ -473,21 +482,23 @@ export function SeatFinder() {
         ) : null}
       </AnimatePresence>
 
-      <HostGuestViewer
-        isOpen={isAdminModalOpen}
-        onClose={() => {
-          setIsAdminModalOpen(false);
-          setIsAdminMode(false);
-          setResults([]);
-          setSelectedGuest(null);
-          setHasSearched(false);
-          setError(null);
-          setQuery("");
-        }}
-        guests={acceptedGuests}
-        groups={groupSummaries}
-        isLoading={isLoadingGuests}
-      />
+      {enableAdminViewer && (
+        <HostGuestViewer
+          isOpen={isAdminModalOpen}
+          onClose={() => {
+            setIsAdminModalOpen(false);
+            setIsAdminMode(false);
+            setResults([]);
+            setSelectedGuest(null);
+            setHasSearched(false);
+            setError(null);
+            setQuery("");
+          }}
+          guests={acceptedGuests}
+          groups={groupSummaries}
+          isLoading={isLoadingGuests}
+        />
+      )}
     </div>
   );
 }

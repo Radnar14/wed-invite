@@ -34,9 +34,11 @@ function useDebounce<T>(value: T, delay: number): T {
 interface SeatFinderProps {
   /** Public QR mode keeps guest search available but hides host-only tools. */
   enableAdminViewer?: boolean;
+  /** Optional class for the initial helper message on themed standalone pages. */
+  helperTextClassName?: string;
 }
 
-export function SeatFinder({ enableAdminViewer = true }: SeatFinderProps) {
+export function SeatFinder({ enableAdminViewer = true, helperTextClassName }: SeatFinderProps) {
   const searchParams = useSearchParams();
   const initialGuest = searchParams.get("guest") || "";
 
@@ -477,7 +479,7 @@ export function SeatFinder({ enableAdminViewer = true }: SeatFinderProps) {
           </motion.div>
         ) : !hasSearched && !isLoading ? (
           <motion.div key="initial" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center">
-            <p className="text-muted-foreground/70 text-lg">Enter your name to find your table</p>
+            <p className={`text-lg ${helperTextClassName || "text-muted-foreground/70"}`}>Enter your name to find your table</p>
           </motion.div>
         ) : null}
       </AnimatePresence>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ScrollReveal } from "./scroll-reveal";
 import { Check } from "lucide-react";
 import {
   assignedColorLabels,
@@ -220,15 +221,15 @@ export function Attire() {
     <section id="attire" className="bg-linear-to-b from-secondary via-secondary/70 to-background py-24 md:py-32">
       <div className="container mx-auto px-6">
         {/* Section header */}
-        <div className="mb-14 text-center md:mb-18">
+        <ScrollReveal className="mb-14 text-center md:mb-18">
           <p className="mb-4 text-sm tracking-[0.3em] uppercase text-blushpink font-(family-name:--font-montserrat)">What to Wear</p>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-foreground">Dress Code</h2>
           <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-muted-foreground font-(family-name:--font-montserrat) md:text-base">
             {attireText.description}
           </p>
-        </div>
+        </ScrollReveal>
 
-        <div className="max-w-4xl mx-auto">
+        <ScrollReveal delay={0.12} className="max-w-4xl mx-auto">
           <div className="overflow-hidden rounded-4xl border border-blushpink/10 bg-linear-to-br from-background/95 via-background/80 to-blushpink/5 p-5 shadow-[0_24px_70px_rgba(68,45,40,0.07)] backdrop-blur-sm md:p-10">
             <div className="mb-8 flex min-h-32 flex-col items-center justify-center text-center md:mb-10">
               <h3 className="text-2xl md:text-3xl font-light text-foreground">{activeAttire.role}</h3>
@@ -363,7 +364,7 @@ export function Attire() {
               <p className="text-xs italic text-muted-foreground md:text-sm">{attireText.footerNote}</p>
             </div>
           </div>
-        </div>
+        </ScrollReveal>
       </div>
     </section>
   );

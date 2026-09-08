@@ -3,6 +3,7 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { faqs } from "@/data/faq";
 import { ArrowRight, Heart, Plus } from "lucide-react";
+import { ScrollReveal } from "./scroll-reveal";
 
 export function FAQ() {
   return (
@@ -12,7 +13,7 @@ export function FAQ() {
       <Heart className="absolute -right-10 bottom-44 h-40 w-40 rotate-12 text-blushpink/8" strokeWidth={0.7} />
 
       <div className="container relative z-10 mx-auto max-w-4xl px-6">
-        <div className="mb-12 text-center md:mb-16">
+        <ScrollReveal className="mb-12 text-center md:mb-16">
           <div className="mb-5 flex items-center justify-center gap-4">
             <span className="h-px w-10 bg-blushpink/40" />
             <p className="text-xs uppercase tracking-[0.35em] text-blushpink font-(family-name:--font-montserrat)">Need to Know</p>
@@ -27,9 +28,10 @@ export function FAQ() {
             <span className="h-1.5 w-1.5 rotate-45 bg-current" />
             <span className="h-px w-14 bg-current" />
           </div>
-        </div>
+        </ScrollReveal>
 
-        <Accordion type="single" collapsible className="space-y-4">
+        <ScrollReveal delay={0.12}>
+          <Accordion type="single" collapsible className="space-y-4">
           {faqs.map((faq, index) => (
             <AccordionItem
               key={faq.question}
@@ -57,10 +59,11 @@ export function FAQ() {
               </AccordionContent>
             </AccordionItem>
           ))}
-        </Accordion>
+          </Accordion>
+        </ScrollReveal>
 
         {/* Contact details stay in one place; this button only links to them. */}
-        <div className="mt-10 rounded-4xl border border-blushpink/15 bg-background/75 px-6 py-9 text-center shadow-[0_12px_40px_rgba(68,45,40,0.05)] md:mt-12 md:px-10">
+        <ScrollReveal delay={0.2} className="mt-10 rounded-4xl border border-blushpink/15 bg-background/75 px-6 py-9 text-center shadow-[0_12px_40px_rgba(68,45,40,0.05)] md:mt-12 md:px-10">
           <Heart className="mx-auto h-5 w-5 text-blushpink/70" fill="currentColor" strokeWidth={1} />
           <h3 className="mt-4 text-2xl font-light text-foreground md:text-3xl">Still have a question?</h3>
           <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-muted-foreground font-(family-name:--font-montserrat) md:text-base">
@@ -73,7 +76,7 @@ export function FAQ() {
             View Contact Details
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
           </a>
-        </div>
+        </ScrollReveal>
       </div>
     </section>
   );

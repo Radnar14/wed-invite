@@ -6,6 +6,7 @@ import { X, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { galleryVideos, homepageGalleryImages } from "@/data/gallery";
 import { cn } from "@/lib/utils"
+import { ScrollReveal } from "./scroll-reveal"
 
 export function Gallery() {
   const [selectedImage, setSelectedImage] = useState<number | null>(null)
@@ -27,17 +28,17 @@ export function Gallery() {
     <section id="gallery" className="py-24 md:py-32 bg-secondary">
       <div className="container mx-auto px-6">
         {/* Section Header */}
-        <div className="text-center mb-16 md:mb-24">
+        <ScrollReveal className="text-center mb-16 md:mb-24">
           <p className="text-sm tracking-[0.3em] uppercase font-(family-name:--font-montserrat) text-blushpink mb-4">
             Captured Moments
           </p>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-foreground">
             Our Gallery
           </h2>
-        </div>
+        </ScrollReveal>
 
       {/* Gallery Layout */}
-              <div className="max-w-6xl mx-auto">
+              <ScrollReveal delay={0.12} className="max-w-6xl mx-auto">
 
                 {/* MOBILE LAYOUT */}
                 <div className="md:hidden space-y-6">
@@ -135,10 +136,10 @@ export function Gallery() {
                       ))}
                     </div>
                 </div>
-              </div>
+              </ScrollReveal>
 
         {/* View Full Gallery Bubble Button */}
-            <div className="mt-16 text-center">
+            <ScrollReveal delay={0.2} className="mt-16 text-center">
               <Link
                 href="/gallery"
                 className="
@@ -196,7 +197,7 @@ export function Gallery() {
                     />
                 </div>
               </Link>
-            </div>
+            </ScrollReveal>
 
 
       </div>

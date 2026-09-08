@@ -11,20 +11,16 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Check,
-  CheckCheck,
   Heart,
   CircleX,
   Frown,
   Search,
   ChevronLeft,
-  ChevronDown,
   Loader2,
   Calendar,
   Lock,
   Pencil,
   X,
-  UserPlus,
-  Plus,
 } from "lucide-react";
 import { RSVP_DEADLINE, RSVP_DEADLINE_DATE } from "@/lib/wedding-config";
 
@@ -1354,102 +1350,7 @@ export function RSVP() {
                       {/* Add-member dropdown — themed custom dropdown */}
                       {!isLockedRSVP && groupAttendees.some((p) => !p.confirmed) && (
                         <>
-                          <div className="hidden sm:block">
-                            <div className="relative" ref={groupDropdownRef}>
-                          {/* Trigger */}
-                          <button
-                            type="button"
-                            onClick={() => setIsGroupDropdownOpen((open) => !open)}
-                            className="
-                              flex h-12 w-full items-center gap-3
-                              rounded-2xl border border-border/50 bg-white px-4 text-left text-sm
-                              transition-colors duration-300
-                              hover:border-accent/60 focus:border-accent focus:outline-none"
-                          >
-                            <UserPlus className="h-4 w-4 shrink-0 text-accent" />
-                            <span className="flex-1 text-muted-foreground font-(family-name:--font-montserrat)">
-                              Select a guest to confirm…
-                            </span>
-                            <ChevronDown
-                              className={`h-4 w-4 shrink-0 text-muted-foreground/60 transition-transform duration-300 ${
-                                isGroupDropdownOpen ? "rotate-180" : ""
-                              }`}
-                            />
-                          </button>
-
-                          {/* Menu */}
-                          {isGroupDropdownOpen && (
-                            <div
-                              className="
-                                absolute top-[calc(100%+0.35rem)] z-50 w-full overflow-hidden
-                                rounded-4xl border border-border/40 bg-white/95 backdrop-blur-sm shadow-xl
-                                animate-in fade-in slide-in-from-top-2 duration-300"
-                            >
-                              {/* Top gradient bar */}
-                              <div className="h-3 w-full bg-linear-to-r from-[#A8BBA3] via-[#C7D7C0] to-[#A8BBA3]" />
-
-                              {/* Title */}
-                              <div className="pt-1 text-center">
-                                <div className="flex items-center gap-3">
-                                  <div className="h-px flex-1 bg-border/90" />
-                                  <p className="whitespace-nowrap text-sm font-medium text-foreground">Your Group ✨</p>
-                                  <div className="h-px flex-1 bg-border/90" />
-                                </div>
-                                <p className="mt-1 text-xs text-muted-foreground">Select who&apos;s attending</p>
-                                <div className="mt-2 h-1 w-full bg-linear-to-r from-[#A8BBA3] via-[#C7D7C0] to-[#A8BBA3]" />
-                              </div>
-
-                              {/* Options */}
-                              <div className="max-h-64 overflow-y-auto">
-                                {showAddAllAttendees && (
-                                  <button
-                                    type="button"
-                                    onClick={addAllAttendees}
-                                    className="
-                                      flex w-full items-center gap-2.5
-                                      border-b border-[#D3E0CF] bg-[#F4F9F1] px-4 py-3 text-left
-                                      font-medium text-[#6F806B] transition duration-200
-                                      hover:bg-[#E4EEE0]
-                                      active:scale-[0.98] active:bg-[#D8E6D3]"
-                                  >
-                                    <CheckCheck className="h-4 w-4 shrink-0 text-[#6F806B]" />
-                                    <span className="text-sm font-semibold">Confirm all guests ({unconfirmedAttendeeCount})</span>
-                                  </button>
-                                )}
-                                {groupAttendees.map((person, index) =>
-                                  !person.confirmed ? (
-                                    <button
-                                      key={index}
-                                      type="button"
-                                      onClick={() => addAttendee(index)}
-                                      className="
-                                        flex w-full items-center
-                                        border-b border-border/50 px-4 py-2.5 text-left
-                                        transition duration-200 hover:bg-accent/10
-                                        active:scale-[0.98] active:bg-accent/15"
-                                    >
-                                      <span className="text-sm font-medium">{person.name}</span>
-                                      {person.isRepresentative && (
-                                        <span className="ml-2 rounded-full bg-[#E4EEE0] px-2 py-0.5 text-[0.6rem] uppercase tracking-widest text-[#6F806B]">
-                                          Rep
-                                        </span>
-                                      )}
-                                      <span className="ml-auto text-accent">
-                                        <Plus size={16} />
-                                      </span>
-                                    </button>
-                                  ) : null,
-                                )}
-                              </div>
-
-                              {/* Bottom gradient bar */}
-                              <div className="h-3 w-full bg-linear-to-r from-[#A8BBA3] via-[#C7D7C0] to-[#A8BBA3]" />
-                            </div>
-                          )}
-                            </div>
-                          </div>
-
-                          <div className="sm:hidden rounded-[1.75rem] border border-dashed border-blushpink/40 bg-blushpink/5 px-4 py-4">
+                          <div className="rounded-[1.75rem] border border-dashed border-blushpink/40 bg-blushpink/5 px-4 py-4">
                             <div className="flex items-center justify-between">
                               <p className="text-xs font-bold tracking-wide text-blushpink">
                                 {unconfirmedAttendeeCount} GUEST{unconfirmedAttendeeCount === 1 ? "" : "S"} STILL PENDING
@@ -1560,10 +1461,12 @@ export function RSVP() {
                                         setIsGroupDropdownOpen(false);
                                       }}
                                       className="
-                                        flex h-8 w-8 items-center justify-center rounded-full
-                                        text-rose-400 transition-colors hover:bg-rose-50 hover:text-rose-600"
+                                        flex items-center justify-center gap-1 rounded-full
+                                        bg-rose-50 px-2 py-1 text-[0.6rem] font-medium text-rose-700
+                                        transition-colors hover:bg-rose-100"
                                     >
-                                      <X size={15} />
+                                      <X size={11} />
+                                      Decline
                                     </button>
                                   </div>
                                 )}
@@ -1616,20 +1519,7 @@ export function RSVP() {
                       </div>
 
                       {/* Attending tally */}
-                      <div className="hidden sm:block">
-                        <div
-                          className="
-                            rounded-4xl border border-blushpink/10
-                            bg-linear-to-br from-white to-rose-50/40
-                            px-5 py-3 text-center shadow-[0_8px_25px_rgba(0,0,0,0.06)]"
-                        >
-                          <p className="text-sm font-medium text-foreground font-(family-name:--font-montserrat)">
-                            ✨ {groupAttendees.filter((p) => p.confirmed).length} of {groupAttendees.length} attending
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="sm:hidden rounded-full bg-blushpink/10 px-5 py-3 text-center text-sm font-medium text-blushpink">
+                      <div className="rounded-full bg-[#E4EEE0] px-5 py-3 text-center text-sm font-medium text-[#3F5A38]">
                         🎉 {groupAttendees.filter((p) => p.confirmed).length} of {groupAttendees.length} attending
                         {unconfirmedAttendeeCount > 0 &&
                           ` — ${unconfirmedAttendeeCount} guest${unconfirmedAttendeeCount === 1 ? "" : "s"} still need confirming`}

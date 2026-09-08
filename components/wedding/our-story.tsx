@@ -1,26 +1,27 @@
 "use client";
 
 import Image from "next/image";
+import { ScrollReveal } from "./scroll-reveal";
 
 export function OurStory() {
   return (
     <section id="story" className="py-24 md:py-32">
       <div className="container mx-auto px-6">
         {/* Section Header */}
-        <div className="text-center mb-16 md:mb-24">
+        <ScrollReveal className="text-center mb-16 md:mb-24">
           <p className="text-sm tracking-[0.3em] uppercase font-(family-name:--font-montserrat) text-blushpink mb-4">How It All Began</p>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-foreground">Our Love Story</h2>
-        </div>
+        </ScrollReveal>
 
         {/* Story Content */}
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center max-w-6xl mx-auto">
           {/* Image */}
-          <div className="relative aspect-4/5 rounded-sm overflow-hidden">
+          <ScrollReveal direction="left" className="relative aspect-4/5 rounded-sm overflow-hidden">
             <Image src="/gallery/images/ourstory.jpg" alt="John Mark and Chezza together" fill className="object-cover" />
-          </div>
+          </ScrollReveal>
 
           {/* Text */}
-          <div className="space-y-4">
+          <ScrollReveal direction="right" delay={0.12} className="space-y-4">
             <h3 className="text-2xl md:text-3xl font-light text-foreground">THE LOVE THAT STAYED</h3>
             <p className="text-muted-foreground leading-relaxed font-(family-name:--font-montserrat) text-sm md:text-base">
               Back in first year high school, John Mark had just transferred to a new school. At the time, he and Chezza were simply
@@ -75,7 +76,7 @@ export function OurStory() {
                 Our story continues, and we can't wait to write the rest of it together. ❤️
                 </p>
             </div>
-          </div>
+          </ScrollReveal>
         </div>
       </div>
     </section>

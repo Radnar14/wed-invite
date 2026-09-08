@@ -4,6 +4,7 @@ import { MapPin, Clock, Shirt, Mail, Heart, PartyPopper } from "lucide-react";
 import { FaFacebookMessenger, FaInstagram } from "react-icons/fa6";
 import Image from "next/image";
 import { useState } from "react";
+import { ScrollReveal } from "./scroll-reveal";
 
 const ImageShimmer = (
   <div
@@ -47,14 +48,14 @@ export function Details() {
 
       <div className="container mx-auto px-6 relative z-10">
         {/* Section Header */}
-        <div className="text-center mb-16 md:mb-24">
+        <ScrollReveal className="text-center mb-16 md:mb-24">
           <p className="text-sm tracking-[0.3em] uppercase font-(family-name:--font-montserrat) text-blushpink mb-4">The Celebration</p>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-foreground">Wedding Details</h2>
           <div className="mt-8 w-px h-16 bg-border mx-auto" />
-        </div>
+        </ScrollReveal>
 
         {/* Main Events (Ceremony & Reception) */}
-        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 max-w-6xl mx-auto mb-10">
+        <ScrollReveal className="grid lg:grid-cols-2 gap-16 lg:gap-24 max-w-6xl mx-auto mb-10">
           {/* Ceremony Side Card */}
           <div
             className="relative group rounded-4xl border border-border/40 
@@ -183,10 +184,10 @@ export function Details() {
               </a>
             </div>
           </div>
-        </div>
+        </ScrollReveal>
 
         {/* Additional Info Grid */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+        <ScrollReveal delay={0.12} className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
           {/* Dress Code */}
           <div className="bg-background/60 backdrop-blur-sm rounded-3xl p-8 md:p-10 border border-border/50 text-center shadow-sm hover:shadow-md transition-shadow duration-300">
             <Shirt className="w-6 h-6 mx-auto mb-6 text-muted-foreground opacity-70" strokeWidth={1.5} />
@@ -257,7 +258,7 @@ export function Details() {
               </div>
             </div>
           </div>
-        </div>
+        </ScrollReveal>
       </div>
       {selectedImage && (
         <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4" onClick={() => setSelectedImage(null)}>

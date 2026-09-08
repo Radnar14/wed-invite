@@ -11,6 +11,7 @@ import {
   secondarySponsors,
   type EntourageMember,
 } from "@/data/entourage";
+import { ScrollReveal } from "./scroll-reveal";
 
 // Component for Bride's Side and Groom's Side
 function EntourageSide({ title, lead, members }: { title: string; lead: EntourageMember; members: EntourageMember[] }) {
@@ -62,14 +63,14 @@ export function Entourage() {
     <section id="entourage" className="py-16 md:py-24 bg-secondary">
       <div className="container mx-auto px-4 md:px-6">
         {/* Section Header */}
-        <div className="text-center mb-10 md:mb-16">
+        <ScrollReveal className="text-center mb-10 md:mb-16">
           <p className="text-blushpink text-xs md:text-sm tracking-[0.3em] uppercase mb-3">The Wedding Party</p>
           <h2 className="text-4xl md:text-5xl font-cursive text-foreground mb-2 md:mb-4">Our Entourage</h2>
           <div className="w-16 md:w-24 h-px bg-[#d8cfc7] mx-auto" />
-        </div>
+        </ScrollReveal>
 
         {/* Groom's Parents */}
-        <div className="mb-12 md:mb-16">
+        <ScrollReveal className="mb-12 md:mb-16">
           <h3 className="text-center font-cursive text-2xl md:text-4xl text-[#8C6A5D] mb-2 md:mb-4">Groom's Parents</h3>
 
           <div className="w-40 h-px bg-[#d8cfc7] mx-auto mb-3"></div>
@@ -89,10 +90,10 @@ export function Entourage() {
               ))}
             </div>
           </div>
-        </div>
+        </ScrollReveal>
 
         {/* Bride's Parents */}
-        <div className="mb-12 md:mb-16">
+        <ScrollReveal delay={0.08} className="mb-12 md:mb-16">
           <h3 className="text-center font-cursive text-2xl md:text-4xl text-[#8C6A5D] mb-2 md:mb-4">Bride's Parents</h3>
 
           <div className="w-40 h-px bg-[#d8cfc7] mx-auto mb-3"></div>
@@ -112,10 +113,10 @@ export function Entourage() {
               ))}
             </div>
           </div>
-        </div>
+        </ScrollReveal>
 
         {/* Principal Sponsors */}
-        <div className="mb-12 md:mb-16">
+        <ScrollReveal delay={0.16} className="mb-12 md:mb-16">
           <h3 className="text-center  font-serif text-xl md:text-2xl text-[#8C6A5D] mb-2 md:mb-4">Principal Sponsors</h3>
           <div className="w-40 h-px bg-[#d8cfc7] mx-auto mb-3"></div>
           {/* Card effect shadow */}
@@ -140,17 +141,17 @@ export function Entourage() {
               })}
             </div>
           </div>
-        </div>
+        </ScrollReveal>
 
         {/* Bride's Side & Groom's Side */}
-        <div className="grid md:grid-cols-2 gap-8 md:gap-12 mb-12  md:mb-16">
+        <ScrollReveal delay={0.24} className="grid md:grid-cols-2 gap-8 md:gap-12 mb-12 md:mb-16">
           <EntourageSide title="Bride's Side" lead={bridesSide[0]} members={bridesSide.slice(1)} />
 
           <EntourageSide title="Groom's Side" lead={groomsSide[0]} members={groomsSide.slice(1)} />
-        </div>
+        </ScrollReveal>
 
         {/* Secondary Sponsors */}
-        <div className="mb-12 md:mb-16">
+        <ScrollReveal delay={0.32} className="mb-12 md:mb-16">
           <h3 className="text-center font-serif text-xl md:text-2xl text-[#8C6A5D] mb-2 md:mb-4">Secondary Sponsors</h3>
 
           <div className="w-40 h-px bg-[#d8cfc7] mx-auto mb-4"></div>
@@ -200,10 +201,10 @@ export function Entourage() {
               ))}
             </div>
           </div>
-        </div>
+        </ScrollReveal>
 
         {/* Flower girls */}
-        <div className="mb-12 md:mb-16">
+        <ScrollReveal delay={0.4} className="mb-12 md:mb-16">
           <h3 className="text-center font-serif text-xl md:text-2xl text-[#8C6A5D] mb-2 md:mb-4">Flower Girls</h3>
 
           <div className="w-40 h-px bg-[#d8cfc7] mx-auto mb-4"></div>
@@ -221,7 +222,7 @@ export function Entourage() {
               ))}
             </div>
           </div>
-        </div>
+        </ScrollReveal>
 
         {/* Bearers */}
         <div>

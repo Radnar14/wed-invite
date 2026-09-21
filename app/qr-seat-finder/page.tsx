@@ -1,6 +1,7 @@
 import { Suspense } from "react"
 import { SeatFinder } from "@/components/wedding/seat-finder"
 import { Footer } from "@/components/wedding/footer"
+import SeatFinderUtilityLinks from "@/app/seat-finder/SeatFinderUtilityLinks"
 
 /**
  * Public QR destination: standalone guest lookup with no site navigation,
@@ -30,7 +31,15 @@ export default function QrSeatFinderPage() {
             </div>
 
             <Suspense fallback={<div className="text-center text-white/80">Loading seat finder...</div>}>
-              <SeatFinder enableAdminViewer={false} helperTextClassName="text-white/90 drop-shadow-[0_1px_3px_rgba(43,25,20,0.75)]" />
+              <SeatFinderUtilityLinks
+                dark
+                seatFinderContent={
+                  <SeatFinder
+                    enableAdminViewer={false}
+                    helperTextClassName="text-white/90 drop-shadow-[0_1px_3px_rgba(43,25,20,0.75)]"
+                  />
+                }
+              />
             </Suspense>
           </div>
         </div>

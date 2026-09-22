@@ -24,13 +24,13 @@ export const tableAssignments: TableGroup[] = [
 export const vipTable: string = "Principals"; // TODO: enter the VIP table number here once decided
 
 export const vipPairs: VipPair[] = [
-  { left: "Ante Menak", right: "Eduardo Pino" },
-  { left: "Ante Fecot", right: "Partner" },
-  { left: "Tita Arlene", right: "Partner" },
-  { left: "Engr. Criselda", right: "Partner" },
-  { left: "Tita Wena", right: "Partner" },
-  { left: "Kap Alley Berdin", right: "Celyn Kinaadman" },
-  { left: "Tita Babeth", right: "Jerome" },
-  { left: "Ante Grace", right: "Partner" },
-  { left: "Engr. Paul", right: "Mira Bugarin" },
+  { left: "Myrna Ybañez", right: "Eduardo Pino" },
+  { left: "Fe Manlunas", right: "Elson Manlunas" },
+  { left: "Arlene Argallon", right: "Dante Argallon" },
+  { left: "Engr. Criselda Caballero", right: "Allan Caballero" },
+  { left: "Rowena Bartolabac", right: "Junrey Bartolabac" },
+  { left: "Capt. Alley Berdin", right: "Celyn Kinaadman" },
+  { left: "Elmarie Agosto", right: "Jeson Agosto" },
+  { left: "Grace Esconde", right: "Eric Esconde" },
+  { left: "Engr. Paul Bugarin", right: "Mira Bugarin" },
 ];

@@ -228,6 +228,7 @@ export function SeatFinder({ enableAdminViewer = true, helperTextClassName }: Se
         >
           <Search className="absolute left-5 top-1/2 h-[1.05rem] w-[1.05rem] -translate-y-1/2 text-[#A8BBA3]/90" />
           <Input
+            id="seat-finder-search"
             type="text"
             placeholder="Search your name..."
             value={query}
@@ -479,7 +480,7 @@ export function SeatFinder({ enableAdminViewer = true, helperTextClassName }: Se
           </motion.div>
         ) : !hasSearched && !isLoading ? (
           <motion.div key="initial" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center">
-            <p className={`text-lg ${helperTextClassName || "text-muted-foreground/70"}`}>Enter your name to find your table</p>
+            <p className={`text-lg ${helperTextClassName || "text-[#5B3832]"} font-medium`}>Enter your name to find your table</p>
           </motion.div>
         ) : null}
       </AnimatePresence>

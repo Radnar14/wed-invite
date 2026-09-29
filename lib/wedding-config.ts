@@ -14,4 +14,7 @@ export const RSVP_DEADLINE = "September 25, 2026";
 
 // 12:00 AM Philippine time. The explicit offset keeps RSVP closing behavior
 // consistent for guests outside the wedding timezone.
-export const RSVP_DEADLINE_DATE = new Date("2026-09-25T00:00:00+08:00");
+export const RSVP_DEADLINE_DATE = new Date("2026-09-30T00:00:00+08:00");
+
+// Edit here: Philippine-time effective date for scheduled Groom's Side text.
+export const GROOM_SIDE_TEXT_EFFECTIVE_DATE = "2026-10-01T00:00:00+08:00";

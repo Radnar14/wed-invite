@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import {
   bearers,
   bridesParents,
@@ -11,6 +12,8 @@ import {
   secondarySponsors,
   type EntourageMember,
 } from "@/data/entourage";
+import { GROOM_SIDE_TEXT_EFFECTIVE_DATE } from "@/lib/wedding-config";
+import { scheduledText } from "@/lib/utils";
 import { ScrollReveal } from "./scroll-reveal";
 
 // Component for Bride's Side and Groom's Side
@@ -59,6 +62,15 @@ function EntourageSide({ title, lead, members }: { title: string; lead: Entourag
 }
 
 export function Entourage() {
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  const displayScheduledText = (before: string, after: string) =>
+    hasMounted ? scheduledText({ before, after, effectiveDate: GROOM_SIDE_TEXT_EFFECTIVE_DATE }) : before;
+
   return (
     <section id="entourage" className="py-16 md:py-24 bg-secondary">
       <div className="container mx-auto px-4 md:px-6">
@@ -147,7 +159,15 @@ export function Entourage() {
         <ScrollReveal delay={0.24} className="grid md:grid-cols-2 gap-8 md:gap-12 mb-12 md:mb-16">
           <EntourageSide title="Bride's Side" lead={bridesSide[0]} members={bridesSide.slice(1)} />
 
-          <EntourageSide title="Groom's Side" lead={groomsSide[0]} members={groomsSide.slice(1)} />
+          <EntourageSide
+            title="Groom's Side"
+            lead={{ ...groomsSide[0], name: displayScheduledText(groomsSide[0].name, "Joseph Dainne Argallon") }}
+            members={groomsSide.slice(1).map((member) => ({
+              ...member,
+              name: displayScheduledText(member.name, member.name === "Axziel Bartolabac" ? "Mico Niel Abad" : member.name),
+              role: displayScheduledText(member.role, member.role === "Groomsman" ? "Groomsmen" : member.role),
+            }))}
+          />
         </ScrollReveal>
 
         {/* Secondary Sponsors */}

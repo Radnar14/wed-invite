@@ -164,7 +164,7 @@ export function Entourage() {
             lead={{ ...groomsSide[0], name: displayScheduledText(groomsSide[0].name, "Joseph Dainne Argallon") }}
             members={groomsSide.slice(1).map((member) => ({
               ...member,
-              name: displayScheduledText(member.name, member.name === "Axziel Bartolabac" ? "Mico Niel Abad" : member.name),
+              name: displayScheduledText(member.name, member.name === "Mico Niel Abad" ? "Axziel Bartolabac" : member.name),
               role: displayScheduledText(member.role, member.role === "Groomsman" ? "Groomsmen" : member.role),
             }))}
           />

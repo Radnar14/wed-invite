@@ -1,9 +1,10 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Search, X } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-import { tableAssignments, vipPairs, vipTable } from "@/data/table-assignments";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { tableAssignments, vipPairs, vipTable, type TableGroup, type VipPair } from "@/data/table-assignments";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface GuestsViewerProps {
   isOpen: boolean;
@@ -11,14 +12,6 @@ interface GuestsViewerProps {
 }
 
 const normalize = (value: string) => value.toLowerCase().replace(/\s+/g, " ").trim();
-
-const tablePageLabel = (page: number) => {
-  if (page === 1) return "VIP";
-
-  const startIndex = (page - 2) * 2 + 1;
-  const endIndex = Math.min(page === 6 ? 10 : (page - 1) * 2, 10);
-  return `Tables ${startIndex}–${endIndex}`;
-};
 
 const sortedTableAssignments = [...tableAssignments].sort((left, right) => {
   const leftNumber = left.table.trim() ? Number(left.table) : Number.NaN;
@@ -29,9 +22,122 @@ const sortedTableAssignments = [...tableAssignments].sort((left, right) => {
   return leftNumber - rightNumber;
 });
 
+function VipTableCard({ pairs }: { pairs: VipPair[] }) {
+  return (
+    <div className="overflow-hidden rounded-[1.5rem] border border-[#D4537E]/40 bg-[linear-gradient(135deg,#F8F4F2_0%,#FFF_100%)] p-2 md:p-3">
+      <div className="rounded-[1.2rem] border-[1.5px] border-[#D4537E] bg-[rgba(255,255,255,0.6)] p-2 md:p-3">
+        <div className="mb-3 text-center">
+          <p className="text-[0.62rem] font-(family-name:--font-montserrat) tracking-[0.24em] text-[#993556] uppercase md:text-[0.7rem]">
+            VIP table
+          </p>
+          <p className="mt-1 text-3xl text-[#993556] font-(family-name:--font-cormorant) md:text-4xl">
+            {vipTable || "TBD"}
+          </p>
+        </div>
+
+        <div className="overflow-hidden rounded-[1rem] border border-[#EFC8D8]/80 bg-white/60">
+          {pairs.map((pair, index) => (
+            <div
+              key={`${pair.left}-${pair.right}-${index}`}
+              className={`grid grid-cols-2 border-b border-[#EFC8D8]/80 text-sm md:text-base ${
+                index % 2 === 1 ? "bg-[rgba(255,255,255,0.55)]" : "bg-[rgba(255,255,255,0.15)]"
+              }`}
+            >
+              <div className="max-md:break-words border-r border-[#EFC8D8]/80 px-3 py-3 text-center text-[#5B3832] md:px-4">
+                {pair.left}
+              </div>
+              <div className="max-md:break-words px-3 py-3 text-center text-[#5B3832] md:px-4">
+                {pair.right === "Partner" ? (
+                  <span className="italic text-[#8B6A62]">Partner</span>
+                ) : (
+                  pair.right
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RegularTableCard({ entry }: { entry: TableGroup }) {
+  return (
+    <div className="rounded-[1.5rem] border border-[#A8BBA3] bg-[linear-gradient(135deg,#F8F4F2_0%,#fff_100%)] p-4 text-center shadow-[0_10px_30px_rgba(91,56,50,0.04)] md:p-5">
+      <p className="text-[0.62rem] font-(family-name:--font-montserrat) tracking-[0.24em] text-[#7A5B54] uppercase md:text-[0.7rem]">
+        Table
+      </p>
+      <p className="mt-2 text-3xl text-[#5B3832] font-(family-name:--font-cormorant) md:text-4xl">
+        {entry.table || "TBD"}
+      </p>
+
+      <div className="my-4 h-px w-full bg-[#A8BBA3]/40" />
+
+      <div className="space-y-2 text-sm text-[#5B3832] md:text-base">
+        {entry.guests.map((guest, guestIndex) => (
+          <div key={`${guest}-${guestIndex}`} className="max-md:break-words leading-relaxed">
+            {guest}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function GuestsViewer({ isOpen, onClose }: GuestsViewerProps) {
+  const isMobile = useIsMobile();
+  const tablesPerPage = isMobile ? 1 : 2;
+  const regularPageCount = Math.ceil(sortedTableAssignments.length / tablesPerPage);
+  const totalPages = regularPageCount + 1;
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const previousTablesPerPage = useRef(tablesPerPage);
+  const contentMeasurementsRef = useRef<HTMLDivElement>(null);
+  const [mobileContentMinHeight, setMobileContentMinHeight] = useState(0);
+  const reduceMotion = useReducedMotion();
+  const slideDistance = reduceMotion ? 0 : 24;
+  const previousPage = useRef(currentPage);
+  const direction = currentPage >= previousPage.current ? 1 : -1;
+
+  useEffect(() => {
+    previousPage.current = currentPage;
+  }, [currentPage]);
+
+  useLayoutEffect(() => {
+    const measurementContainer = contentMeasurementsRef.current;
+
+    if (!isOpen || !isMobile || !measurementContainer) {
+      setMobileContentMinHeight(0);
+      return;
+    }
+
+    const updateMinHeight = () => {
+      const tallestPage = Array.from(measurementContainer.children).reduce(
+        (height, candidate) => Math.max(height, candidate instanceof HTMLElement ? candidate.offsetHeight : 0),
+        0,
+      );
+      setMobileContentMinHeight(Math.ceil(tallestPage));
+    };
+
+    updateMinHeight();
+
+    const resizeObserver = new ResizeObserver(updateMinHeight);
+    resizeObserver.observe(measurementContainer);
+    Array.from(measurementContainer.children).forEach((candidate) => resizeObserver.observe(candidate));
+
+    return () => resizeObserver.disconnect();
+  }, [isMobile, isOpen]);
+
+  useEffect(() => {
+    const previousPageSize = previousTablesPerPage.current;
+
+    if (previousPageSize !== tablesPerPage && currentPage > 1) {
+      const firstVisibleTableIndex = (currentPage - 2) * previousPageSize;
+      setCurrentPage(Math.floor(firstVisibleTableIndex / tablesPerPage) + 2);
+    }
+
+    previousTablesPerPage.current = tablesPerPage;
+  }, [currentPage, tablesPerPage]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -65,10 +171,10 @@ export default function GuestsViewer({ isOpen, onClose }: GuestsViewerProps) {
     });
 
     if (tableMatchIndex >= 0) {
-      const page = Math.min(6, Math.max(2, Math.floor(tableMatchIndex / 2) + 2));
+      const page = Math.min(totalPages, Math.max(2, Math.floor(tableMatchIndex / tablesPerPage) + 2));
       setCurrentPage(page);
     }
-  }, [searchQuery]);
+  }, [searchQuery, tablesPerPage, totalPages]);
 
   const filteredVipPairs = useMemo(() => {
     if (!searchQuery.trim()) {
@@ -101,10 +207,10 @@ export default function GuestsViewer({ isOpen, onClose }: GuestsViewerProps) {
   }, [searchQuery]);
 
   const regularPages = useMemo(() => {
-    return Array.from({ length: Math.ceil(sortedTableAssignments.length / 2) }, (_, index) =>
-      sortedTableAssignments.slice(index * 2, index * 2 + 2),
+    return Array.from({ length: regularPageCount }, (_, index) =>
+      sortedTableAssignments.slice(index * tablesPerPage, index * tablesPerPage + tablesPerPage),
     );
-  }, []);
+  }, [regularPageCount, tablesPerPage]);
 
   const visibleRegularPage = useMemo(() => {
     if (currentPage <= 1) {
@@ -119,19 +225,15 @@ export default function GuestsViewer({ isOpen, onClose }: GuestsViewerProps) {
       return visibleRegularPage;
     }
 
-    const query = normalize(searchQuery);
-    return filteredTables.filter((entry) => {
-      if (entry.table && normalize(entry.table).includes(query)) {
-        return true;
-      }
-
-      return entry.guests.some((guest) => normalize(guest).includes(query));
-    });
+    return filteredTables.filter((entry) => visibleRegularPage.includes(entry));
   }, [searchQuery, filteredTables, visibleRegularPage]);
 
-  const totalPages = regularPages.length + 1;
-
-  const pageLabel = currentPage === 1 ? "1 of 6 · VIP" : `${currentPage} of 6 · ${tablePageLabel(currentPage)}`;
+  const visibleTableLabel = visibleRegularPage.length === 1
+    ? `Table ${visibleRegularPage[0].table || "TBD"}`
+    : `Tables ${visibleRegularPage[0]?.table || "TBD"}–${visibleRegularPage.at(-1)?.table || "TBD"}`;
+  const pageLabel = currentPage === 1
+    ? `1 of ${totalPages} · VIP`
+    : `${currentPage} of ${totalPages} · ${visibleTableLabel}`;
 
   const isFirstPage = currentPage === 1;
   const isLastPage = currentPage === totalPages;
@@ -186,70 +288,59 @@ export default function GuestsViewer({ isOpen, onClose }: GuestsViewerProps) {
                 </div>
               </div>
 
-              {currentPage === 1 && canShowVip ? (
-                <div className="mb-5 md:mb-6">
-                  <div className="overflow-hidden rounded-[1.5rem] border border-[#D4537E]/40 bg-[linear-gradient(135deg,#F8F4F2_0%,#FFF_100%)] p-2 md:p-3">
-                    <div className="rounded-[1.2rem] border-[1.5px] border-[#D4537E] bg-[rgba(255,255,255,0.6)] p-2 md:p-3">
-                      <div className="mb-3 text-center">
-                        <p className="text-[0.62rem] font-(family-name:--font-montserrat) tracking-[0.24em] text-[#993556] uppercase md:text-[0.7rem]">
-                          VIP table
-                        </p>
-                        <p className="mt-1 text-3xl text-[#993556] font-(family-name:--font-cormorant) md:text-4xl">
-                          {vipTable || "TBD"}
-                        </p>
-                      </div>
-
-                      <div className="overflow-hidden rounded-[1rem] border border-[#EFC8D8]/80 bg-white/60">
-                        {filteredVipPairs.map((pair, index) => (
-                          <div
-                            key={`${pair.left}-${pair.right}-${index}`}
-                            className={`grid grid-cols-2 border-b border-[#EFC8D8]/80 text-sm md:text-base ${
-                              index % 2 === 1 ? "bg-[rgba(255,255,255,0.55)]" : "bg-[rgba(255,255,255,0.15)]"
-                            }`}
-                          >
-                            <div className="border-r border-[#EFC8D8]/80 px-3 py-3 text-center text-[#5B3832] md:px-4">
-                              {pair.left}
-                            </div>
-                            <div className="px-3 py-3 text-center text-[#5B3832] md:px-4">
-                              {pair.right === "Partner" ? (
-                                <span className="italic text-[#8B6A62]">Partner</span>
-                              ) : (
-                                pair.right
-                              )}
-                            </div>
-                          </div>
+              <div
+                className="relative mb-5 md:mb-6"
+                style={isMobile && mobileContentMinHeight > 0 ? { minHeight: mobileContentMinHeight } : undefined}
+              >
+                <AnimatePresence mode="wait" initial={false} custom={direction}>
+                  <motion.div
+                    key={currentPage}
+                    custom={direction}
+                    variants={{
+                      enter: (d: number) => ({ opacity: 0, x: d * slideDistance }),
+                      center: { opacity: 1, x: 0 },
+                      exit: (d: number) => ({ opacity: 0, x: -d * slideDistance }),
+                    }}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={{ duration: 0.18, ease: "easeOut" }}
+                  >
+                    {currentPage === 1 && canShowVip ? (
+                      <VipTableCard pairs={filteredVipPairs} />
+                    ) : visibleRegularCards.length > 0 ? (
+                      <div className="grid gap-3 md:grid-cols-2 md:gap-4">
+                        {visibleRegularCards.map((entry) => (
+                          <RegularTableCard key={entry.table} entry={entry} />
                         ))}
                       </div>
+                    ) : null}
+                  </motion.div>
+                </AnimatePresence>
+
+                {!(currentPage === 1 && canShowVip) && visibleRegularCards.length === 0 && searchQuery.trim() ? (
+                  <p className="absolute inset-0 flex items-center justify-center text-center text-sm text-[#7A5B54]">
+                    No matches on this page
+                  </p>
+                ) : null}
+
+                {isMobile && (
+                  <div
+                    ref={contentMeasurementsRef}
+                    aria-hidden="true"
+                    className="pointer-events-none invisible absolute inset-x-0 top-0"
+                  >
+                    <div>
+                      <VipTableCard pairs={vipPairs} />
                     </div>
+                    {sortedTableAssignments.map((entry) => (
+                      <div key={`measure-${entry.table}`} className="grid gap-3">
+                        <RegularTableCard entry={entry} />
+                      </div>
+                    ))}
                   </div>
-                </div>
-              ) : (
-                <div className="mb-5 grid gap-3 md:mb-6 md:grid-cols-2 md:gap-4">
-                  {visibleRegularCards.map((entry, index) => (
-                    <div
-                      key={`${entry.table}-${index}`}
-                      className="rounded-[1.5rem] border border-[#A8BBA3] bg-[linear-gradient(135deg,#F8F4F2_0%,#fff_100%)] p-4 text-center shadow-[0_10px_30px_rgba(91,56,50,0.04)] md:p-5"
-                    >
-                      <p className="text-[0.62rem] font-(family-name:--font-montserrat) tracking-[0.24em] text-[#7A5B54] uppercase md:text-[0.7rem]">
-                        Table
-                      </p>
-                      <p className="mt-2 text-3xl text-[#5B3832] font-(family-name:--font-cormorant) md:text-4xl">
-                        {entry.table || "TBD"}
-                      </p>
-
-                      <div className="my-4 h-px w-full bg-[#A8BBA3]/40" />
-
-                      <div className="space-y-2 text-sm text-[#5B3832] md:text-base">
-                        {entry.guests.map((guest, guestIndex) => (
-                          <div key={`${guest}-${guestIndex}`} className="leading-relaxed">
-                            {guest}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+                )}
+              </div>
 
               <div className="flex flex-col items-center gap-3 pt-2">
                 <div className="flex items-center justify-center gap-2">

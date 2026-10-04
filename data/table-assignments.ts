@@ -9,16 +9,16 @@ export interface VipPair {
 }
 
 export const tableAssignments: TableGroup[] = [
-  // { table: "", guests: ["Charmie Bott", "Charles Bott", "Gabriella Eloise Bott", "Chariss Marqueses", "Tarcisio Dela Cruz/Roselo Lilo-an", "Sophia Marqueses", "Elias Marqueses", "Wilnard", "Mama amelita", "Niño Lilo-an"] },
-  // { table: "", guests: ["Shairah Myrene Ybañez", "Raymart Ybañez", "Zeijian Wryle Ybañez", "Dave Arong", "Fatima Arong", "Rafael Arong", "Melai - kokoy", "Wendell Pino", "Kate Pino", "Rhea Pino"] },
-  // { table: "", guests: ["Candice Pastor", "Jomily Irisawa", "Majesca Shane Zamora", "Sofia Garcia", "Joshua Marvin Albiso", "Joshua Dave Degamo", "Angel Bamo", "Renz Forcadilla"] },
-  // { table: "", guests: ["Shinn Everielle Booc", "Jemmelyn Pescadero", "hpesoj", "aniruy", "Arianne Argallon", "Leonardo Berjame", "Lorah", "Seth"] },
-  // { table: "", guests: ["Gemma Mendez", "Ramelito Mendez", "Jinky Mendez", "Louie Mendez", "Florie Mae Mendez", "Vicky Gera", "Nick Lumain"] },
-  // { table: "", guests: ["Axziel Bartolabac", "Sophia Bartolabac", "Josh Nicolaus Abad", "James Vincent Abad", "Hannah Mae Abad", "Mary Orchid Lopez", "Jonathan Lopez", "Orje Marey Ceniza", "Vincy Ceniza"] },
-  // { table: "", guests: ["Eizel Jimenez", "Ellen Jimenez", "Abiel Jimenez", "Rogs Nuñez", "Kimarth Argallon", "Jill Argallon", "Rosalie", "Che-che", "Kuya Ramil"] },
-  // { table: "", guests: ["Wilson Abad", "Marinel Librea", "Carmelita Abad", "Mico", "Mona", "Danno", "Rino Zhel Abad", "Michelle Abad", "Ramon Yap"] },
-  // { table: "", guests: ["Zhyrae Magpusao", "Zeius Magpusao", "Joeniry Magpusao", "Liezl Jualo", "Archie Aragones", "Chona Aragones", "Chean Aragones", "Czarina Aragones", "Amara Aragones"] },
-  // { table: "", guests: ["Alfredo Kinaadman", "Yoyon Calooy", "Carla Calooy", "Van Zulueta", "Mai Mai Zulueta", "Danny Navarro", "Merlyn Navarro", "Nelson Gabayan", "Nelson Mabugnon", "Agnes Mabugnon"] },
+  { table: "1", guests: ["Charmie Bott", "Charles Bott", "Gabriella Eloise Bott", "Chariss Marqueses", "Tarcisio Dela Cruz/Roselo Lilo-an", "Sophia Marqueses", "Elias Marqueses", "Wilnard", "Mama amelita", "Niño Lilo-an"] },
+  { table: "2", guests: ["Shairah Ybañez", "Raymart Ybañez", "Zeijian Ybañez", "Dave Arong", "Fatima Arong", "Rafael Arong", "Mary Grace Datoy", "Wendell Pino", "Kate Pino", "Rhea Pino"] },
+  { table: "3", guests: ["Candice Pastor", "Jomily Irisawa", "Majesca Zamora", "Sofia Garcia", "Joshua Marvin Albiso", "Joshua Dave Degamo", "Angel Bamo", "Renz Forcadilla"] },
+  { table: "4", guests: ["Joseph Argallon", "Yurina Argallon", "Arianne Argallon", "Leonardo Berjame", "Lorah", "Seth", "Shinn Everielle Booc", "Jemmelyn Pescadero", "Roy Mangubat", "Dra. Gel Mangubat"] },
+  { table: "5", guests: ["Gemma Mendez", "Ramelito Mendez", "Jinky Mendez", "Louie Mendez", "Florie Mae Mendez", "Vicky Gera", "Nick Lumain", "Jesus Reyes", "Teresita Reyes", "Connie Salcedo"] },
+  { table: "6", guests: ["Axziel Bartolabac", "Sophia Bartolabac", "Josh Nicolaus Abad", "James Vincent Abad", "Hannah Mae Abad", "Mary Orchid Lopez", "Jonathan Lopez", "Orje Marey Ceniza", "Vincy Ceniza", "Ramil Balbuena"] },
+  { table: "7", guests: ["Eizel Jimenez", "Ellen Jimenez", "Abiel Jimenez", "Rogs Nuñez", "Kimarth Argallon", "Jill Argallon", "Rosalie", "Che-che", "Camille Dungog", "Arci Lim"] },
+  { table: "8", guests: ["Wilson Abad", "Marinel Librea", "Carmelita Abad", "Mico Niel Abad", "Mona Abad", "Danielle Franz Abad", "Rino Zhel Abad", "Michelle Abad", "Sandro Agosto", "Mylene Pagubo"] },
+  { table: "9", guests: ["Zhyrae Magpusao", "Zeius Magpusao", "Joeniry Magpusao", "Liezl Jualo", "Archie Aragones", "Chona Aragones", "Chean Aragones", "Czarina Aragones", "Amara Aragones"] },
+  { table: "10", guests: ["Alfredo Kinaadman", "Carla Calooy", "Van Zulueta", "Mai Mai Zulueta", "Danny Navarro", "Merlyn Navarro", "Nelson Gabayan", "Nelson Mabugnon", "Agnes Mabugnon", "Jaen peramedi"] },
 ];
 
 export const vipTable: string = "Principals"; // TODO: enter the VIP table number here once decided

@@ -13,7 +13,7 @@ export const tableAssignments: TableGroup[] = [
   { table: "2", guests: ["Shairah Ybañez", "Raymart Ybañez", "Zeijian Ybañez", "Dave Arong", "Fatima Arong", "Rafael Arong", "Mary Grace Datoy", "Wendell Pino", "Kate Pino", "Rhea Pino"] },
   { table: "3", guests: ["Candice Pastor", "Jomily Irisawa", "Majesca Zamora", "Sofia Garcia", "Joshua Marvin Albiso", "Joshua Dave Degamo", "Angel Bamo", "Renz Forcadilla"] },
   { table: "4", guests: ["Joseph Argallon", "Yurina Argallon", "Arianne Argallon", "Leonardo Berjame", "Lorah", "Seth", "Shinn Everielle Booc", "Jemmelyn Pescadero", "Roy Mangubat", "Dra. Gel Mangubat"] },
-  { table: "5", guests: ["Gemma Mendez", "Ramelito Mendez", "Jinky Mendez", "Louie Mendez", "Florie Mae Mendez", "Vicky Gera", "Nick Lumain", "Jesus Reyes", "Teresita Reyes", "Connie Salcedo"] },
+  { table: "5", guests: ["Gemma Mendez", "Ramelito Mendez", "Jinky Mendez", "Louie Mendez", "Florie Mae Mendez", "Vicky Gera", "Nick Lumain", "Jess Michael Reyes", "Connie Salcedo"] },
   { table: "6", guests: ["Axziel Bartolabac", "Sophia Bartolabac", "Josh Nicolaus Abad", "James Vincent Abad", "Hannah Mae Abad", "Mary Orchid Lopez", "Jonathan Lopez", "Orje Marey Ceniza", "Vincy Ceniza", "Ramil Balbuena"] },
   { table: "7", guests: ["Eizel Jimenez", "Ellen Jimenez", "Abiel Jimenez", "Rogs Nuñez", "Kimarth Argallon", "Jill Argallon", "Rosalie", "Che-che", "Camille Dungog", "Arci Lim"] },
   { table: "8", guests: ["Wilson Abad", "Marinel Librea", "Carmelita Abad", "Mico Niel Abad", "Mona Abad", "Danielle Franz Abad", "Rino Zhel Abad", "Michelle Abad", "Sandro Agosto", "Mylene Pagubo"] },

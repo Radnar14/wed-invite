@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import {
+  ArrowRight,
   Check,
   Heart,
   CircleX,
@@ -18,11 +19,13 @@ import {
   ChevronLeft,
   Loader2,
   Calendar,
+  Images,
   Lock,
   Pencil,
   X,
 } from "lucide-react";
 import { RSVP_DEADLINE, RSVP_DEADLINE_DATE } from "@/lib/wedding-config";
+import { ScrollReveal } from "./scroll-reveal";
 
 // Manual override — flip to `true` to force submissions closed early.
 // Otherwise the RSVP closes automatically once RSVP_DEADLINE_DATE passes.
@@ -83,6 +86,51 @@ const buildSubmissionSummary = (attendees: SubmissionAttendee[]): SubmissionSumm
 };
 
 export function RSVP() {
+  return (
+    <section id="rsvp" className="relative overflow-hidden bg-secondary py-24 md:py-32">
+      <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-border to-transparent" />
+
+      <div className="container relative mx-auto px-6">
+        <ScrollReveal className="mx-auto max-w-3xl text-center">
+          <div className="mx-auto mb-7 flex h-12 w-12 items-center justify-center rounded-full border border-blushpink/25 bg-background/80 text-blushpink">
+            <Heart className="h-5 w-5" strokeWidth={1.4} aria-hidden="true" />
+          </div>
+
+          <p className="mb-4 font-(family-name:--font-montserrat) text-xs uppercase tracking-[0.3em] text-blushpink">
+            With hearts full
+          </p>
+
+          <h2 className="font-(family-name:--font-cormorant) text-4xl font-light leading-tight text-foreground sm:text-5xl md:text-6xl">
+            Thank You for Being Part of Our Day
+          </h2>
+
+          <p className="mx-auto mt-7 max-w-2xl font-(family-name:--font-montserrat) text-sm leading-7 text-muted-foreground md:text-base md:leading-8">
+            Our wedding day was made even more special because we got to celebrate it with the people we love. Thank you for being there, for your love, your prayers, and the memories we will treasure forever.
+          </p>
+
+          <div className="mx-auto my-8 flex max-w-44 items-center gap-3 text-blushpink/45" aria-hidden="true">
+            <span className="h-px flex-1 bg-current" />
+            <span className="h-1.5 w-1.5 rotate-45 border border-current" />
+            <span className="h-px flex-1 bg-current" />
+          </div>
+
+          <Link
+            href="/gallery"
+            className="group inline-flex min-h-12 items-center justify-center gap-3 border border-accent/35 bg-background/80 px-6 py-3 font-(family-name:--font-montserrat) text-xs uppercase tracking-[0.18em] text-foreground shadow-[0_8px_24px_rgba(68,45,40,0.06)] transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/60 hover:bg-background hover:shadow-[0_12px_30px_rgba(68,45,40,0.1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:px-8"
+          >
+            <Images className="h-4 w-4 text-accent" strokeWidth={1.6} aria-hidden="true" />
+            <span>Relive Our Day</span>
+            <ArrowRight className="h-4 w-4 text-accent transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none" strokeWidth={1.5} aria-hidden="true" />
+          </Link>
+        </ScrollReveal>
+      </div>
+
+      <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-px bg-linear-to-r from-transparent via-border to-transparent" />
+    </section>
+  );
+}
+
+export function LegacyRSVP() {
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);

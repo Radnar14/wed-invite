@@ -3,23 +3,17 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Menu, X, Heart, MapPin } from "lucide-react";
+import { Menu, X, Images } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 
 const navLinks = [
   { id: "home", label: "Home" },
   { id: "story", label: "Our Story" },
-  { id: "entourage", label: "Entourage" },
-  { id: "details", label: "Details" },
-  { id: "attire", label: "Attire" },
-  { id: "timeline", label: "Timeline" },
+  { id: "details", label: "Our Day" },
   { id: "gallery", label: "Gallery" },
-  { id: "faq", label: "FAQ" },
+  { id: "rsvp", label: "Thank You" },
 ];
-
-const rsvpLink = { id: "rsvp", label: "RSVP" };
-const seatFinderLink = { href: "/seat-finder", label: "Find Seat" };
 
 export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -35,7 +29,7 @@ export function Navigation() {
 
       // Update active hash based on scroll position
       if (pathname === "/") {
-        const sections = ["home", "story", "entourage", "details", "attire", "timeline", "gallery", "rsvp", "faq"];
+        const sections = navLinks.map((link) => link.id);
         for (const section of sections.reverse()) {
           const el = document.getElementById(section);
           if (el && el.getBoundingClientRect().top <= 100) {
@@ -80,6 +74,8 @@ export function Navigation() {
         setActiveHash(`#${id}`);
         setIsMobileMenuOpen(false);
       }
+    } else {
+      setIsMobileMenuOpen(false);
     }
   };
 
@@ -141,33 +137,6 @@ export function Navigation() {
               </Link>
             </li>
           ))}
-          <li>
-            <Link
-              href={getHref(rsvpLink.id)}
-              onClick={(e) => handleLinkClick(e, rsvpLink.id)}
-              className={cn(
-                "relative inline-block text-sm tracking-[0.2em] uppercase font-(family-name:--font-montserrat) transition-colors hover:text-accent",
-                "after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:h-px after:bg-current after:transition-all after:duration-300",
-                isActive(rsvpLink.id) ? "after:w-full text-accent" : "after:w-0 hover:after:w-full",
-                textClass,
-              )}
-            >
-              {rsvpLink.label}
-            </Link>
-          </li>
-          <li>
-            <Link
-              href={seatFinderLink.href}
-              className={cn(
-                "relative inline-block text-sm tracking-[0.2em] uppercase font-(family-name:--font-montserrat) transition-colors hover:text-accent",
-                "after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:h-px after:bg-current after:transition-all after:duration-300",
-                pathname === seatFinderLink.href ? "after:w-full text-accent" : "after:w-0 hover:after:w-full",
-                textClass,
-              )}
-            >
-              {seatFinderLink.label}
-            </Link>
-          </li>
         </ul>
 
         {/* Mobile Menu Toggle Button */}
@@ -179,6 +148,8 @@ export function Navigation() {
             textClass,
           )}
           aria-label="Toggle menu"
+          aria-expanded={isMobileMenuOpen}
+          aria-controls="mobile-navigation"
         >
           {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
@@ -186,48 +157,33 @@ export function Navigation() {
 
       {/* Mobile Menu */}
       <div
+        id="mobile-navigation"
+        aria-hidden={!isMobileMenuOpen}
+        inert={!isMobileMenuOpen}
         className={cn(
           "lg:hidden absolute top-full left-0 right-0 bg-background/98 backdrop-blur-md transition-all duration-300 overflow-hidden",
           isMobileMenuOpen ? "max-h-[85vh] overflow-y-auto border-b border-border" : "max-h-0",
         )}
       >
         <div className="container mx-auto px-6 py-6 flex flex-col">
-          {/* Mobile Header Row: RSVP and Find Seat */}
+          {/* Featured mobile gallery action */}
           <div className="flex flex-col gap-3 pb-7 mb-6 border-b border-border/50">
-            {/* RSVP — filled warm gradient */}
             <Link
-              href={getHref(rsvpLink.id)}
-              onClick={(e) => handleLinkClick(e, rsvpLink.id)}
+              href={getHref("gallery")}
+              onClick={(e) => handleLinkClick(e, "gallery")}
               className="mobile-rsvp-link group relative flex items-center justify-center gap-2.5 overflow-hidden py-4 transition-all duration-300 active:scale-[0.98]"
+              aria-label="Relive our day in the gallery"
             >
-              {/* RSVP and Find Seat Button */}
               <span
                 aria-hidden="true"
                 className="mobile-rsvp-link-shine pointer-events-none absolute inset-0 -translate-x-full transition-transform duration-700 ease-in-out group-hover:translate-x-full"
               />
-              {/* RSVP Button */}
-              <Heart size={11} strokeWidth={1.5} className="text-primary-foreground/70 shrink-0" />
+              <Images size={14} strokeWidth={1.5} className="text-primary-foreground/80 shrink-0" aria-hidden="true" />
               <span className="font-(family-name:--font-montserrat) tracking-[0.3em] uppercase text-xs text-primary-foreground">
-                {rsvpLink.label}
+                Relive Our Day
               </span>
             </Link>
 
-            {/* Find Seat — outlined glassmorphism */}
-            <Link
-              href={seatFinderLink.href}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="flex items-center justify-center gap-2.5 py-4 backdrop-blur-sm transition-all duration-300 hover:bg-primary/5 active:scale-[0.98]"
-              style={{
-                border: "1px solid oklch(0.35 0.05 30 / 0.25)",
-                boxShadow: "inset 0 1px 0 oklch(1 0 0 / 0.6)",
-              }}
-            >
-              {/* Find Seat button */}
-              <MapPin size={11} strokeWidth={1.5} className="text-primary/60 shrink-0" />
-              <span className="font-(family-name:--font-montserrat) tracking-[0.3em] uppercase text-xs text-primary">
-                {seatFinderLink.label}
-              </span>
-            </Link>
           </div>
 
           {/* Scroll only the Home and below */}

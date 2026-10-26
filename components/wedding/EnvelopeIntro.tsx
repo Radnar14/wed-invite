@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 import { COUPLE_NAMES, WEDDING_DISPLAY_DATE } from "@/lib/wedding-config";
 
 const INTRO_OPENED_EVENT = "wedding-intro-opened";
@@ -13,18 +14,19 @@ interface EnvelopeIntroProps {
 }
 
 /**
- * Full-screen "envelope opening" intro. Shown on every fresh page load
- * before the homepage is revealed.
+ * Full-screen wedding memory intro shown before the homepage on fresh loads.
  */
 export function EnvelopeIntro({ onComplete }: EnvelopeIntroProps) {
-  const [opened, setOpened] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const prefersReducedMotion = useReducedMotion();
   const completedRef = useRef(false);
-  const timeoutsRef = useRef<number[]>([]);
+  const timeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     return () => {
-      timeoutsRef.current.forEach((id) => window.clearTimeout(id));
+      if (timeoutRef.current !== null) {
+        window.clearTimeout(timeoutRef.current);
+      }
     };
   }, []);
 
@@ -34,26 +36,14 @@ export function EnvelopeIntro({ onComplete }: EnvelopeIntroProps) {
     onComplete();
   };
 
-  const handleOpen = () => {
-    if (opened) return;
-    setOpened(true);
+  const handleContinue = () => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
     window.dispatchEvent(new CustomEvent(INTRO_OPENED_EVENT));
 
-    const openingDuration = prefersReducedMotion ? 500 : 1900;
-    const revealHold = prefersReducedMotion ? 150 : 450;
-
-    const timeoutId = window.setTimeout(() => {
+    timeoutRef.current = window.setTimeout(() => {
       markComplete();
-    }, openingDuration + revealHold);
-
-    timeoutsRef.current.push(timeoutId);
-  };
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      handleOpen();
-    }
+    }, prefersReducedMotion ? 650 : 1350);
   };
 
   const overlayVariants: Variants = {
@@ -68,151 +58,87 @@ export function EnvelopeIntro({ onComplete }: EnvelopeIntroProps) {
     },
   };
 
-  const flapVariants: Variants = {
-    closed: { rotateX: 0, opacity: 1 },
-    open: {
-      rotateX: prefersReducedMotion ? -20 : -130,
-      opacity: 0,
-      transition: {
-        rotateX: { duration: prefersReducedMotion ? 0.4 : 1.1, ease: [0.65, 0, 0.35, 1] },
-        opacity: {
-          duration: prefersReducedMotion ? 0.3 : 0.5,
-          delay: prefersReducedMotion ? 0.1 : 0.6,
-        },
-      },
-    },
-  };
-
-  const sealVariants: Variants = {
-    idle: { scale: 1, opacity: 1, rotate: 0 },
-    open: {
-      scale: 0,
-      opacity: 0,
-      rotate: prefersReducedMotion ? 0 : 12,
-      transition: { duration: prefersReducedMotion ? 0.25 : 0.5, ease: "easeInOut" },
-    },
-  };
-
-  const cardVariants: Variants = {
-    hidden: { y: "20%", opacity: 0 },
-    open: {
-      y: "-38%",
-      opacity: 1,
-      transition: {
-        duration: prefersReducedMotion ? 0.4 : 1.1,
-        delay: prefersReducedMotion ? 0.1 : 0.5,
-        ease: [0.22, 1, 0.36, 1],
-      },
-    },
-  };
-
   return (
     <motion.div
-      className="fixed inset-0 z-100 flex flex-col items-center justify-center overflow-hidden px-6 py-10 envelope-intro-bg"
+      className="fixed inset-0 z-100 flex items-center justify-center overflow-hidden bg-[#fffaf9] px-6 py-10"
       variants={overlayVariants}
       initial="hidden"
       animate="visible"
       exit="exit"
       role="region"
-      aria-label="Wedding invitation envelope"
+      aria-label="Wedding day memories introduction"
     >
-      <div className="mb-6 text-center">
-        <p className="text-xs uppercase tracking-[0.45em] text-primary/60 md:text-sm">We are getting</p>
-        <h1 className="mt-2 text-5xl font-(family-name:--font-cormorant) uppercase tracking-[0.18em] text-primary sm:text-6xl">Married</h1>
-      </div>
+      <Image
+        src="/images/hero-couple.jpg"
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover object-center opacity-25"
+        aria-hidden="true"
+      />
+      <div aria-hidden="true" className="absolute inset-0 bg-linear-to-b from-[#fffdfc]/95 via-[#fffaf9]/90 to-[#f5e7e9]/95" />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-4 border border-[#c68c99]/35 sm:inset-6 md:inset-10" />
+
       <motion.div
-        className="relative w-[88vw] max-w-110 aspect-[4/3.1] envelope-perspective cursor-pointer"
-        animate={!opened && !prefersReducedMotion ? { y: [0, -8, 0] } : { y: 0 }}
-        transition={!opened && !prefersReducedMotion ? { duration: 4.5, repeat: Infinity, ease: "easeInOut" } : { duration: 0.4 }}
-        onClick={handleOpen}
-        role="button"
-        tabIndex={opened ? -1 : 0}
-        onKeyDown={handleKeyDown}
-        aria-label="Open your wedding invitation"
+        className="relative z-10 flex w-full max-w-2xl flex-col items-center text-center"
+        initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 12 }}
+        animate={{ opacity: isTransitioning ? 0 : 1, y: 0 }}
+        transition={{ duration: prefersReducedMotion ? 0 : isTransitioning ? 0.7 : 0.8, ease: "easeOut" }}
       >
-        <Image
-          src="/images/bouquet.png"
-          alt=""
-          width={400}
-          height={280}
-          priority
-          className={`pointer-events-none absolute -left-20 -bottom-12 w-40 sm:w-52 h-auto object-contain select-none transition-[z-index] ${opened ? "z-0" : "z-10"}`}
-          aria-hidden="true"
-        />
-        <Image
-          src="/images/bouquet.png"
-          alt=""
-          width={400}
-          height={280}
-          priority
-          className={`pointer-events-none absolute -right-16 -top-14 w-36 sm:w-48 h-auto object-contain select-none -scale-x-100 ${opened ? "z-0" : "z-10"}`}
-          aria-hidden="true"
-        />
-        {/* Envelope back / body */}
-        <div className="absolute inset-0 rounded-[28px] shadow-[0_35px_70px_-25px_rgba(120,90,70,0.35)] overflow-hidden envelope-body">
-          <div className="absolute inset-0 opacity-70 envelope-body-pattern" />
-          <div className="absolute inset-1.75 rounded-[22px] border border-[#C68C99]/70" />
-        </div>
+        <p className="mb-7 font-(family-name:--font-montserrat) text-[0.65rem] uppercase tracking-[0.3em] text-[#946d77] sm:text-xs sm:tracking-[0.38em]">
+          Welcome back to our wedding day
+        </p>
 
-        {/* Invitation card sliding up from inside */}
-        <motion.div
-          className="absolute left-1/2 bottom-[16%] h-[76%] w-[80%] -translate-x-1/2 rounded-md bg-[#FFFDFA] envelope-card"
-          variants={cardVariants}
-          initial="hidden"
-          animate={opened ? "open" : "hidden"}
-        >
-          <div className="flex h-full flex-col items-center justify-center gap-2 px-4 text-center">
-            <p className="font-(family-name:--font-great-vibes) text-2xl text-primary sm:text-3xl">
-              {COUPLE_NAMES.groom} <span className="text-[#F2B8C6]">&amp;</span> {COUPLE_NAMES.bride}
-            </p>
-            <span className="h-px w-10 bg-[#9CAF88]/60" />
-            <p className="font-(family-name:--font-montserrat) text-[10px] uppercase tracking-[0.3em] text-primary/70 sm:text-xs">
-              {WEDDING_DISPLAY_DATE}
-            </p>
-          </div>
-        </motion.div>
-
-        {/* Front pocket */}
-        <div className="absolute bottom-0 left-0 right-0 h-[62%] rounded-b-[28px] overflow-hidden envelope-pocket">
-          <div className="absolute inset-0 opacity-70 envelope-pocket-pattern" />
-        </div>
-
-        {/* Flap */}
-        <motion.div
-          className="absolute left-0 right-0 top-0 h-[58%] origin-top envelope-flap"
-          variants={flapVariants}
-          initial="closed"
-          animate={opened ? "open" : "closed"}
-        >
-          <div className="absolute inset-x-0 top-0 h-full" />
-        </motion.div>
-
-        {/* Wax seal — visual element (entire envelope is now clickable) */}
-        <motion.div
-          className="absolute left-1/2 top-[58%] flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full sm:h-20 sm:w-20 seal-button pointer-events-none"
-          variants={sealVariants}
-          initial="idle"
-          animate={opened ? "open" : "idle"}
-        >
+        <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full border border-[#c68c99]/35 bg-white/70 shadow-[0_8px_24px_rgba(120,75,85,0.08)] sm:h-20 sm:w-20">
           <Image
             src="/images/logo.svg"
-            alt="Wedding monogram"
-            width={40}
-            height={40}
-            className="h-10 w-10 sm:h-12 sm:w-12 object-contain"
+            alt="John Mark and Chezza monogram"
+            width={52}
+            height={52}
+            className="h-10 w-10 object-contain sm:h-12 sm:w-12"
             priority
           />
-        </motion.div>
-      </motion.div>
+        </div>
 
-      {/* Instruction label */}
-      <motion.p
-        className="mt-8 font-(family-name:--font-cormorant) text-sm italic uppercase tracking-[0.25em] text-primary/70 sm:text-base"
-        animate={{ opacity: opened ? 0 : [0.5, 1, 0.5] }}
-        transition={{ duration: 2.6, repeat: opened ? 0 : Infinity, ease: "easeInOut" }}
-      >
-        Tap to Open
-      </motion.p>
+        <h1 className="font-(family-name:--font-great-vibes) text-5xl text-[#5f454b] sm:text-6xl md:text-7xl">
+          {COUPLE_NAMES.groom} <span className="text-[#c98296]">&amp;</span> {COUPLE_NAMES.bride}
+        </h1>
+
+        <div className="my-6 flex w-48 items-center gap-3 text-[#c68c99]/65" aria-hidden="true">
+          <span className="h-px flex-1 bg-current" />
+          <span className="h-1.5 w-1.5 rotate-45 border border-current" />
+          <span className="h-px flex-1 bg-current" />
+        </div>
+
+        <p className="font-(family-name:--font-montserrat) text-[0.65rem] uppercase tracking-[0.3em] text-[#8d777a] sm:text-xs">
+          {WEDDING_DISPLAY_DATE}
+        </p>
+        <p className="mt-6 font-(family-name:--font-cormorant) text-2xl italic text-[#514448] sm:text-3xl">
+          Thank you for being part of our day.
+        </p>
+
+        <button
+          type="button"
+          onClick={handleContinue}
+          disabled={isTransitioning}
+          className="group mt-9 inline-flex min-h-12 items-center justify-center gap-3 border border-[#b77b8b]/50 bg-white/65 px-6 font-(family-name:--font-montserrat) text-[0.65rem] uppercase tracking-[0.22em] text-[#76565f] shadow-[0_8px_24px_rgba(120,75,85,0.06)] transition-colors duration-300 hover:border-[#a96b7d] hover:bg-white/90 disabled:cursor-default sm:px-8 sm:text-xs"
+        >
+          <span>{isTransitioning ? "Returning to our day" : "Revisit our day"}</span>
+          {!isTransitioning && <ArrowRight size={15} strokeWidth={1.5} aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1" />}
+        </button>
+
+        <div className="mt-6 h-px w-36 overflow-hidden bg-[#c68c99]/20" aria-hidden="true">
+          {isTransitioning && (
+            <motion.div
+              className="h-full origin-left bg-[#b77b8b]/70"
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: prefersReducedMotion ? 0.65 : 1.35, ease: "easeInOut" }}
+            />
+          )}
+        </div>
+      </motion.div>
     </motion.div>
   );
 }

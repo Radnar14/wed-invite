@@ -30,6 +30,7 @@ import { AnimatePresence } from 'framer-motion'
 import { Analytics } from '@vercel/analytics/next'
 import { MusicPlayer } from "@/components/wedding/music-player"
 import { EnvelopeIntro } from "@/components/wedding/EnvelopeIntro"
+import { AfterIntroCelebration } from "@/components/wedding/AfterIntroCelebration"
 
 export function RootLayoutClient({
   children,
@@ -51,6 +52,7 @@ export function RootLayoutClient({
    * in the same browser session
    */
   const [introFinished, setIntroFinished] = useState(false)
+  const [showCelebration, setShowCelebration] = useState(false)
 
   useEffect(() => {
     if (didInitialUrlReset.current) return
@@ -63,7 +65,7 @@ export function RootLayoutClient({
       return
     }
 
-    if (pathname === '/gallery' || pathname === '/seat-finder') {
+    if (pathname === '/gallery') {
       router.replace('/')
     }
   }, [router])
@@ -72,9 +74,15 @@ export function RootLayoutClient({
     <>
       {/* Envelope Animation Overlay */}
       {/* Only shows when introFinished is false (fresh load or page refresh) */}
-      <AnimatePresence>
+      <AnimatePresence
+        onExitComplete={() => {
+          if (introFinished) setShowCelebration(true)
+        }}
+      >
         {!introFinished && !isQrSeatFinder && <EnvelopeIntro onComplete={() => setIntroFinished(true)} />}
       </AnimatePresence>
+
+      {showCelebration && <AfterIntroCelebration onComplete={() => setShowCelebration(false)} />}
       
       {/* Music Player */}
       {/* Mounted for the main wedding experience so it can listen for the envelope event. */}
